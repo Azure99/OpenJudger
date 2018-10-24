@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Judger.Fetcher.Generic\Judger.Fetcher.Generic.csproj" />
+    <ProjectReference Include="..\Judger.Fetcher.HUSTOJ\Judger.Fetcher.HUSTOJ.csproj" />
+    <ProjectReference Include="..\Judger.Fetcher.SDNUOJ\Judger.Fetcher.SDNUOJ.csproj" />
+    <ProjectReference Include="..\Judger.Service\Judger.Service.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,7 @@
+language: csharp
+sudo: required
+mono: none
+dotnet: 2.1.300
+
+script:
+  - dotnet publish src/Judger/Judger.csproj -f netcoreapp2.1 -c Release

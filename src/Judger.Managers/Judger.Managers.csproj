@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Judger.Models\Judger.Models.csproj" />
+    <ProjectReference Include="..\Judger.Utils\Judger.Utils.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,24 @@
+﻿##格式
+##[Language=语言]
+##之后每行一条正则，代表禁止的内容
+
+[Language=java]
+java\.net\.
+FileOutputStream
+FileInputStream
+Runtime\.
+\.exec\(
+
+
+[Language=python]
+import(.*)(subprocess|os|sys|http|urllib|requests|win32api|win32process|ctypes)
+
+
+[Language=g]
+windows\.h
+windowsx\.h
+winbase\.h
+system\(
+fopen\(
+stderr
+cerr( *)<<
