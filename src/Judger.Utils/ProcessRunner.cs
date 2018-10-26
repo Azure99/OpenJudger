@@ -120,6 +120,9 @@ namespace Judger.Utils
         private string TryReadStreamToEnd(object readerObject)
         {
             StreamReader reader = readerObject as StreamReader;
+            // ConsoleEncoding读取中文会乱码，使用UTF8编码
+            reader = new StreamReader(reader.BaseStream, Encoding.UTF8); 
+
             while (true)
             {
                 try
