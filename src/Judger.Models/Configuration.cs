@@ -81,6 +81,11 @@ namespace Judger.Models
         public string InterceptionRules { get; set; } = "InterceptionRules.txt";
 
         /// <summary>
+        /// 时间、内存消耗 监控周期(ms)
+        /// </summary>
+        public int MonitorInterval { get; set; } = 10;
+
+        /// <summary>
         /// 附加设置
         /// </summary>
         public Dictionary<string, string> AdditionalConfig { get; set; } = new Dictionary<string, string>();

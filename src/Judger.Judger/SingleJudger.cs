@@ -42,7 +42,7 @@ namespace Judger.Judger
             using (ProcessRunner runner = new ProcessRunner(RunnerPath, RunnerWorkDirectory, RunnerArgs))
             {
                 runner.ProcessorAffinity = ProcessorAffinity;
-                monitor = new RuntimeMonitor(runner.Process)//创建监视器
+                monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval)//创建监视器
                 {
                     TimeLimit = TimeLimit,
                     TotalTimeLimit = TimeLimit * TOTAL_TIME_LIMIT_TUPLING,

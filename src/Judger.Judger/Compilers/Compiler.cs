@@ -31,7 +31,7 @@ namespace Judger.Judger.Compilers
             {
                 runner.ProcessorAffinity = ProcessorAffinity;
 
-                RuntimeMonitor monitor = new RuntimeMonitor(runner.Process);
+                RuntimeMonitor monitor = new RuntimeMonitor(runner.Process, 50);
                 monitor.TimeLimit = TimeLimit;
 
                 monitor.Start();
