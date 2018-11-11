@@ -87,12 +87,8 @@ namespace Judger.Utils
 
             try
             {
-                Process.StandardInput.WriteLine(stdInput);
-                if (stdInput.Length > 0 && !stdInput.EndsWith('\n')) //若输入的结尾不是换行符
-                {
-                    // 写入一个换行符以刷新目标进程缓冲区
-                    Process.StandardInput.WriteLine();
-                }
+                Process.StandardInput.Write(stdInput);
+                Process.StandardInput.Flush();
                 Process.StandardInput.Close();
             }
             catch { }
