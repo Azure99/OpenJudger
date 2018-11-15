@@ -1,5 +1,6 @@
 ﻿using System;
 using Judger.Service;
+using Judger.Managers;
 
 namespace Judger
 {
@@ -19,8 +20,19 @@ namespace Judger
 
         private static void StartUp()
         {
+            AppDomain.CurrentDomain.UnhandledException += LogManager.OnUnhandledException;
+            AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
+            {
+                LogManager.Info("Judger stopped");
+                LogManager.Flush();
+            };
+
+            LogManager.Info("Starting judger");
+
             Service = new JudgeService();
             Service.Start();
+
+            LogManager.Info("Judger started");
         }
         
         private static void ReadCommand()

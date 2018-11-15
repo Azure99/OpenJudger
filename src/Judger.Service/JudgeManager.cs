@@ -46,6 +46,10 @@ namespace Judger.Service
         /// <param name="task">JudgeTask</param>
         public void AddTask(JudgeTask task)
         {
+            LogManager.Info(
+                string.Format("New task: SubmitID:{0} Language:{1} CodeLength:{2} ProblemID:{3} Author:{4}",
+                              task.SubmitID, task.Language, task.SourceCode.Length, task.ProblemID, task.Author));
+
             _judgeQueue.Enqueue(task);
             CheckTask();
         }
@@ -89,7 +93,7 @@ namespace Judger.Service
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                LogManager.Exception(ex);
             }
 
             lock (_queueLock)
@@ -111,20 +115,28 @@ namespace Judger.Service
                 // 检查测试数据是否为最新
                 if (!TestDataManager.CheckData(task.ProblemID, task.DataVersion))
                 {
+                    LogManager.Info("Invalid test data, fetch new data. ProblemID: " + task.ProblemID);
                     ITestDataFetcher fetcher = FetcherFactory.CreateTestDataFetcher();
                     TestDataManager.WriteTestData(task.ProblemID, fetcher.Fetch(task.ProblemID));
+                    LogManager.Info("Problem " + task.ProblemID + " data fetched");
                 }
 
                 JudgeResult result;
                 using (MainJudger judger = new MainJudger(task))
                 {
+                    LogManager.Info("Judge task " + task.SubmitID);
                     result = judger.Judge();
                 }
 
+                LogManager.Info(string.Format("Task {0} result: Time:{1} Mem:{2} Code:{3} PassRate:{4} Details:{5} ",
+                                              result.SubmitID, result.TimeCost, result.MemoryCost, result.ResultCode,
+                                              result.PassRate, result.JudgeDetail));
                 submitter.Submit(result);
             }
             catch(Exception ex)//判题失败
             {
+                LogManager.Info("Judge failed, SubmitID: " + task.SubmitID);
+                LogManager.Exception(ex);
                 submitter.Submit(CreateFailedJudgeResult(task, ex.ToString()));
                 throw ex;
             }
@@ -160,6 +172,7 @@ namespace Judger.Service
         {
             if (RunningCount == 0)
             {
+                LogManager.Info("Run GC");
                 GC.Collect();
             }
         }

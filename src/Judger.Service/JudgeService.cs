@@ -52,6 +52,8 @@ namespace Judger.Service
         /// </summary>
         public void Start()
         {
+            LogManager.Info("Start service");
+
             ClearTempDirectory();
             _workTimer.Start();
         }
@@ -61,6 +63,8 @@ namespace Judger.Service
         /// </summary>
         public void Stop()
         {
+            LogManager.Info("Stop service");
+
             _workTimer.Stop();
         }
 
@@ -72,6 +76,8 @@ namespace Judger.Service
 
         private bool ClearTempDirectory()//清空临时目录
         {
+            LogManager.Info("Clear temp directory");
+
             foreach (var lang in _config.Languages)
             {
                 try
