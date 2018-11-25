@@ -49,7 +49,7 @@ namespace Judger.Models
         /// <summary>
         /// 编译器参数
         /// </summary>
-        public string CompilerArgs { get; set; } = "<tempdir>src.cpp -o2 <tempdir>program.exe";
+        public string CompilerArgs { get; set; } = "<tempdir>src.cpp -o <tempdir>program.exe";
 
         /// <summary>
         /// 运行器路径
