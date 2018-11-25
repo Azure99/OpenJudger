@@ -11,7 +11,7 @@ namespace MainUnitTest
         [Fact]
         public void TestSingleJudgerCompare()
         {
-            SingleJudger judger = new SingleJudger("");
+            SingleJudger judger = new SingleJudger(new Judger.Models.JudgeTask());
 
             string test1 = @"123123";
             string test2 = @"123123";
