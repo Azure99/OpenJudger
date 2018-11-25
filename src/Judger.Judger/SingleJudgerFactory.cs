@@ -15,16 +15,7 @@ namespace Judger.Judger
         /// </summary>
         public static ISingleJudger Create(JudgeTask task)
         {
-            LanguageConfiguration config = task.LangConfig;
-
-            ISingleJudger judger = new SingleJudger(config.RunnerPath)
-            {
-                RunnerWorkDirectory = config.RunnerWorkDirectory,
-                RunnerArgs = config.RunnerArgs,
-                TimeLimit = task.TimeLimit,
-                MemoryLimit = task.MemoryLimit,
-                OutputLimit = config.OutputLimit
-            };
+            ISingleJudger judger = new SingleJudger(task);
 
             return judger;
         }

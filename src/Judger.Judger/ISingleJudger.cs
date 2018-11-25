@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Judger.Models;
 using Judger.Judger.Models;
 
 namespace Judger.Judger
@@ -11,39 +12,9 @@ namespace Judger.Judger
     public interface ISingleJudger
     {
         /// <summary>
-        /// 运行器路径
+        /// 评测任务
         /// </summary>
-        string RunnerPath { get; set; }
-
-        /// <summary>
-        /// 运行器工作目录
-        /// </summary>
-        string RunnerWorkDirectory { get; set; }
-
-        /// <summary>
-        /// 运行器运行参数
-        /// </summary>
-        string RunnerArgs { get; set; }
-
-        /// <summary>
-        /// 时间限制
-        /// </summary>
-        int TimeLimit { get; set; }
-
-        /// <summary>
-        /// 内存限制
-        /// </summary>
-        int MemoryLimit { get; set; }
-        
-        /// <summary>
-        /// 输出限制
-        /// </summary>
-        int OutputLimit { get; set; }
-
-        /// <summary>
-        /// 处理器亲和性
-        /// </summary>
-        IntPtr ProcessorAffinity { get; set; }
+        JudgeTask JudgeTask { get; set; }
 
         /// <summary>
         /// 评测

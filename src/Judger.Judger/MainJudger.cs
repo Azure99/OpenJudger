@@ -25,7 +25,7 @@ namespace Judger.Judger
         {
             JudgeTask = task;
             // 分配独立的处理器核心
-            task.ProcessorAffinityUseage = ProcessorAffinityManager.GetUseage();
+            task.ProcessorAffinity = ProcessorAffinityManager.GetUseage();
         }
 
         /// <summary>
@@ -71,10 +71,7 @@ namespace Judger.Judger
             if(JudgeTask.LangConfig.NeedCompile)
             {
                 ICompiler compiler = CompilerFactory.Create(JudgeTask);
-                //使用分配的独立处理器核心
-                compiler.ProcessorAffinity = JudgeTask.ProcessorAffinityUseage;
-
-                string compileRes = compiler.Compile(JudgeTask.LangConfig.CompilerArgs);
+                string compileRes = compiler.Compile();
 
                 //检查是否有编译错误(compileRes不为空则代表有错误)
                 if (!string.IsNullOrEmpty(compileRes))
@@ -85,10 +82,8 @@ namespace Judger.Judger
                 }
             }
 
-
             //创建单例Judger
             ISingleJudger judger = SingleJudgerFactory.Create(JudgeTask);
-            judger.ProcessorAffinity = JudgeTask.ProcessorAffinityUseage;
 
             //获取所有测试点文件名
             Tuple<string, string>[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemID);
@@ -143,7 +138,7 @@ namespace Judger.Judger
         public void Dispose()
         {
             // 释放占用的独立处理器核心
-            ProcessorAffinityManager.ReleaseUseage(JudgeTask.ProcessorAffinityUseage);
+            ProcessorAffinityManager.ReleaseUseage(JudgeTask.ProcessorAffinity);
             DeleteTempDirectory();
         }
 

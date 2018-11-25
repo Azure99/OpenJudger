@@ -14,22 +14,19 @@ namespace Judger.Judger
     /// </summary>
     public class SingleJudger : ISingleJudger
     {
+        public JudgeTask JudgeTask { get; set; }
+
         /// <summary>
         /// 最大总时间为CPU总时间的倍数
         /// </summary>
         private const int TOTAL_TIME_LIMIT_TUPLING = 3;
 
-        public string RunnerPath { get; set; }
-        public string RunnerWorkDirectory { get; set; } = "";
-        public string RunnerArgs { get; set; } = "";
-        public int TimeLimit { get; set; } = 1000;
-        public int MemoryLimit { get; set; } = 262144;
-        public int OutputLimit { get; set; } = 67108864;
-        public IntPtr ProcessorAffinity { get; set; } = ProcessorAffinityManager.DefaultAffinity;
+        private LanguageConfiguration _langConfig;
 
-        public SingleJudger(string runnerPath)
+        public SingleJudger(JudgeTask task)
         {
-            RunnerPath = runnerPath;
+            JudgeTask = task;
+            _langConfig = task.LangConfig;
         }
 
         public SingleJudgeResult Judge(string input, string output)
@@ -39,18 +36,22 @@ namespace Judger.Judger
             int exitcode = 0;
             RuntimeMonitor monitor;
 
-            using (ProcessRunner runner = new ProcessRunner(RunnerPath, RunnerWorkDirectory, RunnerArgs))
+            using (ProcessRunner runner = new ProcessRunner(
+                                              _langConfig.RunnerPath,     
+                                              _langConfig.RunnerWorkDirectory,
+                                              _langConfig.RunnerArgs))
             {
-                runner.ProcessorAffinity = ProcessorAffinity;
-                monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval)//创建监视器
+                runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
+                // 创建监视器
+                monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval)
                 {
-                    TimeLimit = TimeLimit,
-                    TotalTimeLimit = TimeLimit * TOTAL_TIME_LIMIT_TUPLING,
-                    MemoryLimit = MemoryLimit
+                    TimeLimit = JudgeTask.TimeLimit,
+                    TotalTimeLimit = JudgeTask.TimeLimit * TOTAL_TIME_LIMIT_TUPLING,
+                    MemoryLimit = JudgeTask.MemoryLimit
                 };
                 monitor.Start();
 
-                runner.OutputLimit = OutputLimit;
+                runner.OutputLimit = _langConfig.OutputLimit;
                 exitcode = runner.Run(input, out userOutput, out userError, ProcessPriorityClass.RealTime);
                 monitor.Dispose();
             }
@@ -63,7 +64,8 @@ namespace Judger.Judger
                 ResultCode = JudgeResultCode.Accepted
             };
 
-            if ((userOutput.Length >= OutputLimit || userError.Length >= OutputLimit))
+            if ((userOutput.Length >= _langConfig.OutputLimit || 
+                userError.Length >= _langConfig.OutputLimit))
             {
                 result.ResultCode = JudgeResultCode.OutputLimitExceed;
                 return result;
@@ -71,7 +73,9 @@ namespace Judger.Judger
 
             if (monitor.LimitExceed)
             {
-                result.ResultCode = (TimeLimit == monitor.TimeCost) ? JudgeResultCode.TimeLimitExceed : JudgeResultCode.MemoryLimitExceed;
+                result.ResultCode = (JudgeTask.TimeLimit == monitor.TimeCost) ? 
+                                     JudgeResultCode.TimeLimitExceed : 
+                                     JudgeResultCode.MemoryLimitExceed;
                 return result;
             }
 
@@ -122,8 +126,10 @@ namespace Judger.Judger
                 return CompareResult.Accepted;
             }
 
-            string[] crtArr = correctAnswer.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');//正确答案
-            string[] usrArr = userAnswer.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');//用户答案
+            // 正确答案
+            string[] crtArr = correctAnswer.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+            // 用户答案
+            string[] usrArr = userAnswer.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
             int crtLength = crtArr.Length;
             int usrLength = usrArr.Length;
 

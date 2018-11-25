@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Judger.Managers;
+using Judger.Models;
 using Judger.Utils;
 
 namespace Judger.Judger.Compilers
@@ -11,28 +12,24 @@ namespace Judger.Judger.Compilers
     /// </summary>
     public class Compiler : ICompiler
     {
-        public string CompilerPath { get; set; }
+        public JudgeTask JudgeTask { get; set; }
 
-        public string CompilerWorkDirectory { get; set; }
-
-        public int TimeLimit { get; set; }
-
-        public IntPtr ProcessorAffinity { get; set; } = ProcessorAffinityManager.DefaultAffinity;
-
-        public Compiler(string compilerPath, string compilerWorkDirectory)
+        public Compiler(JudgeTask task)
         {
-            CompilerPath = compilerPath;
-            CompilerWorkDirectory = compilerWorkDirectory;
+            JudgeTask = task;
         }
 
-        public string Compile(string args)
+        public string Compile()
         {
-            using (ProcessRunner runner = new ProcessRunner(CompilerPath, CompilerWorkDirectory, args))
+            using (ProcessRunner runner = new ProcessRunner(
+                                              JudgeTask.LangConfig.CompilerPath, 
+                                              JudgeTask.LangConfig.CompilerWorkDirectory, 
+                                              JudgeTask.LangConfig.CompilerArgs))
             {
-                runner.ProcessorAffinity = ProcessorAffinity;
+                runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
 
                 RuntimeMonitor monitor = new RuntimeMonitor(runner.Process, 50);
-                monitor.TimeLimit = TimeLimit;
+                monitor.TimeLimit = JudgeTask.LangConfig.MaxCompileTime;
 
                 monitor.Start();
 

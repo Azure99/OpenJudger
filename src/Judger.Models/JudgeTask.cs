@@ -55,7 +55,7 @@ namespace Judger.Models
         /// <summary>
         /// 处理器亲和性(二进制表示)
         /// </summary>
-        public IntPtr ProcessorAffinityUseage { get; set; } = new IntPtr(1);
+        public IntPtr ProcessorAffinity { get; set; } = new IntPtr(1);
 
         /// <summary>
         /// 编程语言配置信息

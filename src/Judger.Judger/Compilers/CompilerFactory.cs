@@ -12,11 +12,7 @@ namespace Judger.Judger.Compilers
         /// </summary>
         public static ICompiler Create(JudgeTask task)
         {
-            ICompiler compiler = new Compiler(
-                                     task.LangConfig.CompilerPath, 
-                                     task.LangConfig.CompilerWorkDirectory);
-
-            compiler.TimeLimit = task.LangConfig.MaxCompileTime;
+            ICompiler compiler = new Compiler(task);
 
             return compiler;
         }
