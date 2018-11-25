@@ -31,7 +31,8 @@ namespace Judger.Fetcher
         {
             foreach(Type type in _fetcherAssembly.ExportedTypes)
             {
-                if(type.GetInterface(typeof(ITaskFetcher).FullName) != null)
+                if(type.BaseType == typeof(BaseTaskFetcher) ||
+                   type.GetInterface(typeof(ITaskFetcher).FullName) != null)
                 {
                     return _fetcherAssembly.CreateInstance(type.FullName) as ITaskFetcher;
                 }
@@ -47,7 +48,8 @@ namespace Judger.Fetcher
         {
             foreach (Type type in _fetcherAssembly.ExportedTypes)
             {
-                if (type.GetInterface(typeof(ITaskSubmitter).FullName) != null)
+                if (type.BaseType == typeof(BaseTaskSubmitter) ||
+                    type.GetInterface(typeof(ITaskSubmitter).FullName) != null)
                 {
                     return _fetcherAssembly.CreateInstance(type.FullName) as ITaskSubmitter;
                 }
@@ -56,7 +58,6 @@ namespace Judger.Fetcher
             throw new FetcherException("ITaskSubmitter not implement!");
         }
 
-
         /// <summary>
         /// 动态创建TestDataFetcher
         /// </summary>
@@ -64,7 +65,8 @@ namespace Judger.Fetcher
         {
             foreach (Type type in _fetcherAssembly.ExportedTypes)
             {
-                if (type.GetInterface(typeof(ITestDataFetcher).FullName) != null)
+                if (type.BaseType == typeof(BaseTestDataFetcher) || 
+                    type.GetInterface(typeof(ITestDataFetcher).FullName) != null)
                 {
                     return _fetcherAssembly.CreateInstance(type.FullName) as ITestDataFetcher;
                 }

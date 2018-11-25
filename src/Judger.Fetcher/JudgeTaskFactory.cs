@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Judger.Managers;
 using Judger.Models;
 using Judger.Utils;
 
-namespace Judger.Managers
+namespace Judger.Fetcher
 {
     /// <summary>
     /// 评测任务工厂

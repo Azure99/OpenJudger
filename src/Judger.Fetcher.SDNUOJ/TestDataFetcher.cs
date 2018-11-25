@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.IO.Compression;
-using Judger.Managers;
 using Judger.Models;
 using Judger.Utils;
 
@@ -12,19 +11,14 @@ namespace Judger.Fetcher.SDNUOJ
     /// <summary>
     /// TestData获取器
     /// </summary>
-    public class TestDataFetcher : ITestDataFetcher
+    public class TestDataFetcher : BaseTestDataFetcher
     {
-        //最大测试数据下载时间
-        private const int MAX_DOWNLOAD_TIME = 600000;
-        private readonly Configuration _config = ConfigManager.Config;
-        private HttpWebClient _httpClient = ConfiguredClient.Create();
-
         public TestDataFetcher()
         {
-            _httpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
+            Client.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
-        public byte[] Fetch(JudgeTask task)
+        public override byte[] Fetch(JudgeTask task)
         {
             return Fetch(task.ProblemID.ToString());
         }
@@ -33,7 +27,7 @@ namespace Judger.Fetcher.SDNUOJ
         {
             string body = CreateRequestBody(problemID);
 
-            byte[] result = _httpClient.UploadData(_config.TestDataFetchUrl, body, 3);
+            byte[] result = Client.UploadData(Config.TestDataFetchUrl, body, 3);
             result = ChangeVersionFileName(result);
 
             return result;
@@ -84,11 +78,6 @@ namespace Judger.Fetcher.SDNUOJ
         private string CreateRequestBody(string problemID)
         {
             return "pid=" + problemID;
-        }
-
-        public void Dispose()
-        {
-            _httpClient.Dispose();
         }
     }
 }

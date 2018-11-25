@@ -1,34 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Judger.Managers;
 using Judger.Models;
-using Judger.Utils;
 
 namespace Judger.Fetcher.SDNUOJ
 {
     /// <summary>
     /// JudgeResult提交器
     /// </summary>
-    public class TaskSubmitter : ITaskSubmitter
+    public class TaskSubmitter : BaseTaskSubmitter
     {
-        private readonly Configuration _config = ConfigManager.Config;
-
-        public bool Submit(JudgeResult result)
+        public override bool Submit(JudgeResult result)
         {
-            try
-            {
-                using (HttpWebClient client = ConfiguredClient.Create())
-                {
-                    client.CookieContainer = Authenticator.Singleton.CookieContainer;
-
-                    client.UploadString(_config.ResultSubmitUrl, GetDataForSubmit(result), 3);
-                    return true;
-                }
-            }
-            catch { }
-
-            return false;
+            Client.CookieContainer = Authenticator.Singleton.CookieContainer;
+            Client.UploadString(Config.ResultSubmitUrl, GetDataForSubmit(result), 3);
+            return true;
         }
 
         /// <summary>
@@ -62,8 +48,5 @@ namespace Judger.Fetcher.SDNUOJ
 
             return data.ToString();
         }
-
-        public void Dispose()
-        { }
     }
 }

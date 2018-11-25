@@ -2,24 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using Judger.Fetcher;
-using Judger.Managers;
 using Judger.Models;
 using Judger.Utils;
 
 namespace Judger.Fetcher.HUSTOJ
 {
-    public class TaskFetcher : ITaskFetcher
+    public class TaskFetcher : BaseTaskFetcher
     {
-        private HttpWebClient _webClient = ConfiguredClient.Create();
-        private Configuration _config = ConfigManager.Config;
-
         public TaskFetcher()
         {
-            _webClient.CookieContainer = Authenticator.Singleton.CookieContainer;
+            Client.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
-        public JudgeTask[] Fetch()
+        public override JudgeTask[] Fetch()
         {
             List<JudgeTask> taskList = new List<JudgeTask>();
             int[] pendingSid = GetPending();
@@ -43,7 +38,7 @@ namespace Judger.Fetcher.HUSTOJ
             try
             {
                 string body = CreateGetPendingRequestBody();
-                res = _webClient.UploadString(_config.TaskFetchUrl, body);
+                res = Client.UploadString(Config.TaskFetchUrl, body);
             }
             catch
             {
@@ -69,14 +64,14 @@ namespace Judger.Fetcher.HUSTOJ
             sb.Append("getpending=1&");
 
             sb.Append("oj_lang_set=");
-            foreach(var lang in _config.Languages)
+            foreach(var lang in Config.Languages)
             {
                 sb.Append(lang.Language + ",");
             }
             sb.Remove(sb.Length - 1, 1);
             sb.Append("&");
 
-            sb.Append("max_running=" + _config.MaxQueueSize);
+            sb.Append("max_running=" + Config.MaxQueueSize);
             return sb.ToString();
         }
 
@@ -101,7 +96,7 @@ namespace Judger.Fetcher.HUSTOJ
         private void GetSolutionInfo(int sid, out int problemID, out string username, out string lang)
         {
             string body = "getsolutioninfo=1&sid=" + sid;
-            string res = _webClient.UploadString(_config.TaskFetchUrl, body, 3);
+            string res = Client.UploadString(Config.TaskFetchUrl, body, 3);
 
             string[] split = Regex.Split(res, "\r\n|\r|\n");
             problemID = int.Parse(split[0]);
@@ -112,7 +107,7 @@ namespace Judger.Fetcher.HUSTOJ
         private string GetSolution(int sid)
         {
             string body = "getsolution=1&sid=" + sid;
-            string res = _webClient.UploadString(_config.TaskFetchUrl, body, 3);
+            string res = Client.UploadString(Config.TaskFetchUrl, body, 3);
 
             return res;
         }
@@ -120,7 +115,7 @@ namespace Judger.Fetcher.HUSTOJ
         private void GetProblemInfo(int pid, out int timeLimit, out int memoryLimit, out bool spj)
         {
             string body = "getprobleminfo=1&pid=" + pid;
-            string res = _webClient.UploadString(_config.TaskFetchUrl, body, 3);
+            string res = Client.UploadString(Config.TaskFetchUrl, body, 3);
 
             string[] split = Regex.Split(res, "\r\n|\r|\n");
             timeLimit = int.Parse(split[0]) * 1000;
@@ -131,14 +126,9 @@ namespace Judger.Fetcher.HUSTOJ
         private string GetTestDataMD5(int pid)
         {
             string body = string.Format("gettestdatalist=1&pid={0}&time=1", pid);
-            string res = _webClient.UploadString(_config.TaskFetchUrl, body, 3);
+            string res = Client.UploadString(Config.TaskFetchUrl, body, 3);
             
             return MD5Encrypt.EncryptToHexString(res);
-        }
-
-        public void Dispose()
-        {
-            _webClient.Dispose();
         }
     }
 }

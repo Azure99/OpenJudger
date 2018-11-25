@@ -2,28 +2,23 @@
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
-using Judger.Managers;
 using Judger.Models;
-using Judger.Utils;
 
 namespace Judger.Fetcher.Generic
 {
     /// <summary>
     /// JudgeTask取回器
     /// </summary>
-    public class TaskFetcher : ITaskFetcher
+    public class TaskFetcher : BaseTaskFetcher
     {
-        private readonly Configuration _config = ConfigManager.Config;
-        private HttpWebClient _httpClient = ConfiguredClient.Create();
-
         public TaskFetcher()
         {
-            _httpClient.DefaultContentType = "application/json";
+            Client.DefaultContentType = "application/json";
         }
 
-        public JudgeTask[] Fetch()
+        public override JudgeTask[] Fetch()
         {
-            string resultString = _httpClient.UploadString(_config.TaskFetchUrl, CreateRequestBody());
+            string resultString = Client.UploadString(Config.TaskFetchUrl, CreateRequestBody());
 
             return ParseTask(resultString);
         }
@@ -32,7 +27,7 @@ namespace Judger.Fetcher.Generic
         private string CreateRequestBody()
         {
             JObject requestObj = new JObject();
-            requestObj.Add("JudgerName", _config.JudgerName);
+            requestObj.Add("JudgerName", Config.JudgerName);
             requestObj.Add("Token", Token.Create());
 
             return requestObj.ToString();
@@ -75,11 +70,6 @@ namespace Judger.Fetcher.Generic
             }
 
             return true;
-        }
-
-        public void Dispose()
-        {
-            _httpClient.Dispose();
         }
     }
 }

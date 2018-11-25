@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
-using Judger.Managers;
 using Judger.Models;
-using Judger.Utils;
 using Judger.Fetcher.SDNUOJ.Models;
 
 namespace Judger.Fetcher.SDNUOJ
@@ -12,19 +10,16 @@ namespace Judger.Fetcher.SDNUOJ
     /// <summary>
     /// JudgeTask取回器
     /// </summary>
-    public class TaskFetcher : ITaskFetcher
+    public class TaskFetcher : BaseTaskFetcher
     {
-        private readonly Configuration _config = ConfigManager.Config;
-        private HttpWebClient _httpClient = ConfiguredClient.Create();
-
         public TaskFetcher()
         {
-            _httpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
+            Client.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
-        public JudgeTask[] Fetch()
+        public override JudgeTask[] Fetch()
         {
-            string resultString = _httpClient.UploadString(_config.TaskFetchUrl, CreateRequestBody(), 3);
+            string resultString = Client.UploadString(Config.TaskFetchUrl, CreateRequestBody(), 3);
 
             JudgeTask[] tasks = ParseTask(resultString);
             return tasks;
@@ -38,7 +33,7 @@ namespace Judger.Fetcher.SDNUOJ
             sb.Append("supported_languages=");
 
             StringBuilder langSB = new StringBuilder();
-            foreach (var lang in _config.Languages)
+            foreach (var lang in Config.Languages)
             {
                 langSB.Append(lang.Language + "[],");
             }
@@ -93,11 +88,6 @@ namespace Judger.Fetcher.SDNUOJ
             }
 
             return true;
-        }
-
-        public void Dispose()
-        {
-            _httpClient.Dispose();
         }
     }
 }

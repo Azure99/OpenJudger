@@ -4,26 +4,19 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.IO.Compression;
-using Judger.Fetcher;
-using Judger.Managers;
 using Judger.Models;
 using Judger.Utils;
 
 namespace Judger.Fetcher.HUSTOJ
 {
-    public class TestDataFetcher : ITestDataFetcher
+    public class TestDataFetcher : BaseTestDataFetcher
     {
-        //最大测试数据下载时间
-        private const int MAX_DOWNLOAD_TIME = 600000;
-        private readonly Configuration _config = ConfigManager.Config;
-        private HttpWebClient _webClient = ConfiguredClient.Create(); 
         public TestDataFetcher()
         {
-            _webClient.ReadWriteTimeout = MAX_DOWNLOAD_TIME;
-            _webClient.CookieContainer = Authenticator.Singleton.CookieContainer;
+            Client.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
-        public byte[] Fetch(JudgeTask task)
+        public override byte[] Fetch(JudgeTask task)
         {
             return Fetch(task.ProblemID);
         }
@@ -44,7 +37,7 @@ namespace Judger.Fetcher.HUSTOJ
         private string[] GetTestDataList(int pid)
         {
             string body = "gettestdatalist=1&pid=" + pid;
-            string res = _webClient.UploadString(_config.TaskFetchUrl, body, 3);
+            string res = Client.UploadString(Config.TaskFetchUrl, body, 3);
 
             string[] split = Regex.Split(res, "\r\n|\r|\n");
 
@@ -63,7 +56,7 @@ namespace Judger.Fetcher.HUSTOJ
         private byte[] GetTestDataFile(int pid, string fileName)
         {
             string body = "gettestdata=1&filename=" + pid + "/" + fileName;
-            return _webClient.UploadData(_config.TaskFetchUrl, body, 3);
+            return Client.UploadData(Config.TaskFetchUrl, body, 3);
         }
 
         private byte[] CreateZIP(Tuple<string, byte[]>[] files, string dataVersion)
@@ -116,14 +109,9 @@ namespace Judger.Fetcher.HUSTOJ
         private string GetTestDataMD5(int pid)
         {
             string body = string.Format("gettestdatalist=1&pid={0}&time=1", pid);
-            string res = _webClient.UploadString(_config.TaskFetchUrl, body, 3);
+            string res = Client.UploadString(Config.TaskFetchUrl, body, 3);
 
             return MD5Encrypt.EncryptToHexString(res);
-        }
-
-        public void Dispose()
-        {
-            _webClient.Dispose();
         }
     }
 }

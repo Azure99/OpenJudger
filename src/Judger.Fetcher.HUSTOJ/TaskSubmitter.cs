@@ -1,32 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Judger.Fetcher;
-using Judger.Managers;
 using Judger.Models;
-using Judger.Utils;
 
 namespace Judger.Fetcher.HUSTOJ
 {
-    public class TaskSubmitter : ITaskSubmitter
+    public class TaskSubmitter : BaseTaskSubmitter
     {
-        private readonly Configuration _config = ConfigManager.Config;
-        public bool Submit(JudgeResult result)
+        public override bool Submit(JudgeResult result)
         {
-            using (HttpWebClient webClient = ConfiguredClient.Create())
-            {
-                webClient.CookieContainer = Authenticator.Singleton.CookieContainer;
-
-                try
-                {
-                    webClient.UploadString(_config.TaskFetchUrl, GetDataForSubmit(result), 3);
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
+            Client.CookieContainer = Authenticator.Singleton.CookieContainer;
+            Client.UploadString(Config.TaskFetchUrl, GetDataForSubmit(result), 3);
+            return true;
         }
 
         private string GetDataForSubmit(JudgeResult result)
@@ -51,11 +36,6 @@ namespace Judger.Fetcher.HUSTOJ
                     result.SubmitID, resultCode, result.TimeCost, result.MemoryCost, result.PassRate);
 
             return body;
-        }
-
-        public void Dispose()
-        {
-
         }
     }
 }
