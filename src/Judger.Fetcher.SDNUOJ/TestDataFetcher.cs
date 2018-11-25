@@ -24,6 +24,11 @@ namespace Judger.Fetcher.SDNUOJ
             _httpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
+        public byte[] Fetch(JudgeTask task)
+        {
+            return Fetch(task.ProblemID.ToString());
+        }
+
         public byte[] Fetch(string problemID)
         {
             string body = CreateRequestBody(problemID);
@@ -79,16 +84,6 @@ namespace Judger.Fetcher.SDNUOJ
         private string CreateRequestBody(string problemID)
         {
             return "pid=" + problemID;
-        }
-
-        public byte[] Fetch(int problemID)
-        {
-            return Fetch(problemID.ToString());
-        }
-
-        public byte[] Fetch(JudgeTask task)
-        {
-            return Fetch(task.ProblemID.ToString());
         }
 
         public void Dispose()

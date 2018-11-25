@@ -24,6 +24,11 @@ namespace Judger.Fetcher.Generic
             _httpClient.DefaultContentType = "application/json";
         }
 
+        public byte[] Fetch(JudgeTask task)
+        {
+            return Fetch(task.ProblemID.ToString());
+        }
+
         public byte[] Fetch(string problemID)
         {
             string body = CreateRequestBody(problemID);
@@ -40,16 +45,6 @@ namespace Judger.Fetcher.Generic
             obj.Add("ProblemID", Int32.Parse(problemID));
 
             return obj.ToString();
-        }
-
-        public byte[] Fetch(int problemID)
-        {
-            return Fetch(problemID.ToString());
-        }
-
-        public byte[] Fetch(JudgeTask task)
-        {
-            return Fetch(task.ProblemID.ToString());
         }
 
         public void Dispose()

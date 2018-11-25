@@ -23,6 +23,11 @@ namespace Judger.Fetcher.HUSTOJ
             _webClient.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
+        public byte[] Fetch(JudgeTask task)
+        {
+            return Fetch(task.ProblemID);
+        }
+
         public byte[] Fetch(int problemID)
         {
             string[] fileNameArr = GetTestDataList(problemID);
@@ -114,15 +119,6 @@ namespace Judger.Fetcher.HUSTOJ
             string res = _webClient.UploadString(_config.TaskFetchUrl, body, 3);
 
             return MD5Encrypt.EncryptToHexString(res);
-        }
-
-        public byte[] Fetch(string problemID)
-        {
-            return Fetch(int.Parse(problemID));
-        }
-        public byte[] Fetch(JudgeTask task)
-        {
-            return Fetch(task.ProblemID);
         }
 
         public void Dispose()

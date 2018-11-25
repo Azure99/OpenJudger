@@ -117,7 +117,7 @@ namespace Judger.Service
                 {
                     LogManager.Info("Invalid test data, fetch new data. ProblemID: " + task.ProblemID);
                     ITestDataFetcher fetcher = FetcherFactory.CreateTestDataFetcher();
-                    TestDataManager.WriteTestData(task.ProblemID, fetcher.Fetch(task.ProblemID));
+                    TestDataManager.WriteTestData(task.ProblemID, fetcher.Fetch(task));
                     LogManager.Info("Problem " + task.ProblemID + " data fetched");
                 }
 
