@@ -59,6 +59,7 @@ namespace Judger.Judger
                     {
                         //若语言信息不规范, 直接忽略当前语言所有规则
                         nowLang = "";
+                        LogManager.Error("Can not parse interception rules!");
                     }
                     
                     if (!_langRulesDic.ContainsKey(nowLang)) 

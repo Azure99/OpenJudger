@@ -84,8 +84,10 @@ namespace Judger.Service
                 {
                     System.IO.Directory.Delete(lang.JudgeDirectory, true);
                 }
-                catch
+                catch(Exception ex)
                 {
+                    LogManager.Error("Can not clear temp directory!");
+                    LogManager.Exception(ex);
                     return false;
                 }
             }
@@ -111,7 +113,10 @@ namespace Judger.Service
                 {
                     FetchJudgeTask();
                 }
-                catch { }
+                catch(Exception ex)
+                {
+                    LogManager.Exception(ex);
+                }
 
                 _innerWorking = false;
             }
