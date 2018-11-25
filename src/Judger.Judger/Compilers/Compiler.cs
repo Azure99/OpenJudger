@@ -27,6 +27,10 @@ namespace Judger.Judger.Compilers
                                               JudgeTask.LangConfig.CompilerArgs))
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
+                if(JudgeTask.LangConfig.UseUTF8)
+                {
+                    runner.Encoding = Encoding.UTF8;
+                }
 
                 RuntimeMonitor monitor = new RuntimeMonitor(runner.Process, 50);
                 monitor.TimeLimit = JudgeTask.LangConfig.MaxCompileTime;

@@ -42,6 +42,11 @@ namespace Judger.Judger
                                               _langConfig.RunnerArgs))
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
+                if (JudgeTask.LangConfig.UseUTF8)
+                {
+                    runner.Encoding = Encoding.UTF8;
+                }
+
                 // 创建监视器
                 monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval)
                 {

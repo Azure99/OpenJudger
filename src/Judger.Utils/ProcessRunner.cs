@@ -29,6 +29,11 @@ namespace Judger.Utils
         public long OutputLimit { get; set; } = 2684354;
 
         /// <summary>
+        /// 读写流的编码
+        /// </summary>
+        public Encoding Encoding { get; set; } = null;
+
+        /// <summary>
         /// 程序运行器
         /// </summary>
         /// <param name="fileName">程序文件名</param>
@@ -85,13 +90,7 @@ namespace Judger.Utils
                              TaskCreationOptions.LongRunning);
             readErrorTask.Start();
 
-            try
-            {
-                Process.StandardInput.Write(stdInput);
-                Process.StandardInput.Flush();
-                Process.StandardInput.Close();
-            }
-            catch { }
+            TryWriteToStream(Process.StandardInput, stdInput);
 
             //等待读取完成
             Task.WaitAll(readOutputTask, readErrorTask);
@@ -108,6 +107,18 @@ namespace Judger.Utils
             Process.Dispose();
         }
 
+
+        private void TryWriteToStream(StreamWriter writer, string data)
+        {
+            try
+            {
+                writer.Write(data);
+                writer.Flush();
+                writer.Close();
+            }
+            catch { }
+        }
+
         /// <summary>
         /// 尝试调用StreamReader读取到流尾
         /// </summary>
@@ -116,8 +127,10 @@ namespace Judger.Utils
         private string TryReadStreamToEnd(object readerObject)
         {
             StreamReader reader = readerObject as StreamReader;
-            // ConsoleEncoding读取中文会乱码，使用UTF8编码
-            reader = new StreamReader(reader.BaseStream, Encoding.UTF8); 
+            if (Encoding != null)
+            {
+                reader = new StreamReader(reader.BaseStream, Encoding);
+            }
 
             while (true)
             {

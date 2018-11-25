@@ -26,6 +26,11 @@ namespace Judger.Models
         public string SourceCodeFileName { get; set; } = "src.cpp";
 
         /// <summary>
+        /// 使用UTF8编码读写流
+        /// </summary>
+        public bool UseUTF8 { get; set; } = true;
+
+        /// <summary>
         /// 最大编译时间
         /// </summary>
         public int MaxCompileTime { get; set; } = 20000;
