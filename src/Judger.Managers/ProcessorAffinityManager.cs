@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Judger.Models;
 
 namespace Judger.Managers
 {
@@ -43,7 +44,7 @@ namespace Judger.Managers
         /// <summary>
         /// 申请处理器使用权
         /// </summary>
-        public static ProcessorAffinityUseage GetUseage()
+        public static IntPtr GetUseage()
         {
             lock (_lock)
             {
@@ -57,37 +58,20 @@ namespace Judger.Managers
                         break;
                     }
                 }
-                return new ProcessorAffinityUseage(affinity);
+                return new IntPtr(affinity);
             }
         }
 
         /// <summary>
         /// 释放useage对应处理器
         /// </summary>
-        public static void ReleaseUseage(ProcessorAffinityUseage useage)
+        public static void ReleaseUseage(IntPtr affinity)
         {
-            int affinity = useage.Affinity.ToInt32();
-            if (affinity < _defaultAffinity)
+            int affinityInt = affinity.ToInt32();
+            if (affinityInt < _defaultAffinity)
             {
-                _usingProcessor ^= affinity;
+                _usingProcessor ^= affinityInt;
             }
-        }
-    }
-
-    /// <summary>
-    /// 由处理器亲和性管理的使用权, 用于向判题任务分配独立处理器
-    /// </summary>
-    public class ProcessorAffinityUseage : IDisposable
-    {
-        public IntPtr Affinity { get; }
-        public ProcessorAffinityUseage(int affinity)
-        {
-            Affinity = new IntPtr(affinity);
-        }
-        public void Dispose()
-        {
-            //调用释放处理器方法
-            ProcessorAffinityManager.ReleaseUseage(this);
         }
     }
 }
