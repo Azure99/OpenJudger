@@ -43,6 +43,11 @@ namespace Judger.Models
         public int MemoryLimit { get; set; } = 262144;
 
         /// <summary>
+        /// 是否评测所有测试点(错误答案依旧评测)
+        /// </summary>
+        public bool JudgeAllCases { get; set; } = false;
+
+        /// <summary>
         /// 是否为SpecialJudge
         /// </summary>
         public bool SpecialJudge { get; set; } = false;

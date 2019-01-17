@@ -115,7 +115,11 @@ namespace Judger.Judger
                     {
                         result.ResultCode = singleRes.ResultCode;
                         result.JudgeDetail = singleRes.JudgeDetail;
-                        break;
+
+                        if(!JudgeTask.JudgeAllCases)
+                        {
+                            break;
+                        }
                     }
                 }
                 catch(Exception e)
