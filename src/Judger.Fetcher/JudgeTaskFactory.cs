@@ -26,7 +26,8 @@ namespace Judger.Fetcher
         /// <param name="specialJudge">是否为SpecialJudge</param>
         /// <returns>JudgeTask实例</returns>
         public static JudgeTask Create(int submitID, int problemID, string dataVersion, string language, string sourceCode,
-                                             string author = "", int timeLimit = 1000, int memoryLimit = 262144, bool specialJudge = false)
+                                       string author = "", int timeLimit = 1000, int memoryLimit = 262144, 
+                                       bool judgeAllCases = false, bool specialJudge = false)
         {
             LanguageConfiguration langConfig = ConfigManager.GetLanguageConfig(language).Clone() as LanguageConfiguration;
 
@@ -57,6 +58,7 @@ namespace Judger.Fetcher
                 Author = author,
                 TimeLimit = (int)(timeLimit / langConfig.TimeCompensation),
                 MemoryLimit = memoryLimit,
+                JudgeAllCases = judgeAllCases,
                 SpecialJudge = specialJudge,
                 LangConfig = langConfig,
                 TempJudgeDirectory = tempDirectory
