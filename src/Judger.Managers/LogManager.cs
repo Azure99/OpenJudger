@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Judger.Managers
 {
@@ -12,6 +14,7 @@ namespace Judger.Managers
     {
         private static StringBuilder _infoBuffer = new StringBuilder();
         private static object _writeLock = new object();
+        private static Task _autoFlushTask = new Task(AutoFlush, TaskCreationOptions.LongRunning);
 
         // 仅对Info级日志进行缓冲输出
         private const int INFO_BUFFER_SIZE = 512;
@@ -22,6 +25,8 @@ namespace Judger.Managers
             {
                 Directory.CreateDirectory(ConfigManager.Config.LogDirectory);
             }
+
+            _autoFlushTask.Start();
         }
 
         /// <summary>
@@ -154,6 +159,15 @@ namespace Judger.Managers
             }
 
             return date + ".txt";
+        }
+
+        private static void AutoFlush()
+        {
+            while(true)
+            {
+                Flush();
+                Thread.Sleep(5000);
+            }
         }
     }
 }
