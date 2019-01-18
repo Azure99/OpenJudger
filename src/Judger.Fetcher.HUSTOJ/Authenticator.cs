@@ -13,7 +13,7 @@ namespace Judger.Fetcher.HUSTOJ
         public static Authenticator Singleton { get; set; }
 
         public CookieContainer CookieContainer { get; private set; }
-        private HttpWebClient _webClient = ConfiguredClient.Create();
+        private HttpWebClient _httpClient = ConfiguredClient.Create();
 
         private Configuration _config = ConfigManager.Config;
         private string loginUrl = "http://localhost/login.php";
@@ -27,7 +27,7 @@ namespace Judger.Fetcher.HUSTOJ
         private Authenticator()
         {
             CookieContainer = new CookieContainer();
-            _webClient.CookieContainer = CookieContainer;
+            _httpClient.CookieContainer = CookieContainer;
 
             if (_config.AdditionalConfig.ContainsKey("LoginUrl"))
             {
@@ -42,7 +42,9 @@ namespace Judger.Fetcher.HUSTOJ
             Login();
         }
 
-
+        /// <summary>
+        /// 登录HUSTOJ
+        /// </summary>
         public bool Login()
         {
             if (CheckLogin())
@@ -50,23 +52,26 @@ namespace Judger.Fetcher.HUSTOJ
                 return true;
             }
 
-            string body = string.Format("user_id={0}&password={1}", _config.JudgerName, _config.Password);
+            string requestBody = string.Format("user_id={0}&password={1}", _config.JudgerName, _config.Password);
             try
             {
-                string res = _webClient.UploadString(loginUrl, body, 3);
+                string response = _httpClient.UploadString(loginUrl, requestBody, 3);
             }
             catch { }
 
             return CheckLogin();
         }
 
+        /// <summary>
+        /// 检查是否已登录
+        /// </summary>
         public bool CheckLogin()
         {
-            string body = "checklogin=1";
+            string requestBody = "checklogin=1";
             try
             {
-                string res = _webClient.UploadString(_config.TaskFetchUrl, body);
-                return res == "1";
+                string response = _httpClient.UploadString(_config.TaskFetchUrl, requestBody);
+                return response == "1";
             }
             catch
             {
@@ -74,6 +79,9 @@ namespace Judger.Fetcher.HUSTOJ
             }
         }
 
+        /// <summary>
+        /// 定期检查并登录
+        /// </summary>
         public void CheckAndLogin()
         {
             if(delayCheckCount++ > 10)
@@ -83,15 +91,24 @@ namespace Judger.Fetcher.HUSTOJ
             }
         }
 
+        /// <summary>
+        /// 更新判题状态
+        /// </summary>
+        /// <param name="sid">Solution ID</param>
+        /// <param name="result">结果</param>
+        /// <param name="time">时间</param>
+        /// <param name="memory">内存消耗</param>
+        /// <param name="passRate">通过率</param>
         public void UpdateSolution(int sid, int result, int time, int memory, double passRate)
         {
             string requestBody = 
-                string.Format("update_solution=1&sid={0}&result={1}&time={2}&memory={3}&sim=0&simid=0&pass_rate={4}",
+                string.Format(
+                    "update_solution=1&sid={0}&result={1}&time={2}&memory={3}&sim=0&simid=0&pass_rate={4}",
                     sid, result, time, memory, passRate);
 
             try
             {
-                string res = _webClient.UploadString(_config.TaskFetchUrl, requestBody, 3);
+                string response = _httpClient.UploadString(_config.TaskFetchUrl, requestBody, 3);
             }
             catch { }
         }

@@ -11,14 +11,14 @@ namespace Judger.Fetcher.HUSTOJ
     {
         public TaskFetcher()
         {
-            Client.CookieContainer = Authenticator.Singleton.CookieContainer;
+            HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
         public override JudgeTask[] Fetch()
         {
             List<JudgeTask> taskList = new List<JudgeTask>();
-            int[] pendingSid = GetPending();
-            foreach(int sid in pendingSid)
+            int[] pendingSids = GetPending();
+            foreach(int sid in pendingSids)
             {
                 try
                 {
@@ -30,22 +30,25 @@ namespace Judger.Fetcher.HUSTOJ
             return taskList.ToArray();
         }
 
+        /// <summary>
+        /// 获取正在Pending的Solution ID
+        /// </summary>
         private int[] GetPending()
         {
             Authenticator.Singleton.CheckLogin();
 
-            string res = "";
+            string response = "";
             try
             {
-                string body = CreateGetPendingRequestBody();
-                res = Client.UploadString(Config.TaskFetchUrl, body);
+                string requestBody = CreateGetPendingRequestBody();
+                response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody);
             }
             catch
             {
                 return new int[0];
             }
 
-            string[] split = Regex.Split(res, "\r\n|\r|\n");
+            string[] split = Regex.Split(response, "\r\n|\r|\n");
             List<int> sidList = new List<int>();
             foreach (string s in split)
             {
@@ -58,29 +61,35 @@ namespace Judger.Fetcher.HUSTOJ
             return sidList.ToArray();
         }
 
+        /// <summary>
+        /// 创建用于获取Pending提交的Http请求Body
+        /// </summary>
         private string CreateGetPendingRequestBody()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("getpending=1&");
+            StringBuilder bodyBuilder = new StringBuilder();
+            bodyBuilder.Append("getpending=1&");
 
-            sb.Append("oj_lang_set=");
+            bodyBuilder.Append("oj_lang_set=");
             foreach(var lang in Config.Languages)
             {
-                sb.Append(lang.Language + ",");
+                bodyBuilder.Append(lang.Language + ",");
             }
-            sb.Remove(sb.Length - 1, 1);
-            sb.Append("&");
+            bodyBuilder.Remove(bodyBuilder.Length - 1, 1);
+            bodyBuilder.Append("&");
 
-            sb.Append("max_running=" + Config.MaxQueueSize);
-            return sb.ToString();
+            bodyBuilder.Append("max_running=" + Config.MaxQueueSize);
+            return bodyBuilder.ToString();
         }
 
+        /// <summary>
+        /// 根据SubmitID获取JudgeTask
+        /// </summary>
+        /// <param name="submitID">提交ID</param>
         private JudgeTask GetJudgeTask(int submitID)
         {
             GetSolutionInfo(submitID, out int problemID, out string author, out string lang);
             string sourceCode = GetSolution(submitID);
             GetProblemInfo(problemID, out int timeLimit, out int memoryLimit, out bool spj);
-
             string dateMD5 = GetTestDataMD5(problemID);
 
             JudgeTask task = JudgeTaskFactory.Create(
@@ -92,43 +101,66 @@ namespace Judger.Fetcher.HUSTOJ
             return task;
         }
 
-        /// <returns>ProblemID, Username, Language</returns>
+        /// <summary>
+        /// 根据提交ID获取提交信息
+        /// </summary>
+        /// <param name="sid">提交ID</param>
+        /// <param name="problemID">问题ID</param>
+        /// <param name="username">用户名</param>
+        /// <param name="lang">编程语言</param>
         private void GetSolutionInfo(int sid, out int problemID, out string username, out string lang)
         {
-            string body = "getsolutioninfo=1&sid=" + sid;
-            string res = Client.UploadString(Config.TaskFetchUrl, body, 3);
+            string requestBody = "getsolutioninfo=1&sid=" + sid;
+            string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
 
-            string[] split = Regex.Split(res, "\r\n|\r|\n");
+            string[] split = Regex.Split(response, "\r\n|\r|\n");
+
             problemID = int.Parse(split[0]);
             username = split[1];
             lang = split[2];
         }
 
+        /// <summary>
+        /// 根据提交ID获取源代码
+        /// </summary>
+        /// <param name="sid">提交ID</param>
+        /// <returns>源代码</returns>
         private string GetSolution(int sid)
         {
-            string body = "getsolution=1&sid=" + sid;
-            string res = Client.UploadString(Config.TaskFetchUrl, body, 3);
+            string requestBody = "getsolution=1&sid=" + sid;
 
-            return res;
+            return HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
         }
 
+        /// <summary>
+        /// 根据问题ID获取问题信息
+        /// </summary>
+        /// <param name="pid">问题信息</param>
+        /// <param name="timeLimit">时间限制</param>
+        /// <param name="memoryLimit">内存限制</param>
+        /// <param name="spj">是否为Special Judge</param>
         private void GetProblemInfo(int pid, out int timeLimit, out int memoryLimit, out bool spj)
         {
-            string body = "getprobleminfo=1&pid=" + pid;
-            string res = Client.UploadString(Config.TaskFetchUrl, body, 3);
+            string requestBody = "getprobleminfo=1&pid=" + pid;
+            string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
 
-            string[] split = Regex.Split(res, "\r\n|\r|\n");
+            string[] split = Regex.Split(response, "\r\n|\r|\n");
+
             timeLimit = int.Parse(split[0]) * 1000;
             memoryLimit = int.Parse(split[1]) * 1024;
             spj = split[2] == "1";
         }
 
+        /// <summary>
+        /// 根据问题ID获取测试数据的MD5
+        /// </summary>
+        /// <param name="pid">问题ID</param>
         private string GetTestDataMD5(int pid)
         {
-            string body = string.Format("gettestdatalist=1&pid={0}&time=1", pid);
-            string res = Client.UploadString(Config.TaskFetchUrl, body, 3);
+            string requestBody = string.Format("gettestdatalist=1&pid={0}&time=1", pid);
+            string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
             
-            return MD5Encrypt.EncryptToHexString(res);
+            return MD5Encrypt.EncryptToHexString(response);
         }
     }
 }

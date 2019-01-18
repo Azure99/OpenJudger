@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Judger.Fetcher.SDNUOJ.Models
+namespace Judger.Fetcher.SDNUOJ.Entity
 {
     [Serializable]
-    public class SDNUOJJudgeTask
+    public class SDNUOJTaskEntity
     {
         [JsonProperty(PropertyName = "sid")]
         public string SubmitID { get; set; }

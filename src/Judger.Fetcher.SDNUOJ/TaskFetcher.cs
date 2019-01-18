@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using Judger.Models;
-using Judger.Fetcher.SDNUOJ.Models;
+using Judger.Fetcher.SDNUOJ.Entity;
 
 namespace Judger.Fetcher.SDNUOJ
 {
@@ -14,57 +14,64 @@ namespace Judger.Fetcher.SDNUOJ
     {
         public TaskFetcher()
         {
-            Client.CookieContainer = Authenticator.Singleton.CookieContainer;
+            HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
         public override JudgeTask[] Fetch()
         {
-            string resultString = Client.UploadString(Config.TaskFetchUrl, CreateRequestBody(), 3);
+            string resultString = HttpClient.UploadString(Config.TaskFetchUrl, CreateRequestBody(), 3);
 
             JudgeTask[] tasks = ParseTask(resultString);
             return tasks;
         }
 
-        //创建请求Body
+        /// <summary>
+        /// 创建请求Body
+        /// </summary>
         private string CreateRequestBody()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("count=1&");
-            sb.Append("supported_languages=");
+            StringBuilder bodyBuilder = new StringBuilder();
+            bodyBuilder.Append("count=1&");
+            bodyBuilder.Append("supported_languages=");
 
-            StringBuilder langSB = new StringBuilder();
+            StringBuilder langBuilder = new StringBuilder();
             foreach (var lang in Config.Languages)
             {
-                langSB.Append(lang.Language + "[],");
+                langBuilder.Append(lang.Language + "[],");
             }
-            langSB.Remove(langSB.Length - 1, 1);
+            langBuilder.Remove(langBuilder.Length - 1, 1);
 
-            sb.Append(System.Web.HttpUtility.UrlEncode(langSB.ToString()));
+            bodyBuilder.Append(System.Web.HttpUtility.UrlEncode(langBuilder.ToString()));
 
-            return sb.ToString();
+            return bodyBuilder.ToString();
         }
 
+        /// <summary>
+        /// 从Response中解析JudgeTask
+        /// </summary>
+        /// <param name="jsonStr"></param>
+        /// <returns></returns>
         private JudgeTask[] ParseTask(string jsonStr)
         {
-            JArray arr = JArray.Parse(jsonStr);
+            JArray jArray = JArray.Parse(jsonStr);
 
-            if (arr.Count == 0)
+            if (jArray.Count == 0)
             {
                 return new JudgeTask[0];
             }
 
-            JObject obj = arr[0] as JObject;
-            if (!CheckTaskJObject(obj))
+            JObject jObject = jArray[0] as JObject;
+            if (!CheckTaskJObject(jObject))
             {
                 return new JudgeTask[0];
             }
 
-            SDNUOJJudgeTask t = obj.ToObject<SDNUOJJudgeTask>();
+            SDNUOJTaskEntity taskEntity = jObject.ToObject<SDNUOJTaskEntity>();
 
             JudgeTask task = JudgeTaskFactory.Create(
-                Int32.Parse(t.SubmitID), Int32.Parse(t.ProblemID), t.DataVersion,
-                t.Language.Substring(0, t.Language.Length - 2), t.SourceCode, t.Author,
-                Int32.Parse(t.TimeLimit), Int32.Parse(t.MemoryLimit), false);
+                Int32.Parse(taskEntity.SubmitID), Int32.Parse(taskEntity.ProblemID), taskEntity.DataVersion,
+                taskEntity.Language.Substring(0, taskEntity.Language.Length - 2), taskEntity.SourceCode, taskEntity.Author,
+                Int32.Parse(taskEntity.TimeLimit), Int32.Parse(taskEntity.MemoryLimit), false);
 
             return new JudgeTask[1] { task };
         }
@@ -74,15 +81,15 @@ namespace Judger.Fetcher.SDNUOJ
         /// </summary>
         private bool CheckTaskJObject(JObject obj)
         {
-            HashSet<string> set = new HashSet<string>();
+            HashSet<string> keySet = new HashSet<string>();
             foreach (JProperty key in obj.Properties())
             {
-                set.Add(key.Name.ToLower());
+                keySet.Add(key.Name.ToLower());
             }
 
-            if (!set.Contains("sid") || !set.Contains("pid") ||
-                !set.Contains("dataversion") || !set.Contains("language") ||
-                !set.Contains("sourcecode"))
+            if (!keySet.Contains("sid")         || !keySet.Contains("pid")      ||
+                !keySet.Contains("dataversion") || !keySet.Contains("language") ||
+                !keySet.Contains("sourcecode"))
             {
                 return false;
             }

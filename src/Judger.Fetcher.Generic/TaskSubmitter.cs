@@ -13,26 +13,25 @@ namespace Judger.Fetcher.Generic
     {
         public TaskSubmitter()
         {
-            Client.DefaultContentType = "application/json";
+            HttpClient.DefaultContentType = "application/json";
         }
 
         public override bool Submit(JudgeResult result)
         {
-            Client.UploadString(Config.ResultSubmitUrl, GetDataForSubmit(result), 3);
+            HttpClient.UploadString(Config.ResultSubmitUrl, CreateResultBody(result), 3);
             return true;
         }
 
         /// <summary>
-        /// 根据JudgeResult生成用于提交的数据
+        /// 根据JudgeResult生成用于提交的Body
         /// </summary>
-        /// <param name="result">JudgeResult</param>
-        private string GetDataForSubmit(JudgeResult result)
+        private string CreateResultBody(JudgeResult result)
         {
-            JObject obj = JObject.FromObject(result);
-            obj.Add("JudgerName", Config.JudgerName);
-            obj.Add("Token", Token.Create());
+            JObject body = JObject.FromObject(result);
+            body.Add("JudgerName", Config.JudgerName);
+            body.Add("Token", Token.Create());
 
-            return obj.ToString();
+            return body.ToString();
         }
     }
 }

@@ -12,16 +12,15 @@ namespace Judger.Fetcher.SDNUOJ
     {
         public override bool Submit(JudgeResult result)
         {
-            Client.CookieContainer = Authenticator.Singleton.CookieContainer;
-            Client.UploadString(Config.ResultSubmitUrl, GetDataForSubmit(result), 3);
+            HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
+            HttpClient.UploadString(Config.ResultSubmitUrl, CreateResultBody(result), 3);
             return true;
         }
 
         /// <summary>
         /// 根据JudgeResult生成用于提交的数据
         /// </summary>
-        /// <param name="result">JudgeResult</param>
-        private string GetDataForSubmit(JudgeResult result)
+        private string CreateResultBody(JudgeResult result)
         {
             int resultCode = 0;
             switch (result.ResultCode)
@@ -43,10 +42,10 @@ namespace Judger.Fetcher.SDNUOJ
             int memCost = result.MemoryCost;
             int pid = result.ProblemID;
             string username = result.Author;
-            string data = string.Format("sid={0}&resultcode={1}&detail={2}&timecost={3}&memorycost={4}&pid={5}&username={6}",
+            string body = string.Format("sid={0}&resultcode={1}&detail={2}&timecost={3}&memorycost={4}&pid={5}&username={6}",
                                           sid, resultCode, detail, timeCost, memCost, pid, username);
 
-            return data.ToString();
+            return body.ToString();
         }
     }
 }

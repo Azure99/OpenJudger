@@ -11,7 +11,7 @@ namespace Judger.Fetcher
     {
         protected Configuration Config { get; } = ConfigManager.Config;
 
-        protected HttpWebClient Client { get; } = ConfiguredClient.Create();
+        protected HttpWebClient HttpClient { get; } = ConfiguredClient.Create();
 
         /// <summary>
         /// 最大测试数据下载时间
@@ -20,7 +20,7 @@ namespace Judger.Fetcher
 
         public BaseTestDataFetcher()
         {
-            Client.ReadWriteTimeout = MAX_DOWNLOAD_TIME;
+            HttpClient.ReadWriteTimeout = MAX_DOWNLOAD_TIME;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Judger.Fetcher
 
         public virtual void Dispose()
         {
-            Client.Dispose();
+            HttpClient.Dispose();
         }
     }
 }

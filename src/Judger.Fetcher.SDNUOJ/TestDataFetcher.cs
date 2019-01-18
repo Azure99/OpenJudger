@@ -15,7 +15,7 @@ namespace Judger.Fetcher.SDNUOJ
     {
         public TestDataFetcher()
         {
-            Client.CookieContainer = Authenticator.Singleton.CookieContainer;
+            HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
         public override byte[] Fetch(JudgeTask task)
@@ -27,10 +27,16 @@ namespace Judger.Fetcher.SDNUOJ
         {
             string body = CreateRequestBody(problemID);
 
-            byte[] result = Client.UploadData(Config.TestDataFetchUrl, body, 3);
+            byte[] result = HttpClient.UploadData(Config.TestDataFetchUrl, body, 3);
             result = ChangeVersionFileName(result);
 
             return result;
+        }
+
+        //创建请求Body
+        private string CreateRequestBody(string problemID)
+        {
+            return "pid=" + problemID;
         }
 
         /// <summary>
@@ -72,12 +78,6 @@ namespace Judger.Fetcher.SDNUOJ
             }
 
             return res;
-        }
-
-        //创建请求Body
-        private string CreateRequestBody(string problemID)
-        {
-            return "pid=" + problemID;
         }
     }
 }

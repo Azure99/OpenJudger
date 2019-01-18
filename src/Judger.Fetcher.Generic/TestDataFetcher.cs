@@ -13,7 +13,7 @@ namespace Judger.Fetcher.Generic
     {
         public TestDataFetcher()
         {
-            Client.DefaultContentType = "application/json";
+            HttpClient.DefaultContentType = "application/json";
         }
 
         public override byte[] Fetch(JudgeTask task)
@@ -23,20 +23,23 @@ namespace Judger.Fetcher.Generic
 
         public byte[] Fetch(string problemID)
         {
-            string body = CreateRequestBody(problemID);
+            string requestBody = CreateRequestBody(problemID);
 
-            return Client.UploadData(Config.TestDataFetchUrl, body, 3);
+            return HttpClient.UploadData(Config.TestDataFetchUrl, requestBody, 3);
         }
 
-        //创建请求Body
+        /// <summary>
+        /// 创建请求Body
+        /// </summary>
+        /// <param name="problemID">问题ID</param>
         private string CreateRequestBody(string problemID)
         {
-            JObject obj = new JObject();
-            obj.Add("JudgerName", Config.JudgerName);
-            obj.Add("Token", Token.Create());
-            obj.Add("ProblemID", Int32.Parse(problemID));
+            JObject body = new JObject();
+            body.Add("JudgerName", Config.JudgerName);
+            body.Add("Token", Token.Create());
+            body.Add("ProblemID", Int32.Parse(problemID));
 
-            return obj.ToString();
+            return body.ToString();
         }
     }
 }

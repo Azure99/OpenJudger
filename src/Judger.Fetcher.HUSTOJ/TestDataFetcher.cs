@@ -13,7 +13,7 @@ namespace Judger.Fetcher.HUSTOJ
     {
         public TestDataFetcher()
         {
-            Client.CookieContainer = Authenticator.Singleton.CookieContainer;
+            HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
         public override byte[] Fetch(JudgeTask task)
@@ -23,23 +23,28 @@ namespace Judger.Fetcher.HUSTOJ
 
         public byte[] Fetch(int problemID)
         {
-            string[] fileNameArr = GetTestDataList(problemID);
-            Tuple<string, byte[]>[] files = new Tuple<string, byte[]>[fileNameArr.Length];
+            string[] fileNames = GetTestDataList(problemID);
+            Tuple<string, byte[]>[] files = new Tuple<string, byte[]>[fileNames.Length];
+
             for (int i = 0; i < files.Length; i++)
             {
-                string fileName = fileNameArr[i];
+                string fileName = fileNames[i];
                 files[i] = new Tuple<string, byte[]>(fileName, GetTestDataFile(problemID, fileName));
             }
 
             return CreateZIP(files, GetTestDataMD5(problemID));
         }
 
+        /// <summary>
+        /// 根据题目ID获取测试数据文件名列表
+        /// </summary>
+        /// <param name="pid">题目ID</param>
         private string[] GetTestDataList(int pid)
         {
-            string body = "gettestdatalist=1&pid=" + pid;
-            string res = Client.UploadString(Config.TaskFetchUrl, body, 3);
+            string requestBody = "gettestdatalist=1&pid=" + pid;
+            string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
 
-            string[] split = Regex.Split(res, "\r\n|\r|\n");
+            string[] split = Regex.Split(response, "\r\n|\r|\n");
 
             List<string> dataList = new List<string>();
             foreach (string s in split)
@@ -53,12 +58,23 @@ namespace Judger.Fetcher.HUSTOJ
             return dataList.ToArray();
         }
 
+        /// <summary>
+        /// 根据题目ID和文件名获取测试数据
+        /// </summary>
+        /// <param name="pid">题目ID</param>
+        /// <param name="fileName">远程文件名</param>
         private byte[] GetTestDataFile(int pid, string fileName)
         {
-            string body = "gettestdata=1&filename=" + pid + "/" + fileName;
-            return Client.UploadData(Config.TaskFetchUrl, body, 3);
+            string requestBody = "gettestdata=1&filename=" + pid + "/" + fileName;
+
+            return HttpClient.UploadData(Config.TaskFetchUrl, requestBody, 3);
         }
 
+        /// <summary>
+        /// 将测试数据压缩为OpenJudger标准格式
+        /// </summary>
+        /// <param name="files">测试数据文件</param>
+        /// <param name="dataVersion">测试数据版本号</param>
         private byte[] CreateZIP(Tuple<string, byte[]>[] files, string dataVersion)
         {
             byte[] zipData;
@@ -106,12 +122,16 @@ namespace Judger.Fetcher.HUSTOJ
             return zipData;
         }
 
+        /// <summary>
+        /// 根据题目ID获取测试数据的MD5
+        /// </summary>
+        /// <param name="pid">题目ID</param>
         private string GetTestDataMD5(int pid)
         {
-            string body = string.Format("gettestdatalist=1&pid={0}&time=1", pid);
-            string res = Client.UploadString(Config.TaskFetchUrl, body, 3);
+            string requestBody = string.Format("gettestdatalist=1&pid={0}&time=1", pid);
+            string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
 
-            return MD5Encrypt.EncryptToHexString(res);
+            return MD5Encrypt.EncryptToHexString(response);
         }
     }
 }

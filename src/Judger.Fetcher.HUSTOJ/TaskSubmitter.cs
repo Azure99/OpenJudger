@@ -9,12 +9,15 @@ namespace Judger.Fetcher.HUSTOJ
     {
         public override bool Submit(JudgeResult result)
         {
-            Client.CookieContainer = Authenticator.Singleton.CookieContainer;
-            Client.UploadString(Config.TaskFetchUrl, GetDataForSubmit(result), 3);
+            HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
+            HttpClient.UploadString(Config.TaskFetchUrl, CreateResultBody(result), 3);
             return true;
         }
 
-        private string GetDataForSubmit(JudgeResult result)
+        /// <summary>
+        /// 根据JudgeResult生成用于提交的Body
+        /// </summary>
+        private string CreateResultBody(JudgeResult result)
         {
             int resultCode = 0;
             switch(result.ResultCode)

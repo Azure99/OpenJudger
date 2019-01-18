@@ -11,7 +11,7 @@ namespace Judger.Fetcher
     {
         protected Configuration Config { get; } = ConfigManager.Config;
 
-        protected HttpWebClient Client { get; } = ConfiguredClient.Create();
+        protected HttpWebClient HttpClient { get; } = ConfiguredClient.Create();
 
         /// <summary>
         /// 从服务器取回JudgeTask
@@ -21,7 +21,7 @@ namespace Judger.Fetcher
 
         public virtual void Dispose()
         {
-            Client.Dispose();
+            HttpClient.Dispose();
         }
     }
 }

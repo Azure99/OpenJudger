@@ -13,40 +13,45 @@ namespace Judger.Fetcher.Generic
     {
         public TaskFetcher()
         {
-            Client.DefaultContentType = "application/json";
+            HttpClient.DefaultContentType = "application/json";
         }
 
         public override JudgeTask[] Fetch()
         {
-            string resultString = Client.UploadString(Config.TaskFetchUrl, CreateRequestBody());
+            string response = HttpClient.UploadString(Config.TaskFetchUrl, CreateRequestBody());
 
-            return ParseTask(resultString);
+            return ParseTask(response);
         }
 
-        //创建请求Body
+        /// <summary>
+        /// 创建请求Body
+        /// </summary>
         private string CreateRequestBody()
         {
-            JObject requestObj = new JObject();
-            requestObj.Add("JudgerName", Config.JudgerName);
-            requestObj.Add("Token", Token.Create());
+            JObject requestBody = new JObject();
+            requestBody.Add("JudgerName", Config.JudgerName);
+            requestBody.Add("Token", Token.Create());
 
-            return requestObj.ToString();
+            return requestBody.ToString();
         }
 
-        private JudgeTask[] ParseTask(string jsonStr)
+        /// <summary>
+        /// 从ResponseBody中解析Task
+        /// </summary>
+        private JudgeTask[] ParseTask(string jsonString)
         {
-            JObject jsonObj = JObject.Parse(jsonStr);
-            if(!CheckTaskJObject(jsonObj))
+            JObject jObject = JObject.Parse(jsonString);
+            if(!CheckTaskJObject(jObject))
             {
                 return new JudgeTask[0];
             }
 
-            JudgeTask t = JObject.Parse(jsonStr).ToObject<JudgeTask>();
+            JudgeTask tempTask = JObject.Parse(jsonString).ToObject<JudgeTask>();
 
             JudgeTask task = JudgeTaskFactory.Create(
-                t.SubmitID, t.ProblemID, t.DataVersion,
-                t.Language, t.SourceCode, t.Author,
-                t.TimeLimit, t.MemoryLimit, t.SpecialJudge);
+                tempTask.SubmitID, tempTask.ProblemID, tempTask.DataVersion,
+                tempTask.Language, tempTask.SourceCode, tempTask.Author,
+                tempTask.TimeLimit, tempTask.MemoryLimit, tempTask.SpecialJudge);
 
             return new JudgeTask[1] { task };
         }
@@ -56,15 +61,15 @@ namespace Judger.Fetcher.Generic
         /// </summary>
         private bool CheckTaskJObject(JObject obj)
         {
-            HashSet<string> set = new HashSet<string>();
+            HashSet<string> keySet = new HashSet<string>();
             foreach(JProperty key in obj.Properties())
             {
-                set.Add(key.Name.ToLower());
+                keySet.Add(key.Name.ToLower());
             }
 
-            if (!set.Contains("submitid")    || !set.Contains("problemid") ||
-                !set.Contains("dataversion") || !set.Contains("language")  ||
-                !set.Contains("sourcecode")) 
+            if (!keySet.Contains("submitid")    || !keySet.Contains("problemid") ||
+                !keySet.Contains("dataversion") || !keySet.Contains("language")  ||
+                !keySet.Contains("sourcecode")) 
             {
                 return false;
             }
