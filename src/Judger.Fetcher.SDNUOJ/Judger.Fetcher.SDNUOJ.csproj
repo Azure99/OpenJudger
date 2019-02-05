@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Judger.Fetcher\Judger.Fetcher.csproj" />
-    <ProjectReference Include="..\Judger.Models\Judger.Models.csproj" />
   </ItemGroup>
 
 </Project>

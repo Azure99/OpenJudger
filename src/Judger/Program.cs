@@ -48,8 +48,8 @@ namespace Judger
                 else if (command == "status") //显示当前状态
                 {
                     Console.WriteLine("Service working: " + Service.Working);
-                    Console.WriteLine("In queue: " + Service.JudgeManager.InQueueCount);
-                    Console.WriteLine("Running: " + Service.JudgeManager.RunningCount);
+                    Console.WriteLine("In queue: " + Service.Controller.InQueueCount);
+                    Console.WriteLine("Running: " + Service.Controller.RunningCount);
                 }
                 else if(command == "clear") //清屏
                 {

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Judger.Models;
+using Judger.Entity;
 
-namespace Judger.Judger.Models
+namespace Judger.Core.Program.Entity
 {
     /// <summary>
     /// 单例Judge结果

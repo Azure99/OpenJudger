@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Judger.Models;
 
 namespace Judger.Managers
 {
@@ -23,13 +20,19 @@ namespace Judger.Managers
 
         private static readonly object _lock = new object();
 
-        //CPU核心数
+        /// <summary>
+        /// CPU核心数
+        /// </summary>
         private static int _processorCount;
 
-        //默认亲和性
+        /// <summary>
+        /// 默认亲和性
+        /// </summary>
         private static int _defaultAffinity = 0;
 
-        //被使用的核心(二进制表示)
+        /// <summary>
+        /// 被使用的核心(二进制表示)
+        /// </summary>
         private static int _usingProcessor = 0;
 
         static ProcessorAffinityManager()

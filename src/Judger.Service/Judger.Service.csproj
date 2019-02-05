@@ -5,10 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Judger.Core\Judger.Core.csproj" />
+    <ProjectReference Include="..\Judger.Entity\Judger.Entity.csproj" />
     <ProjectReference Include="..\Judger.Fetcher\Judger.Fetcher.csproj" />
-    <ProjectReference Include="..\Judger.Judger\Judger.Judger.csproj" />
     <ProjectReference Include="..\Judger.Managers\Judger.Managers.csproj" />
-    <ProjectReference Include="..\Judger.Models\Judger.Models.csproj" />
     <ProjectReference Include="..\Judger.Utils\Judger.Utils.csproj" />
   </ItemGroup>
 

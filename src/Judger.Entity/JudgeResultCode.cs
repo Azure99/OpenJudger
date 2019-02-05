@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Judger.Models
+namespace Judger.Entity
 {
     /// <summary>
     /// 判题结果码

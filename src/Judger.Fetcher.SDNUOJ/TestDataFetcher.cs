@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.IO.Compression;
-using Judger.Models;
+using Judger.Entity;
 using Judger.Utils;
 
 namespace Judger.Fetcher.SDNUOJ

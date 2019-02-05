@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
-using Judger.Models;
+using Judger.Entity;
 using Judger.Fetcher.SDNUOJ.Entity;
 
 namespace Judger.Fetcher.SDNUOJ

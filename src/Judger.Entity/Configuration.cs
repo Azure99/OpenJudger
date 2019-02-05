@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Judger.Models
+namespace Judger.Entity
 {
     /// <summary>
     /// 配置信息
@@ -11,7 +10,7 @@ namespace Judger.Models
     public class Configuration
     {
         /// <summary>
-        /// 通过反射加载的FetcherDLL路径
+        /// 启动时加载的Fetcher DLL路径
         /// </summary>
         public string FetcherDLLPath { get; set; } = "Judger.Fetcher.Generic.dll";
 
@@ -21,7 +20,7 @@ namespace Judger.Models
         public string JudgerName { get; set; } = "DefaultJudger";
 
         /// <summary>
-        /// 服务器校验密码
+        /// 通信校验密码
         /// </summary>
         public string Password { get; set; } = "RainngAzure99AjUnawWEsK";
 
@@ -71,7 +70,7 @@ namespace Judger.Models
         public int MaxRunning { get; set; } = Math.Max(Environment.ProcessorCount - 2, 1);
 
         /// <summary>
-        /// 拦截不安全代码
+        /// 是否拦截不安全代码
         /// </summary>
         public bool InterceptUnsafeCode { get; set; } = true;
 
@@ -91,7 +90,7 @@ namespace Judger.Models
         public Dictionary<string, string> AdditionalConfig { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
-        /// 编译器配置
+        /// 语言(编译/运行)配置
         /// </summary>
         public LanguageConfiguration[] Languages { get; set; } = 
             new LanguageConfiguration[]{new LanguageConfiguration() };

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Judger.Entity;
 using Judger.Managers;
-using Judger.Models;
 using Judger.Utils;
 
 namespace Judger.Fetcher

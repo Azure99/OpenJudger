@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Judger.Models;
+using Judger.Entity;
 using Judger.Utils;
 
 namespace Judger.Managers

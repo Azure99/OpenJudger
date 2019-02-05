@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Judger.Models
+namespace Judger.Entity
 {
     /// <summary>
     /// Fetcher异常

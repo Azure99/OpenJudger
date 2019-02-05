@@ -1,38 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Judger.Entity;
 using Judger.Managers;
-using Judger.Models;
-using Judger.Judger.Compilers;
-using Judger.Judger.Models;
+using Judger.Core.Program.Entity;
 
-namespace Judger.Judger
+namespace Judger.Core.Program
 {
-    /// <summary>
-    /// JudgeTask Judger
-    /// </summary>
-    public class MainJudger : IDisposable
+    public class ProgramJudger : BaseJudger
     {
-        /// <summary>
-        /// 分配的JugdgeTask
-        /// </summary>
-        public JudgeTask JudgeTask { get; }
-
-        public MainJudger(JudgeTask task)
+        public ProgramJudger(JudgeTask task) : base(task)
         {
-            JudgeTask = task;
-            // 分配独立的处理器核心
-            task.ProcessorAffinity = ProcessorAffinityManager.GetUseage();
+            JudgeTask.ProcessorAffinity = ProcessorAffinityManager.GetUseage();
         }
 
-        /// <summary>
-        /// 评测此任务
-        /// </summary>
-        /// <returns>评测结果</returns>
-        public JudgeResult Judge()
+        public override JudgeResult Judge()
         {
             //判题结果
             JudgeResult result = new JudgeResult
@@ -48,7 +31,7 @@ namespace Judger.Judger
             };
 
             //正则恶意代码检查
-            if (!CodeChecker.Singleton.CheckCode(JudgeTask.SourceCode, JudgeTask.Language, out string unsafeCode, out int line)) 
+            if (!CodeChecker.Singleton.CheckCode(JudgeTask.SourceCode, JudgeTask.Language, out string unsafeCode, out int line))
             {
                 result.ResultCode = JudgeResultCode.CompileError;
                 result.JudgeDetail = "Include unsafe code, please remove them!";
@@ -68,9 +51,9 @@ namespace Judger.Judger
             File.WriteAllText(sourceFileName, JudgeTask.SourceCode);
 
             //编译代码
-            if(JudgeTask.LangConfig.NeedCompile)
+            if (JudgeTask.LangConfig.NeedCompile)
             {
-                ICompiler compiler = CompilerFactory.Create(JudgeTask);
+                Compiler compiler = new Compiler(JudgeTask);
                 string compileRes = compiler.Compile();
 
                 //检查是否有编译错误(compileRes不为空则代表有错误)
@@ -83,11 +66,11 @@ namespace Judger.Judger
             }
 
             //创建单例Judger
-            ISingleJudger judger = SingleJudgerFactory.Create(JudgeTask);
+            SingleCaseJudger judger = new SingleCaseJudger(JudgeTask);
 
             //获取所有测试点文件名
             Tuple<string, string>[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemID);
-            if(dataFiles.Length == 0)//无测试数据
+            if (dataFiles.Length == 0)//无测试数据
             {
                 result.ResultCode = JudgeResultCode.JudgeFailed;
                 result.JudgeDetail = "No test data.";
@@ -116,13 +99,13 @@ namespace Judger.Judger
                         result.ResultCode = singleRes.ResultCode;
                         result.JudgeDetail = singleRes.JudgeDetail;
 
-                        if(!JudgeTask.JudgeAllCases)
+                        if (!JudgeTask.JudgeAllCases)
                         {
                             break;
                         }
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     result.ResultCode = JudgeResultCode.JudgeFailed;
                     result.JudgeDetail = e.ToString();
@@ -139,7 +122,7 @@ namespace Judger.Judger
             return result;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             // 释放占用的独立处理器核心
             ProcessorAffinityManager.ReleaseUseage(JudgeTask.ProcessorAffinity);

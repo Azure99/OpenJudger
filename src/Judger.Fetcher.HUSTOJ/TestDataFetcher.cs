@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.IO;
 using System.IO.Compression;
-using Judger.Models;
+using System.Text.RegularExpressions;
+using Judger.Entity;
 using Judger.Utils;
 
 namespace Judger.Fetcher.HUSTOJ

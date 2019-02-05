@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
+using System.Text;
+using Judger.Entity;
+using Judger.Core.Program.Entity;
 using Judger.Managers;
-using Judger.Models;
 using Judger.Utils;
-using Judger.Judger.Models;
 
-namespace Judger.Judger
+namespace Judger.Core.Program
 {
     /// <summary>
     /// 单例Judger
     /// </summary>
-    public class SingleJudger : ISingleJudger
+    public class SingleCaseJudger
     {
         public JudgeTask JudgeTask { get; set; }
 
@@ -23,7 +22,7 @@ namespace Judger.Judger
 
         private LanguageConfiguration _langConfig;
 
-        public SingleJudger(JudgeTask task)
+        public SingleCaseJudger(JudgeTask task)
         {
             JudgeTask = task;
             _langConfig = task.LangConfig;
@@ -36,10 +35,7 @@ namespace Judger.Judger
             int exitcode = 0;
             RuntimeMonitor monitor;
 
-            using (ProcessRunner runner = new ProcessRunner(
-                                              _langConfig.RunnerPath,     
-                                              _langConfig.RunnerWorkDirectory,
-                                              _langConfig.RunnerArgs))
+            using (ProcessRunner runner = CreateProcessRunner())
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
                 if (JudgeTask.LangConfig.UseUTF8)
@@ -105,17 +101,6 @@ namespace Judger.Judger
             }
 
             return result;
-        }
-
-
-        /// <summary>
-        /// 对比结果
-        /// </summary>
-        public enum CompareResult
-        {
-            Accepted = 1,
-            WrongAnswer = 2,
-            PresentationError = 3
         }
 
         /// <summary>
@@ -219,6 +204,14 @@ namespace Judger.Judger
             }
             
             return wrongAnser ? CompareResult.WrongAnswer : CompareResult.PresentationError;
+        }
+
+        private ProcessRunner CreateProcessRunner()
+        {
+            return new ProcessRunner(
+                _langConfig.RunnerPath,
+                _langConfig.RunnerWorkDirectory,
+                _langConfig.RunnerArgs);
         }
     }
 }

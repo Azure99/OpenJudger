@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
-using Judger.Managers;
-using Judger.Models;
+using Judger.Entity;
 using Judger.Utils;
 
-namespace Judger.Judger.Compilers
+namespace Judger.Core.Program
 {
     /// <summary>
-    /// 通用编译器
+    /// 程序编译器
     /// </summary>
-    public class Compiler : ICompiler
+    public class Compiler
     {
         public JudgeTask JudgeTask { get; set; }
 
@@ -19,12 +17,13 @@ namespace Judger.Judger.Compilers
             JudgeTask = task;
         }
 
+        /// <summary>
+        /// 编译评测任务的代码
+        /// </summary>
+        /// <returns></returns>
         public string Compile()
         {
-            using (ProcessRunner runner = new ProcessRunner(
-                                              JudgeTask.LangConfig.CompilerPath, 
-                                              JudgeTask.LangConfig.CompilerWorkDirectory, 
-                                              JudgeTask.LangConfig.CompilerArgs))
+            using (ProcessRunner runner = CreateProcessRunner())
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
                 if(JudgeTask.LangConfig.UseUTF8)
@@ -44,9 +43,9 @@ namespace Judger.Judger.Compilers
                 {
                     exitcode = runner.Run("", out output, out error);
                 }
-                catch(Exception e)
+                catch(Exception ex)
                 {
-                    return e.ToString();
+                    return ex.ToString();
                 }
                 finally
                 {
@@ -69,6 +68,14 @@ namespace Judger.Judger.Compilers
 
                 return "";
             }
+        }
+
+        private ProcessRunner CreateProcessRunner()
+        {
+            return new ProcessRunner(
+                JudgeTask.LangConfig.CompilerPath,
+                JudgeTask.LangConfig.CompilerWorkDirectory,
+                JudgeTask.LangConfig.CompilerArgs);
         }
     }
 }

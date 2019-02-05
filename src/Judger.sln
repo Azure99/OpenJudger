@@ -7,10 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger", "Judger\Judger.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Service", "Judger.Service\Judger.Service.csproj", "{0DC9A844-D72D-467E-8931-DDBAA9273C8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Models", "Judger.Models\Judger.Models.csproj", "{A8132DBB-6AB0-441E-A910-018D9F763855}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Judger", "Judger.Judger\Judger.Judger.csproj", "{ECCC35D1-2CCE-4300-846C-A8200C227F27}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Fetcher", "Judger.Fetcher\Judger.Fetcher.csproj", "{DCDB6248-F1A8-430C-B30B-DB33ABD8A8E9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Utils", "Judger.Utils\Judger.Utils.csproj", "{2AAF8394-F131-441D-BCE9-023529697C8A}"
@@ -25,7 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Fetcher.SDNUOJ", "Ju
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Fetcher.HUSTOJ", "Judger.Fetcher.HUSTOJ\Judger.Fetcher.HUSTOJ.csproj", "{C5971B72-BB1E-433B-8CF9-6F423B1F670D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainUnitTest", "MainUnitTest\MainUnitTest.csproj", "{26DB6532-DEB7-4592-AABE-6BA1B381E0CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainUnitTest", "MainUnitTest\MainUnitTest.csproj", "{26DB6532-DEB7-4592-AABE-6BA1B381E0CF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Entity", "Judger.Entity\Judger.Entity.csproj", "{B8F605FE-303F-4366-BA83-7EC9A244B35B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Core", "Judger.Core\Judger.Core.csproj", "{FF572FF3-3E04-4BC9-BA1B-B0BD07FDBCDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,14 +41,6 @@ Global
 		{0DC9A844-D72D-467E-8931-DDBAA9273C8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DC9A844-D72D-467E-8931-DDBAA9273C8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DC9A844-D72D-467E-8931-DDBAA9273C8F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A8132DBB-6AB0-441E-A910-018D9F763855}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8132DBB-6AB0-441E-A910-018D9F763855}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8132DBB-6AB0-441E-A910-018D9F763855}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8132DBB-6AB0-441E-A910-018D9F763855}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ECCC35D1-2CCE-4300-846C-A8200C227F27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ECCC35D1-2CCE-4300-846C-A8200C227F27}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ECCC35D1-2CCE-4300-846C-A8200C227F27}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ECCC35D1-2CCE-4300-846C-A8200C227F27}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DCDB6248-F1A8-430C-B30B-DB33ABD8A8E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DCDB6248-F1A8-430C-B30B-DB33ABD8A8E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCDB6248-F1A8-430C-B30B-DB33ABD8A8E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -77,6 +69,14 @@ Global
 		{26DB6532-DEB7-4592-AABE-6BA1B381E0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26DB6532-DEB7-4592-AABE-6BA1B381E0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26DB6532-DEB7-4592-AABE-6BA1B381E0CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8F605FE-303F-4366-BA83-7EC9A244B35B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8F605FE-303F-4366-BA83-7EC9A244B35B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8F605FE-303F-4366-BA83-7EC9A244B35B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8F605FE-303F-4366-BA83-7EC9A244B35B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF572FF3-3E04-4BC9-BA1B-B0BD07FDBCDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF572FF3-3E04-4BC9-BA1B-B0BD07FDBCDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF572FF3-3E04-4BC9-BA1B-B0BD07FDBCDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF572FF3-3E04-4BC9-BA1B-B0BD07FDBCDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

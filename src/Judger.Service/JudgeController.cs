@@ -1,27 +1,25 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using Judger.Managers;
+using Judger.Entity;
 using Judger.Fetcher;
-using Judger.Judger;
-using Judger.Models;
+using Judger.Core;
+using Judger.Managers;
 
 namespace Judger.Service
 {
     /// <summary>
-    /// 并发评测管理器
+    /// 并发评测控制器
     /// </summary>
-    public class JudgeManager
+    public class JudgeController
     {
         /// <summary>
-        /// 正在运行的JudeTask数
+        /// 正在运行的评测任务数量
         /// </summary>
         public int RunningCount { get; private set; }
 
         /// <summary>
-        /// 在等待队列中的JudgeTask数
+        /// 在等待队列中的评测任务数量
         /// </summary>
         public int InQueueCount
         {
@@ -32,13 +30,13 @@ namespace Judger.Service
         }
 
         private readonly Configuration _config = ConfigManager.Config;
-        private object _queueLock = new object();
 
-        // 等待队列
+        /// <summary>
+        /// 评测任务等待队列
+        /// </summary>
         private ConcurrentQueue<JudgeTask> _judgeQueue = new ConcurrentQueue<JudgeTask>();
 
-        public JudgeManager()
-        { }
+        private object _queueLock = new object();
 
         /// <summary>
         /// 添加JudgeTask
@@ -100,6 +98,7 @@ namespace Judger.Service
             {
                 RunningCount--;
             }
+
             CheckTask();//重新检查是否有任务
         }
 
@@ -109,20 +108,13 @@ namespace Judger.Service
         private void Judge(JudgeTask task)
         {
             ITaskSubmitter submitter = FetcherFactory.CreateTaskSubmitter();
+            JudgeResult result = CreateFailedJudgeResult(task);
 
             try
             {
-                // 检查测试数据是否为最新
-                if (!TestDataManager.CheckData(task.ProblemID, task.DataVersion))
-                {
-                    LogManager.Info("Invalid test data, fetch new data. ProblemID: " + task.ProblemID);
-                    ITestDataFetcher fetcher = FetcherFactory.CreateTestDataFetcher();
-                    TestDataManager.WriteTestData(task.ProblemID, fetcher.Fetch(task));
-                    LogManager.Info("Problem " + task.ProblemID + " data fetched");
-                }
+                UpdateTestData(task);
 
-                JudgeResult result;
-                using (MainJudger judger = new MainJudger(task))
+                using (BaseJudger judger = JudgerFactory.Create(task))
                 {
                     LogManager.Info("Judge task " + task.SubmitID);
                     result = judger.Judge();
@@ -131,19 +123,34 @@ namespace Judger.Service
                 LogManager.Info(string.Format("Task {0} result: Time:{1} Mem:{2} Code:{3} PassRate:{4} Details:{5} ",
                                               result.SubmitID, result.TimeCost, result.MemoryCost, result.ResultCode,
                                               result.PassRate, result.JudgeDetail));
-                submitter.Submit(result);
             }
             catch(Exception ex)//判题失败
             {
                 LogManager.Info("Judge failed, SubmitID: " + task.SubmitID);
                 LogManager.Exception(ex);
-                submitter.Submit(CreateFailedJudgeResult(task, ex.ToString()));
+                result.JudgeDetail = ex.ToString();
                 throw ex;
+            }
+            finally
+            {
+                submitter.Submit(result);
+            }
+        }
+
+        private void UpdateTestData(JudgeTask task)
+        {
+            // 检查测试数据是否为最新
+            if (!TestDataManager.CheckData(task.ProblemID, task.DataVersion))
+            {
+                LogManager.Info("Invalid test data, fetch new data. ProblemID: " + task.ProblemID);
+                ITestDataFetcher fetcher = FetcherFactory.CreateTestDataFetcher();
+                TestDataManager.WriteTestData(task.ProblemID, fetcher.Fetch(task));
+                LogManager.Info("Problem " + task.ProblemID + " data fetched");
             }
         }
 
         /// <summary>
-        /// 创建失败的JudgeResult
+        /// 创建评测失败的JudgeResult
         /// </summary>
         /// <param name="task">JudgeTask</param>
         /// <param name="message">错误信息</param>

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Timers;
+using Judger.Entity;
 using Judger.Fetcher;
 using Judger.Managers;
-using Judger.Models;
 
 namespace Judger.Service
 {
@@ -27,11 +25,12 @@ namespace Judger.Service
         /// <summary>
         /// 并发判题管理器
         /// </summary>
-        public JudgeManager JudgeManager { get; } = new JudgeManager();
+        public JudgeController Controller { get; } = new JudgeController();
+
+        private readonly Configuration _config = ConfigManager.Config;
 
         private ITaskFetcher _taskFetcher;
         private Timer _workTimer;
-        private readonly Configuration _config = ConfigManager.Config;
 
         // 指示当前OnWork代码段是否正在执行
         private bool _innerWorking = false;
@@ -127,7 +126,7 @@ namespace Judger.Service
         /// </summary>
         private void FetchJudgeTask()
         {
-            if (JudgeManager.InQueueCount >= _config.MaxQueueSize)
+            if (Controller.InQueueCount >= _config.MaxQueueSize)
             {
                 return;
             }
@@ -135,7 +134,7 @@ namespace Judger.Service
             JudgeTask[] tasks = _taskFetcher.Fetch();
             foreach(var task in tasks)
             {
-                JudgeManager.AddTask(task);
+                Controller.AddTask(task);
             }
 
             // 若当前成功取到任务, 不等待继续尝试取回任务

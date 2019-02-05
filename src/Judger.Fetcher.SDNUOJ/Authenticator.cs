@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Net;
-using Judger.Managers;
-using Judger.Models;
-using Judger.Utils;
+using Judger.Entity;
 using Judger.Fetcher.SDNUOJ.Entity;
+using Judger.Managers;
+using Judger.Utils;
 
 namespace Judger.Fetcher.SDNUOJ
 {

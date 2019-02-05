@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Judger.Models
+namespace Judger.Entity
 {
     public class JudgeTask
     {
@@ -25,7 +23,6 @@ namespace Judger.Models
         /// 提交者
         /// </summary>
         public string Author { get; set; } = "";
-
 
         /// <summary>
         /// 提交语言

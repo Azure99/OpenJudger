@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
-using Judger.Judger;
+using Judger.Core.Program;
+using Judger.Core.Program.Entity;
 
 namespace MainUnitTest
 {
@@ -11,35 +10,35 @@ namespace MainUnitTest
         [Fact]
         public void TestSingleJudgerCompare()
         {
-            SingleJudger judger = new SingleJudger(new Judger.Models.JudgeTask());
+            SingleCaseJudger judger = new SingleCaseJudger(new Judger.Entity.JudgeTask());
 
             string test1 = @"123123";
             string test2 = @"123123";
-            Assert.True(judger.CompareAnswer(test1, test2) == SingleJudger.CompareResult.Accepted);
+            Assert.True(judger.CompareAnswer(test1, test2) == CompareResult.Accepted);
 
             test1 = "123\r\n123";
             test2 = "123\n123";
-            Assert.True(judger.CompareAnswer(test1, test2) == SingleJudger.CompareResult.Accepted);
+            Assert.True(judger.CompareAnswer(test1, test2) == CompareResult.Accepted);
 
             test1 = "123\r\n123\r\n";
             test2 = "123\n123";
-            Assert.True(judger.CompareAnswer(test1, test2) == SingleJudger.CompareResult.Accepted);
+            Assert.True(judger.CompareAnswer(test1, test2) == CompareResult.Accepted);
 
             test1 = "123\r\n123\r\n";
             test2 = "123 \n123";
-            Assert.True(judger.CompareAnswer(test1, test2) == SingleJudger.CompareResult.PresentationError);
+            Assert.True(judger.CompareAnswer(test1, test2) == CompareResult.PresentationError);
 
             test1 = "123123\n\n\r\n";
             test2 = "123123";
-            Assert.True(judger.CompareAnswer(test1, test2) == SingleJudger.CompareResult.Accepted);
+            Assert.True(judger.CompareAnswer(test1, test2) == CompareResult.Accepted);
 
             test1 = "123\n123\n\n\r\n";
             test2 = "\r\r\n\r\n 123\n123";
-            Assert.True(judger.CompareAnswer(test1, test2) == SingleJudger.CompareResult.PresentationError);
+            Assert.True(judger.CompareAnswer(test1, test2) == CompareResult.PresentationError);
 
             test1 = "123\n123\n";
             test2 = "1232\n123\n";
-            Assert.True(judger.CompareAnswer(test1, test2) == SingleJudger.CompareResult.WrongAnswer);
+            Assert.True(judger.CompareAnswer(test1, test2) == CompareResult.WrongAnswer);
         }
     }
 }

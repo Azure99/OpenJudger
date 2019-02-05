@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.IO;
+using System.Text.RegularExpressions;
+using Judger.Entity;
 using Judger.Managers;
-using Judger.Models;
 
-namespace Judger.Judger
+namespace Judger.Core.Program
 {
     /// <summary>
     /// 基于正则的恶意代码检查器
@@ -25,11 +24,11 @@ namespace Judger.Judger
         {
             if(_config.InterceptUnsafeCode)
             {
-                InitRulesDic();
+                InitRulesDictionary();
             }
         }
 
-        private void InitRulesDic()
+        private void InitRulesDictionary()
         {
             const string LANG_START = "[Language=";
 

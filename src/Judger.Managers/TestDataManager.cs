@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using Judger.Entity;
 using Judger.Utils;
-using Judger.Models;
 
 namespace Judger.Managers
 {
@@ -14,12 +13,16 @@ namespace Judger.Managers
     /// </summary>
     public static class TestDataManager
     {
-        private static Configuration _config = ConfigManager.Config;
+        private static readonly Configuration _config = ConfigManager.Config;
 
-        //数据锁字典, 防止统一题目测试数据争用
+        /// <summary>
+        /// 数据锁字典, 防止统一题目测试数据争用
+        /// </summary>
         private static Dictionary<int, object> _dataLockDic;
 
-        //数据锁字典的锁
+        /// <summary>
+        /// 数据锁字典的锁
+        /// </summary>
         private static object _dicLock = new object();
 
         /// <summary>
@@ -31,7 +34,7 @@ namespace Judger.Managers
         {
             _dataLockDic = new Dictionary<int, object>();
 
-            if(!Directory.Exists(_config.TestDataDirectory))
+            if (!Directory.Exists(_config.TestDataDirectory)) 
             {
                 Directory.CreateDirectory(_config.TestDataDirectory);
             }
