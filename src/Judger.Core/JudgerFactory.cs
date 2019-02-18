@@ -18,7 +18,7 @@ namespace Judger.Core
         {
             if(task.SpecialJudge)
             {
-                throw new NotImplementedException();
+                return new SpecialJudger(task);
             }
             else
             {

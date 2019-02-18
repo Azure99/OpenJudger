@@ -2,17 +2,23 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Judger.Core.Program.Entity;
 using Judger.Entity;
 using Judger.Managers;
-using Judger.Core.Program.Entity;
 
 namespace Judger.Core.Program
 {
-    public class ProgramJudger : BaseJudger
+    public class SpecialJudger : BaseJudger
     {
-        public ProgramJudger(JudgeTask task) : base(task)
+        /// <summary>
+        /// 注意:未编写:SPJTaks中的语言应对应SPJ程序，而不是JudgeTask
+        /// </summary>
+        private JudgeTask SPJTask;
+
+        public SpecialJudger(JudgeTask task) : base(task)
         {
             JudgeTask.ProcessorAffinity = ProcessorAffinityManager.GetUseage();
+            SPJTask = SPJManager.CreateSPJJudgeTask(task);
         }
 
         public override JudgeResult Judge()
@@ -40,6 +46,9 @@ namespace Judger.Core.Program
                 return result;
             }
 
+            //构建SPJ程序
+            BuildSpecialJudgeProgram();
+
             //写出源代码
             string sourceFileName = JudgeTask.TempJudgeDirectory + Path.DirectorySeparatorChar + JudgeTask.LangConfig.SourceCodeFileName;
             File.WriteAllText(sourceFileName, JudgeTask.SourceCode);
@@ -60,7 +69,7 @@ namespace Judger.Core.Program
             }
 
             //创建单例Judger
-            SingleCaseJudger judger = new SingleCaseJudger(JudgeTask);
+            SpecialSingleCaseJudger judger = new SpecialSingleCaseJudger(JudgeTask, SPJTask);
 
             //获取所有测试点文件名
             Tuple<string, string>[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemID);
@@ -116,9 +125,65 @@ namespace Judger.Core.Program
             return result;
         }
 
+        /// <summary>
+        /// 构建并写出供Judger使用的SPJ程序
+        /// </summary>
+        private void BuildSpecialJudgeProgram()
+        {
+            File.WriteAllText(
+                Path.Combine(SPJTask.TempJudgeDirectory, SPJTask.LangConfig.SourceCodeFileName), 
+                SPJTask.SourceCode);
+
+            if (SPJTask.LangConfig.NeedCompile)
+            {
+                //构建SPJ程序
+                if (TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemID) == null)
+                {
+                    if (!CompileSpecialJudgeProgram())
+                    {
+                        throw new CompileException("Can not build special judge program!");
+                    }
+                }
+
+                SpecialJudgeProgram spjProgram = TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemID);
+                File.WriteAllBytes(Path.Combine(SPJTask.TempJudgeDirectory, spjProgram.LangConfiguration.ProgramFileName), spjProgram.Program);
+            }
+        }
+
+        /// <summary>
+        /// 编译SPJ程序
+        /// </summary>
+        /// <returns>是否编译并写出成功</returns>
+        private bool CompileSpecialJudgeProgram()
+        {
+            Compiler compiler = new Compiler(SPJTask);
+            string compileResult = compiler.Compile();
+            if (compileResult != "")
+            {
+                throw new CompileException("Can not compile special judge program!" + Environment.NewLine + compileResult);
+            }
+
+            string spjProgramPath =
+                Path.Combine(SPJTask.TempJudgeDirectory, SPJTask.LangConfig.ProgramFileName);
+
+            if (!File.Exists(spjProgramPath))
+            {
+                throw new CompileException("Special judge program not found!");
+            }
+
+            SpecialJudgeProgram spjProgram = new SpecialJudgeProgram
+            {
+                LangConfiguration = SPJTask.LangConfig,
+                Program = File.ReadAllBytes(spjProgramPath)
+            };
+
+            TestDataManager.WriteSpecialJudgeProgramFile(JudgeTask.ProblemID, spjProgram);
+
+            return TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemID) != null;
+        }
+
         public override void Dispose()
         {
-            // 释放占用的独立处理器核心
             ProcessorAffinityManager.ReleaseUseage(JudgeTask.ProcessorAffinity);
             DeleteTempDirectory();
         }

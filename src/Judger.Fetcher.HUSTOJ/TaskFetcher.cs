@@ -94,7 +94,7 @@ namespace Judger.Fetcher.HUSTOJ
 
             JudgeTask task = JudgeTaskFactory.Create(
                                 submitID, problemID, dateMD5, lang, sourceCode, 
-                                author, timeLimit, memoryLimit, spj);
+                                author, timeLimit, memoryLimit, false, spj);
 
             Authenticator.Singleton.UpdateSolution(submitID, 3, 0, 0, 0.0);
 
@@ -148,7 +148,7 @@ namespace Judger.Fetcher.HUSTOJ
 
             timeLimit = int.Parse(split[0]) * 1000;
             memoryLimit = int.Parse(split[1]) * 1024;
-            spj = split[2] == "1";
+            spj = int.Parse(split[2]) == 1;
         }
 
         /// <summary>

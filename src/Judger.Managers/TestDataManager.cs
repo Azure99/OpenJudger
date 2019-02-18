@@ -34,7 +34,7 @@ namespace Judger.Managers
         {
             _dataLockDic = new Dictionary<int, object>();
 
-            if (!Directory.Exists(_config.TestDataDirectory)) 
+            if (!Directory.Exists(_config.TestDataDirectory))
             {
                 Directory.CreateDirectory(_config.TestDataDirectory);
             }
@@ -49,10 +49,10 @@ namespace Judger.Managers
         {
             string path = Path.Combine(_config.TestDataDirectory, problemID.ToString());
 
-            lock(GetDataLock(problemID))
+            lock (GetDataLock(problemID))
             {
-                if (!Directory.Exists(path) || 
-                    !Directory.Exists(path + SepChar + "input") || 
+                if (!Directory.Exists(path) ||
+                    !Directory.Exists(path + SepChar + "input") ||
                     !Directory.Exists(path + SepChar + "output") ||
                     !File.Exists(path + SepChar + "version.txt"))
                 {
@@ -71,8 +71,8 @@ namespace Judger.Managers
         /// <returns>版本号</returns>
         public static string GetTestDataVersion(int problemID)
         {
-            string path = Path.Combine(_config.TestDataDirectory, 
-                                       problemID.ToString(), 
+            string path = Path.Combine(_config.TestDataDirectory,
+                                       problemID.ToString(),
                                        "version.txt");
 
 
@@ -156,7 +156,7 @@ namespace Judger.Managers
                 }
 
                 outputFiles = Directory.GetFiles(path + "output");
-                for(int i=0; i<outputFiles.Length; i++)
+                for (int i = 0; i < outputFiles.Length; i++)
                 {
                     outputFiles[i] = Path.GetFileName(outputFiles[i]);
                 }
@@ -164,7 +164,7 @@ namespace Judger.Managers
 
             var query = from input in inputFiles
                         from output in outputFiles
-                        where Path.GetFileNameWithoutExtension(input) == 
+                        where Path.GetFileNameWithoutExtension(input) ==
                               Path.GetFileNameWithoutExtension(output)
                         select new
                         {
@@ -173,7 +173,7 @@ namespace Judger.Managers
                         };
 
             List<Tuple<string, string>> matchedFiles = new List<Tuple<string, string>>();
-            foreach(var testData in query)
+            foreach (var testData in query)
             {
                 matchedFiles.Add(new Tuple<string, string>(testData.InputFile, testData.OutputFile));
             }
@@ -193,10 +193,103 @@ namespace Judger.Managers
         {
             string problemDir = Path.Combine(_config.TestDataDirectory, problemID.ToString()) + SepChar;
 
-            lock(GetDataLock(problemID))
+            lock (GetDataLock(problemID))
             {
                 input = File.ReadAllText(problemDir + "input" + SepChar + inputName);
                 output = File.ReadAllText(problemDir + "output" + SepChar + outputName);
+            }
+        }
+
+        /// <summary>
+        /// 检查题目是否需要SPJ
+        /// </summary>
+        /// <param name="problemID">问题ID</param>
+        /// <returns>是否需要SPJ</returns>
+        public static bool IsSpecialJudge(int problemID)
+        {
+            string spjDir = Path.Combine(_config.TestDataDirectory, problemID.ToString(), "spj") + SepChar;
+
+            lock (GetDataLock(problemID))
+            {
+                if (Directory.Exists(spjDir))
+                {
+                    if (Directory.GetFiles(spjDir).Length > 0)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        [Obsolete]
+        public static SpecialJudgeSourceFile GetSpecialJudgeSourceFile(int problemID, int index = 0)
+        {
+            string sourceFilePath = SPJManager.FindSPJSourceFileInTestData(problemID, index);
+            if (sourceFilePath == null)
+            {
+                return null;
+            }
+
+            LanguageConfiguration langConfig = SPJManager.GetLangConfigBySourceFilePath(sourceFilePath);
+            if (langConfig == null)
+            {
+                return null;
+            }
+
+            return new SpecialJudgeSourceFile
+            {
+                LangConfiguration = langConfig,
+                SourceCode = File.ReadAllText(sourceFilePath)
+            };
+        }
+
+
+        /// <summary>
+        /// 写出SPJ可执行程序
+        /// </summary>
+        /// <param name="problemID">问题ID</param>
+        /// <param name="programFile">SPJ程序</param>
+        public static void WriteSpecialJudgeProgramFile(int problemID, SpecialJudgeProgram programFile)
+        {
+            lock (GetDataLock(problemID))
+            {
+                string programPath = SPJManager.GetSPJProgramPathInTestData(problemID, programFile.LangConfiguration);
+                if (File.Exists(programPath))
+                {
+                    File.Delete(programPath);
+                }
+                File.WriteAllBytes(programPath, programFile.Program);
+            }
+        }
+
+        /// <summary>
+        /// 获取SPJ可执行程序
+        /// </summary>
+        /// <param name="problemID">问题ID</param>
+        /// <param name="index">索引</param>
+        /// <returns>SPJ程序</returns>
+        public static SpecialJudgeProgram GetSpecialJudgeProgramFile(int problemID, int index = 0)
+        {
+            lock (GetDataLock(problemID))
+            {
+                string programPath = SPJManager.FindSPJProgramInTestData(problemID, index);
+                if (programPath == null)
+                {
+                    return null;
+                }
+
+                LanguageConfiguration langConfig = SPJManager.GetLangConfigByProgramPath(programPath);
+                if (langConfig == null)
+                {
+                    return null;
+                }
+
+                return new SpecialJudgeProgram
+                {
+                    LangConfiguration = langConfig,
+                    Program = File.ReadAllBytes(programPath)
+                };
             }
         }
 
@@ -207,7 +300,7 @@ namespace Judger.Managers
         /// <returns>锁</returns>
         private static object GetDataLock(int problemID)
         {
-            lock(_dicLock)
+            lock (_dicLock)
             {
                 if (!_dataLockDic.ContainsKey(problemID))
                 {

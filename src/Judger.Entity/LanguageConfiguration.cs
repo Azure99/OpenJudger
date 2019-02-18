@@ -24,6 +24,16 @@ namespace Judger.Entity
         public string SourceCodeFileName { get; set; } = "src.cpp";
 
         /// <summary>
+        /// 源代码文件扩展名(使用|分隔),用于Special Judge,必须唯一
+        /// </summary>
+        public string SourceCodeFileExtension { get; set; } = "cc|cpp";
+
+        /// <summary>
+        /// 编译后可执行文件名
+        /// </summary>
+        public string ProgramFileName { get; set; } = "program.exe";
+
+        /// <summary>
         /// 使用UTF8编码读写流
         /// </summary>
         public bool UseUTF8 { get; set; } = true;

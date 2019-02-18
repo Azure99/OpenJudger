@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Judger.Entity;
 using Judger.Managers;
 using Judger.Utils;
@@ -31,6 +32,10 @@ namespace Judger.Fetcher
 
             // 分配评测临时目录
             string tempDirectory = GetTempDirectory(langConfig.JudgeDirectory);
+            if (!Directory.Exists(tempDirectory))
+            {
+                Directory.CreateDirectory(tempDirectory);
+            }
 
             // 替换<tempdir>字段
             langConfig.CompilerPath = langConfig.CompilerPath.Replace("<tempdir>", tempDirectory);

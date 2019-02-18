@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using Judger.Entity;
+using Judger.Managers;
 using Judger.Utils;
 
 namespace Judger.Fetcher.HUSTOJ
@@ -84,13 +85,17 @@ namespace Judger.Fetcher.HUSTOJ
                     foreach(var file in files)
                     {
                         ZipArchiveEntry entry = null;
-                        if(file.Item1.EndsWith(".in"))
+                        if (file.Item1.EndsWith(".in"))
                         {
                             entry = zip.CreateEntry("input/" + file.Item1);
                         }
-                        else if(file.Item1.EndsWith(".out"))
+                        else if (file.Item1.EndsWith(".out"))
                         {
                             entry = zip.CreateEntry("output/" + file.Item1);
+                        }
+                        else if (CheckSpecialJudgeFile(file.Item1))
+                        {
+                            entry = zip.CreateEntry("spj/" + SPJManager.SPJ_SOURCE_FILENAME + Path.GetExtension(file.Item1));
                         }
 
                         if (entry != null)
@@ -131,6 +136,41 @@ namespace Judger.Fetcher.HUSTOJ
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
 
             return MD5Encrypt.EncryptToHexString(response);
+        }
+
+        /// <summary>
+        /// 检查此文件是否为SPJ程序源代码文件
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <returns>是否为SPJ源代码</returns>
+        private bool CheckSpecialJudgeFile(string fileName)
+        {
+            HashSet<string> extensionSet = new HashSet<string>();
+
+            foreach (LanguageConfiguration lang in Config.Languages)
+            {
+                string[] extensions = lang.SourceCodeFileExtension.Split('|');
+                foreach (string ext in extensions)
+                {
+                    if (!extensionSet.Contains(ext))
+                    {
+                        extensionSet.Add(ext);
+                    }
+                }
+            }
+
+            string name = Path.GetFileNameWithoutExtension(fileName).ToLower();
+            string extension = Path.GetExtension(fileName).TrimStart('.').ToLower();
+
+            if(name == "spj")
+            {
+                if(extensionSet.Contains(extension))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

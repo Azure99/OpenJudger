@@ -2,7 +2,8 @@
 
 namespace Judger.Entity
 {
-    public class JudgeTask
+    [Serializable]
+    public class JudgeTask : ICloneable
     {
         /// <summary>
         /// 提交ID
@@ -68,5 +69,12 @@ namespace Judger.Entity
         /// 判题所用临时目录
         /// </summary>
         public string TempJudgeDirectory { get; set; }
+
+        public object Clone()
+        {
+            JudgeTask task = this.MemberwiseClone() as JudgeTask;
+            task.LangConfig = this.LangConfig.Clone() as LanguageConfiguration;
+            return task as object;
+        }
     }
 }

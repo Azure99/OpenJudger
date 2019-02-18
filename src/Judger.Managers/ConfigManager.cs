@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Judger.Entity;
 using Judger.Utils;
 
@@ -49,11 +50,59 @@ namespace Judger.Managers
             {
                 if(item.Language == languageName)
                 {
-                    return item;
+                    return item.Clone() as LanguageConfiguration;
                 }
             }
 
             return null;
+        }
+
+        public static bool HasLanguage(string languageName)
+        {
+            return GetLanguageConfig(languageName) != null;
+        }
+
+        public static Dictionary<string, LanguageConfiguration> GetLanguageDictionary()
+        {
+            Dictionary<string, LanguageConfiguration> langDic = new Dictionary<string, LanguageConfiguration>();
+
+            LanguageConfiguration[] languages = ConfigManager.Config.Languages;
+            foreach (var lang in languages)
+            {
+                if (!langDic.ContainsKey(lang.Language))
+                {
+                    langDic.Add(lang.Language, lang.Clone() as LanguageConfiguration);
+                }
+            }
+
+            return langDic;
+        }
+
+        public static Dictionary<string, LanguageConfiguration> GetLangSourceExtensionDictionary()
+        {
+            Dictionary<string, LanguageConfiguration> extDic = new Dictionary<string, LanguageConfiguration>();
+
+            LanguageConfiguration[] languages = ConfigManager.Config.Languages;
+            foreach (var lang in languages)
+            {
+                string[] extensions = lang.SourceCodeFileExtension.Split('|');
+                foreach(var ex in extensions)
+                {
+                    if (!extDic.ContainsKey(ex))
+                    {
+                        extDic.Add(ex, lang.Clone() as LanguageConfiguration);
+                    }
+                    else
+                    {
+                        LogManager.Warning(
+                            "Source file extension conflict!" + Environment.NewLine +
+                            "Extension: " + ex + Environment.NewLine +
+                            "Languages: " + lang.Language + ", " + extDic[ex].Language);
+                    }
+                }
+            }
+
+            return extDic;
         }
     }
 }
