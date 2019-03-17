@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Data.Common;
+using System.IO;
 using System.Reflection;
 
-namespace Judger.Core.Database
+namespace Judger.Core.Database.Internal
 {
     /// <summary>
     /// 数据库驱动加载器
@@ -16,6 +17,8 @@ namespace Judger.Core.Database
         /// <returns>数据库驱动</returns>
         public static DbDriver Load(string assemblyPath)
         {
+            assemblyPath = Path.GetFullPath(assemblyPath);
+
             Type connectionType = null;
             Type commandType = null;
             Assembly assembly = Assembly.LoadFile(assemblyPath);

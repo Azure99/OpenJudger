@@ -1,6 +1,7 @@
 ﻿using System;
 using Judger.Entity;
 using Judger.Core.Program;
+using Judger.Core.Database;
 
 namespace Judger.Core
 {
@@ -16,7 +17,11 @@ namespace Judger.Core
         /// <returns>Judger实例</returns>
         public static BaseJudger Create(JudgeTask task)
         {
-            if(task.SpecialJudge)
+            if(task.DbJudge)
+            {
+                return new DbJudger(task);
+            }
+            else if(task.SpecialJudge)
             {
                 return new SpecialJudger(task);
             }

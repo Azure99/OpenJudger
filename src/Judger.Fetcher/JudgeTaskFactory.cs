@@ -22,34 +22,40 @@ namespace Judger.Fetcher
         /// <param name="author">作者</param>
         /// <param name="timeLimit">时间限制</param>
         /// <param name="memoryLimit">内存限制</param>
+        /// <param name="judgeAllCases">是否评测全部样例(即使遇到错误答案)</param>
         /// <param name="specialJudge">是否为SpecialJudge</param>
+        /// <param name="dbJudge">是否为数据库评测</param>
         /// <returns>JudgeTask实例</returns>
         public static JudgeTask Create(int submitID, int problemID, string dataVersion, string language, string sourceCode,
                                        string author = "", int timeLimit = 1000, int memoryLimit = 262144, 
-                                       bool judgeAllCases = false, bool specialJudge = false)
+                                       bool judgeAllCases = false, bool specialJudge = false, bool dbJudge = false)
         {
             LanguageConfiguration langConfig = ConfigManager.GetLanguageConfig(language).Clone() as LanguageConfiguration;
+            string tempDirectory = RandomString.Next(16);
 
+            if (langConfig != null && dbJudge == false)
+            {
+
+            }
             // 分配评测临时目录
-            string tempDirectory = GetTempDirectory(langConfig.JudgeDirectory);
+            tempDirectory = GetTempDirectory(langConfig.JudgeDirectory);
             if (!Directory.Exists(tempDirectory))
             {
                 Directory.CreateDirectory(tempDirectory);
+                // 替换<tempdir>字段
+                langConfig.CompilerPath = langConfig.CompilerPath.Replace("<tempdir>", tempDirectory);
+                langConfig.CompilerWorkDirectory = langConfig.CompilerWorkDirectory.Replace("<tempdir>", tempDirectory);
+                langConfig.CompilerArgs = langConfig.CompilerArgs.Replace("<tempdir>", tempDirectory);
+                langConfig.RunnerPath = langConfig.RunnerPath.Replace("<tempdir>", tempDirectory);
+                langConfig.RunnerWorkDirectory = langConfig.RunnerWorkDirectory.Replace("<tempdir>", tempDirectory);
+                langConfig.RunnerArgs = langConfig.RunnerArgs.Replace("<tempdir>", tempDirectory);
+
+                // 使用绝对路径
+                langConfig.CompilerPath = PathHelper.GetBaseAbsolutePath(langConfig.CompilerPath);
+                langConfig.CompilerWorkDirectory = PathHelper.GetBaseAbsolutePath(langConfig.CompilerWorkDirectory);
+                langConfig.RunnerWorkDirectory = PathHelper.GetBaseAbsolutePath(langConfig.RunnerWorkDirectory);
+                langConfig.RunnerPath = PathHelper.GetBaseAbsolutePath(langConfig.RunnerPath);
             }
-
-            // 替换<tempdir>字段
-            langConfig.CompilerPath = langConfig.CompilerPath.Replace("<tempdir>", tempDirectory);
-            langConfig.CompilerWorkDirectory = langConfig.CompilerWorkDirectory.Replace("<tempdir>", tempDirectory);
-            langConfig.CompilerArgs = langConfig.CompilerArgs.Replace("<tempdir>", tempDirectory);
-            langConfig.RunnerPath = langConfig.RunnerPath.Replace("<tempdir>", tempDirectory);
-            langConfig.RunnerWorkDirectory = langConfig.RunnerWorkDirectory.Replace("<tempdir>", tempDirectory);
-            langConfig.RunnerArgs = langConfig.RunnerArgs.Replace("<tempdir>", tempDirectory);
-
-            // 使用绝对路径
-            langConfig.CompilerPath = PathHelper.GetBaseAbsolutePath(langConfig.CompilerPath);
-            langConfig.CompilerWorkDirectory = PathHelper.GetBaseAbsolutePath(langConfig.CompilerWorkDirectory);
-            langConfig.RunnerWorkDirectory = PathHelper.GetBaseAbsolutePath(langConfig.RunnerWorkDirectory);
-            langConfig.RunnerPath = PathHelper.GetBaseAbsolutePath(langConfig.RunnerPath);
 
             JudgeTask task = new JudgeTask
             {
@@ -63,6 +69,7 @@ namespace Judger.Fetcher
                 MemoryLimit = memoryLimit,
                 JudgeAllCases = judgeAllCases,
                 SpecialJudge = specialJudge,
+                DbJudge = dbJudge,
                 LangConfig = langConfig,
                 TempJudgeDirectory = tempDirectory
             };

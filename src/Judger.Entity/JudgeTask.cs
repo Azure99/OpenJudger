@@ -51,6 +51,11 @@ namespace Judger.Entity
         public bool SpecialJudge { get; set; } = false;
 
         /// <summary>
+        /// 是否为数据库评测
+        /// </summary>
+        public bool DbJudge { get; set; } = false;
+
+        /// <summary>
         /// 源代码
         /// </summary>
         public string SourceCode { get; set; } = "";
@@ -67,7 +72,7 @@ namespace Judger.Entity
 
         /// <summary>
         /// 判题所用临时目录
-        /// </summary>
+        /// </summary>                                                                                                                                                                                                                                                                                  '                                     
         public string TempJudgeDirectory { get; set; }
 
         public object Clone()

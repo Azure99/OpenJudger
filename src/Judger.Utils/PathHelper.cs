@@ -23,5 +23,25 @@ namespace Judger.Utils
 
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
         }
+
+        /// <summary>
+        /// 在指定目录下忽略大小写地获取文件路径
+        /// </summary>
+        /// <param name="directory">目录</param>
+        /// <param name="filename">文件名</param>
+        /// <returns>文件路径</returns>
+        public static string FindFileIgnoreCase(string directory, string filename)
+        {
+            string[] files = Directory.GetFiles(directory);
+            foreach (string file in files)
+            {
+                if (Path.GetFileName(file).ToLower() == filename.ToLower())
+                {
+                    return file;
+                }
+            }
+
+            return null;
+        }
     }
 }

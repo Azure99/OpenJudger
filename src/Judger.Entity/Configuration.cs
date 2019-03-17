@@ -93,6 +93,12 @@ namespace Judger.Entity
         /// 语言(编译/运行)配置
         /// </summary>
         public LanguageConfiguration[] Languages { get; set; } = 
-            new LanguageConfiguration[]{new LanguageConfiguration() };
+            new LanguageConfiguration[]{ new LanguageConfiguration() };
+
+        /// <summary>
+        /// 数据库配置
+        /// </summary>
+        public DbConfiguration[] Databases { get; set; } =
+            new DbConfiguration[] { new DbConfiguration() };
     }
 }

@@ -294,6 +294,92 @@ namespace Judger.Managers
         }
 
         /// <summary>
+        /// 根据题目ID获取全部数据库测试数据的名称
+        /// </summary>
+        /// <param name="problemID">问题ID</param>
+        /// <param name="dbType">数据库名称</param>
+        /// <returns>全部测试数据的名称</returns>
+        public static string[] GetDbTestDataNames(int problemID, DatabaseType dbType)
+        {
+            lock (GetDataLock(problemID)) 
+            {
+                string path = Path.Combine(_config.TestDataDirectory, problemID.ToString()) + SepChar + "db" + SepChar;
+
+                string[] inputFiles = Directory.GetFiles(path + "input");
+                var query = from x in inputFiles
+                            where Path.GetExtension(x).TrimStart('.').ToLower() == dbType.ToString().ToLower()
+                            select Path.GetFileNameWithoutExtension(x);
+
+                List<string> dataNames = new List<string>();
+                foreach (var x in query)
+                {
+                    string outputFile = PathHelper.FindFileIgnoreCase(path + "output", x + "." + dbType);
+                    string queryFile = PathHelper.FindFileIgnoreCase(path + "query", x + "." + dbType);
+                    if (outputFile != null || queryFile != null)
+                    {
+                        dataNames.Add(x);
+                    }
+                }
+
+                return dataNames.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// 根据问题ID和数据名称获取数据库测试数据
+        /// </summary>
+        /// <param name="problemID">问题ID</param>
+        /// <param name="dbType">数据库类型</param>
+        /// <param name="dataName">测试数据名称</param>
+        /// <returns>测试数据</returns>
+        public static DbTestData GetDbTestData(int problemID, DatabaseType dbType, string dataName)
+        {
+            lock (GetDataLock(problemID))
+            {
+                string path = Path.Combine(_config.TestDataDirectory, problemID.ToString()) + SepChar + "db" + SepChar;
+
+                string inputFile = PathHelper.FindFileIgnoreCase(path + "input", dataName + '.' + dbType);
+                string outputFile = PathHelper.FindFileIgnoreCase(path + "output", dataName + "." + dbType);
+                string queryFile = PathHelper.FindFileIgnoreCase(path + "query", dataName + "." + dbType);
+
+                if (inputFile == null || (outputFile == null && queryFile == null))
+                {
+                    throw new JudgeException("Database input file not found: " + inputFile);
+                }
+
+                return new DbTestData
+                {
+                    Name = dataName,
+                    Input = (inputFile != null) ? File.ReadAllText(inputFile) : null,
+                    Output = (outputFile != null) ? File.ReadAllText(outputFile) : null,
+                    Query = (queryFile != null) ? File.ReadAllText(queryFile) : null,
+                };
+            }
+        }
+
+        /// <summary>
+        /// 检查题目是否为数据库题目
+        /// </summary>
+        /// <param name="problemID">问题ID</param>
+        /// <returns>是否为数据库题目</returns>
+        public static bool IsDatabaseJudge(int problemID)
+        {
+            string dbDir = Path.Combine(_config.TestDataDirectory, problemID.ToString(), "db") + SepChar;
+
+            lock (GetDataLock(problemID))
+            {
+                if (Directory.Exists(dbDir))
+                {
+                    if (Directory.GetDirectories(dbDir).Length > 0)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
         /// 获取测试数据锁, 保证每个题目的数据只能同时由一个JudgeTask访问
         /// </summary>
         /// <param name="problemID">题目ID</param>

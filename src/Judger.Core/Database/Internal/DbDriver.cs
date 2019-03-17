@@ -2,7 +2,7 @@
 using System.Data.Common;
 using System.Reflection;
 
-namespace Judger.Core.Database
+namespace Judger.Core.Database.Internal
 {
     /// <summary>
     /// 数据库驱动
