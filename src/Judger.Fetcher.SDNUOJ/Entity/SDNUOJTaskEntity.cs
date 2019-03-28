@@ -27,6 +27,9 @@ namespace Judger.Fetcher.SDNUOJ.Entity
         [JsonProperty(PropertyName = "language")]
         public string Language { get; set; }
 
+        [JsonProperty(PropertyName = "dbjudge")]
+        public string DbJudge { get; set; } = "false";
+
         [JsonProperty(PropertyName = "sourcecode")]
         public string SourceCode { get; set; }
     }

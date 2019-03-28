@@ -39,6 +39,10 @@ namespace Judger.Fetcher.SDNUOJ
             {
                 langBuilder.Append(lang.Language + "[],");
             }
+            foreach (var lang in Config.Databases)
+            {
+                langBuilder.Append(lang.DbName + "[],");
+            }
             langBuilder.Remove(langBuilder.Length - 1, 1);
 
             bodyBuilder.Append(System.Web.HttpUtility.UrlEncode(langBuilder.ToString()));
@@ -71,7 +75,7 @@ namespace Judger.Fetcher.SDNUOJ
             JudgeTask task = JudgeTaskFactory.Create(
                 Int32.Parse(taskEntity.SubmitID), Int32.Parse(taskEntity.ProblemID), taskEntity.DataVersion,
                 taskEntity.Language.Substring(0, taskEntity.Language.Length - 2), taskEntity.SourceCode, taskEntity.Author,
-                Int32.Parse(taskEntity.TimeLimit), Int32.Parse(taskEntity.MemoryLimit), false);
+                Int32.Parse(taskEntity.TimeLimit), Int32.Parse(taskEntity.MemoryLimit), false, false, bool.Parse(taskEntity.DbJudge));
 
             return new JudgeTask[1] { task };
         }
