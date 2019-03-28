@@ -51,10 +51,7 @@ namespace Judger.Managers
 
             lock (GetDataLock(problemID))
             {
-                if (!Directory.Exists(path) ||
-                    !Directory.Exists(path + SepChar + "input") ||
-                    !Directory.Exists(path + SepChar + "output") ||
-                    !File.Exists(path + SepChar + "version.txt"))
+                if (!Directory.Exists(path) || !File.Exists(path + SepChar + "version.txt"))
                 {
                     return false;
                 }
