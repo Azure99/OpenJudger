@@ -140,7 +140,6 @@ namespace Judger.Core.Database
         public override void Dispose()
         {
             MainOperator.Dispose();
-            Directory.Delete(JudgeTask.TempJudgeDirectory);
         }
     }
 }

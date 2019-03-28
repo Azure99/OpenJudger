@@ -30,32 +30,34 @@ namespace Judger.Fetcher
                                        string author = "", int timeLimit = 1000, int memoryLimit = 262144, 
                                        bool judgeAllCases = false, bool specialJudge = false, bool dbJudge = false)
         {
-            LanguageConfiguration langConfig = ConfigManager.GetLanguageConfig(language).Clone() as LanguageConfiguration;
-            string tempDirectory = RandomString.Next(16);
+            LanguageConfiguration langConfig = ConfigManager.GetLanguageConfig(language);
 
+            // 分配评测临时目录
+            string tempDirectory = RandomString.Next(16);
+            
             if (langConfig != null && dbJudge == false)
             {
+                tempDirectory = GetTempDirectory(langConfig.JudgeDirectory);
+                if (!Directory.Exists(tempDirectory))
+                {
+                    Directory.CreateDirectory(tempDirectory);
+                    // 替换<tempdir>字段
+                    langConfig.CompilerPath = langConfig.CompilerPath.Replace("<tempdir>", tempDirectory);
+                    langConfig.CompilerWorkDirectory = langConfig.CompilerWorkDirectory.Replace("<tempdir>", tempDirectory);
+                    langConfig.CompilerArgs = langConfig.CompilerArgs.Replace("<tempdir>", tempDirectory);
+                    langConfig.RunnerPath = langConfig.RunnerPath.Replace("<tempdir>", tempDirectory);
+                    langConfig.RunnerWorkDirectory = langConfig.RunnerWorkDirectory.Replace("<tempdir>", tempDirectory);
+                    langConfig.RunnerArgs = langConfig.RunnerArgs.Replace("<tempdir>", tempDirectory);
 
+                    // 使用绝对路径
+                    langConfig.CompilerPath = PathHelper.GetBaseAbsolutePath(langConfig.CompilerPath);
+                    langConfig.CompilerWorkDirectory = PathHelper.GetBaseAbsolutePath(langConfig.CompilerWorkDirectory);
+                    langConfig.RunnerWorkDirectory = PathHelper.GetBaseAbsolutePath(langConfig.RunnerWorkDirectory);
+                    langConfig.RunnerPath = PathHelper.GetBaseAbsolutePath(langConfig.RunnerPath);
+                }
             }
-            // 分配评测临时目录
-            tempDirectory = GetTempDirectory(langConfig.JudgeDirectory);
-            if (!Directory.Exists(tempDirectory))
-            {
-                Directory.CreateDirectory(tempDirectory);
-                // 替换<tempdir>字段
-                langConfig.CompilerPath = langConfig.CompilerPath.Replace("<tempdir>", tempDirectory);
-                langConfig.CompilerWorkDirectory = langConfig.CompilerWorkDirectory.Replace("<tempdir>", tempDirectory);
-                langConfig.CompilerArgs = langConfig.CompilerArgs.Replace("<tempdir>", tempDirectory);
-                langConfig.RunnerPath = langConfig.RunnerPath.Replace("<tempdir>", tempDirectory);
-                langConfig.RunnerWorkDirectory = langConfig.RunnerWorkDirectory.Replace("<tempdir>", tempDirectory);
-                langConfig.RunnerArgs = langConfig.RunnerArgs.Replace("<tempdir>", tempDirectory);
 
-                // 使用绝对路径
-                langConfig.CompilerPath = PathHelper.GetBaseAbsolutePath(langConfig.CompilerPath);
-                langConfig.CompilerWorkDirectory = PathHelper.GetBaseAbsolutePath(langConfig.CompilerWorkDirectory);
-                langConfig.RunnerWorkDirectory = PathHelper.GetBaseAbsolutePath(langConfig.RunnerWorkDirectory);
-                langConfig.RunnerPath = PathHelper.GetBaseAbsolutePath(langConfig.RunnerPath);
-            }
+            double timeCompensation = langConfig != null ? langConfig.TimeCompensation : 1;
 
             JudgeTask task = new JudgeTask
             {
@@ -65,7 +67,7 @@ namespace Judger.Fetcher
                 Language = language,
                 SourceCode = sourceCode,
                 Author = author,
-                TimeLimit = (int)(timeLimit / langConfig.TimeCompensation),
+                TimeLimit = (int)(timeLimit / timeCompensation),
                 MemoryLimit = memoryLimit,
                 JudgeAllCases = judgeAllCases,
                 SpecialJudge = specialJudge,

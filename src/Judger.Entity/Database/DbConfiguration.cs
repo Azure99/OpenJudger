@@ -14,7 +14,7 @@ namespace Judger.Entity
         /// <summary>
         /// 数据库管理系统名称
         /// </summary>
-        public string DbName { get; set; } = DatabaseType.Mysql.ToString();
+        public string DbName { get; set; } = DatabaseType.mysql.ToString();
 
         /// <summary>
         /// 数据库驱动路径
