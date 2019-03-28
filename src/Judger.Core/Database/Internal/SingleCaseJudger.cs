@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using System.Diagnostics;
 using Judger.Core.Database.Internal.Entity;
 using Judger.Entity;
@@ -36,11 +37,26 @@ namespace Judger.Core.Database.Internal
         public SingleJudgeResult Judge(string stdInput, DbData stdOutput, DbQueryData stdQuery)
         {
             Stopwatch sw = new Stopwatch();
-            sw.Start();
+            DbDataReader reader = null;
 
-            var reader = UserOperator.ExecuteReader(JudgeTask.SourceCode, JudgeTask.TimeLimit);
-
-            sw.Stop();
+            try
+            {
+                sw.Start();
+                reader = UserOperator.ExecuteReader(JudgeTask.SourceCode, JudgeTask.TimeLimit);
+            }
+            catch(Exception ex)
+            {
+                return new SingleJudgeResult
+                {
+                    ResultCode = JudgeResultCode.RuntimeError,
+                    JudgeDetail = ex.Message,
+                    TimeCost = 0
+                };
+            }
+            finally
+            {
+                sw.Stop();
+            }
 
             DbQueryData usrQuery = BaseDbOperator.ReadQueryData(reader);
             DbData usrOutput = UserOperator.ReadDbData();
@@ -49,7 +65,7 @@ namespace Judger.Core.Database.Internal
 
             return new SingleJudgeResult
             {
-                ResultCode = result == CompareResult.Accepted ? JudgeResultCode.Accepted : JudgeResultCode.WrongAnswer,
+                ResultCode = (result == CompareResult.Accepted) ? JudgeResultCode.Accepted : JudgeResultCode.WrongAnswer,
                 TimeCost = (int)sw.ElapsedMilliseconds
             };
         }

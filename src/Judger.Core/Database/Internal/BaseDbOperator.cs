@@ -98,7 +98,6 @@ namespace Judger.Core.Database.Internal
 
         public static DbQueryData ReadQueryData(DbDataReader reader, string name = "")
         {
-            Console.WriteLine(name);
             int fieldCount = reader.FieldCount;
             string[] fieldNames = new string[fieldCount];
             for(int i = 0; i < fieldCount; i++)
