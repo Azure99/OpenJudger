@@ -14,7 +14,7 @@ namespace Judger.Core.Database.Internal
         /// <returns>数据库操作器</returns>
         public static BaseDbOperator CreateMainOperatorByName(string dbName)
         {
-            if (dbName == DatabaseType.Mysql.ToString())
+            if (dbName == DatabaseType.mysql.ToString())
             {
                 DbConfiguration config = DbManager.GetDbConfiguration(dbName);
                 return Create(config);
@@ -35,7 +35,7 @@ namespace Judger.Core.Database.Internal
             string connString = dbConfig.ConnectionString;
             DbDriver driver = DbDriverLoader.Load(dbConfig.DriverPath);
 
-            if (dbConfig.DbName == DatabaseType.Mysql.ToString()) 
+            if (dbConfig.DbName == DatabaseType.mysql.ToString()) 
             {
                 return new MySQL5xOperator(connString, driver);
             }

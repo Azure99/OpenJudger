@@ -5,12 +5,12 @@ namespace Judger.Entity
 {
     public enum DatabaseType
     {
-        Mysql = 1,
+        mysql = 1,
 
         //暂未适配
-        SQLServer = 2,
+        mssql = 2,
 
         //暂未适配
-        Oracle = 3,
+        oracle = 3,
     }
 }
