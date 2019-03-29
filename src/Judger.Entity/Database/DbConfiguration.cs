@@ -44,7 +44,7 @@ namespace Judger.Entity
         /// <summary>
         /// 连接字符串模板
         /// </summary>
-        public string ConnStringTemplate { get; set; } = "Server=<Server>;Database=<Database>;User=<User>;Password=<Password>";
+        public string ConnStringTemplate { get; set; } = "Server=<Server>;Database=<Database>;User=<User>;Password=<Password>;CharSet=utf8;";
 
         /// <summary>
         /// 数据库的连接字符串
