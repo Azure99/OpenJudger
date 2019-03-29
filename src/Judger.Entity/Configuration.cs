@@ -85,6 +85,11 @@ namespace Judger.Entity
         public int MonitorInterval { get; set; } = 10;
 
         /// <summary>
+        /// 最小内存消耗值, 如果获取到的内存消耗为0则返回此值
+        /// </summary>
+        public int MinimumMemoryCost { get; set; } = 256;
+
+        /// <summary>
         /// 附加设置
         /// </summary>
         public Dictionary<string, string> AdditionalConfig { get; set; } = new Dictionary<string, string>();

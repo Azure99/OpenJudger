@@ -80,6 +80,7 @@ namespace Judger.Core.Program
                 return result;
             }
 
+            result.MemoryCost = ConfigManager.Config.MinimumMemoryCost;
             int acceptedCasesCount = 0;//通过的测试点数
             for (int i = 0; i < dataFiles.Length; i++)
             {

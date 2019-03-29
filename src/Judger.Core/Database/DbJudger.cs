@@ -33,7 +33,7 @@ namespace Judger.Core.Database
                 ProblemID = JudgeTask.ProblemID,
                 Author = JudgeTask.Author,
                 JudgeDetail = "",
-                MemoryCost = 0,
+                MemoryCost = ConfigManager.Config.MinimumMemoryCost,
                 TimeCost = 0,
                 PassRate = 0,
                 ResultCode = JudgeResultCode.Accepted
