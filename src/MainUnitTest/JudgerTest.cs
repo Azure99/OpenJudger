@@ -7,6 +7,9 @@ namespace MainUnitTest
 {
     public class JudgerTest
     {
+        /// <summary>
+        /// 测试SingleJudger的答案对比
+        /// </summary>
         [Fact]
         public void TestSingleJudgerCompare()
         {

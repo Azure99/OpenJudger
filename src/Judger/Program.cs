@@ -20,13 +20,7 @@ namespace Judger
 
         private static void StartUp()
         {
-            AppDomain.CurrentDomain.UnhandledException += LogManager.OnUnhandledException;
-            AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
-            {
-                LogManager.Info("Judger stopped");
-                LogManager.Flush();
-            };
-
+            SetAppHandle();
             LogManager.Info("Starting judger");
 
             Service = new JudgeService();
@@ -34,7 +28,7 @@ namespace Judger
 
             LogManager.Info("Judger started");
         }
-        
+
         private static void ReadCommand()
         {
             string command = Console.ReadLine();
@@ -47,11 +41,11 @@ namespace Judger
                 }
                 else if (command == "status") //显示当前状态
                 {
-                    Console.WriteLine("Service working: " + Service.Working);
-                    Console.WriteLine("In queue: " + Service.Controller.InQueueCount);
-                    Console.WriteLine("Running: " + Service.Controller.RunningCount);
+                    Console.WriteLine("Service working:\t" + Service.Working);
+                    Console.WriteLine("In queue:\t" + Service.Controller.InQueueCount);
+                    Console.WriteLine("Running:\t" + Service.Controller.RunningCount);
                 }
-                else if(command == "clear") //清屏
+                else if (command == "clear") //清屏
                 {
                     Console.Clear();
                 }
@@ -63,6 +57,16 @@ namespace Judger
             }
 
             Console.WriteLine("Bye!");
+        }
+
+        private static void SetAppHandle()
+        {
+            AppDomain.CurrentDomain.UnhandledException += LogManager.OnUnhandledException;
+            AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
+            {
+                LogManager.Info("Judger stopped");
+                LogManager.Flush();
+            };
         }
     }
 }

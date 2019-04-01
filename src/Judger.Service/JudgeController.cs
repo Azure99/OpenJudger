@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Judger.Core;
 using Judger.Entity;
 using Judger.Fetcher;
-using Judger.Core;
 using Judger.Managers;
 
 namespace Judger.Service
@@ -13,6 +13,11 @@ namespace Judger.Service
     /// </summary>
     public class JudgeController
     {
+        private readonly Configuration _config = ConfigManager.Config;
+        // 评测任务等待队列
+        private ConcurrentQueue<JudgeTask> _judgeQueue = new ConcurrentQueue<JudgeTask>();
+        private object _queueLock = new object();
+
         /// <summary>
         /// 正在运行的评测任务数量
         /// </summary>
@@ -23,20 +28,8 @@ namespace Judger.Service
         /// </summary>
         public int InQueueCount
         {
-            get
-            {
-                return _judgeQueue.Count;
-            }
+            get { return _judgeQueue.Count; }
         }
-
-        private readonly Configuration _config = ConfigManager.Config;
-
-        /// <summary>
-        /// 评测任务等待队列
-        /// </summary>
-        private ConcurrentQueue<JudgeTask> _judgeQueue = new ConcurrentQueue<JudgeTask>();
-
-        private object _queueLock = new object();
 
         /// <summary>
         /// 添加JudgeTask
@@ -44,10 +37,7 @@ namespace Judger.Service
         /// <param name="task">JudgeTask</param>
         public void AddTask(JudgeTask task)
         {
-            LogManager.Info(
-                string.Format("New task: SubmitID:{0} Language:{1} CodeLength:{2} ProblemID:{3} Author:{4}",
-                              task.SubmitID, task.Language, task.SourceCode.Length, task.ProblemID, task.Author));
-
+            LogAddTask(task);
             _judgeQueue.Enqueue(task);
             CheckTask();
         }
@@ -58,9 +48,9 @@ namespace Judger.Service
         public void CheckTask()
         {
 
-            lock(_queueLock)
+            lock (_queueLock)
             {
-                // 若同时运行数达到限制或等待队列为空
+                // 同时运行数达到限制或等待队列为空
                 if (RunningCount >= _config.MaxRunning || _judgeQueue.IsEmpty)
                 {
                     CheckExecuteGC();
@@ -70,7 +60,7 @@ namespace Judger.Service
                 RunningCount++;
             }
 
-
+            //开始评测任务
             if (_judgeQueue.TryDequeue(out JudgeTask task))
             {
                 new Task(RunJudgeTask, task).Start();
@@ -91,7 +81,7 @@ namespace Judger.Service
             }
             catch (Exception ex)
             {
-                LogManager.Exception(ex);
+                LogException(ex);
             }
 
             lock (_queueLock)
@@ -99,7 +89,8 @@ namespace Judger.Service
                 RunningCount--;
             }
 
-            CheckTask();//重新检查是否有任务
+            //重新检查是否有任务
+            CheckTask();
         }
 
         /// <summary>
@@ -116,18 +107,15 @@ namespace Judger.Service
 
                 using (BaseJudger judger = JudgerFactory.Create(task))
                 {
-                    LogManager.Info("Judge task " + task.SubmitID);
+                    LogStartJudgeTask(task.SubmitID);
                     result = judger.Judge();
                 }
 
-                LogManager.Info(string.Format("Task {0} result: Time:{1} Mem:{2} Code:{3} PassRate:{4} Details:{5} ",
-                                              result.SubmitID, result.TimeCost, result.MemoryCost, result.ResultCode,
-                                              result.PassRate, result.JudgeDetail));
+                LogJudgeResult(result);
             }
-            catch(Exception ex)//判题失败
+            catch (Exception ex)//判题失败
             {
-                LogManager.Info("Judge failed, SubmitID: " + task.SubmitID);
-                LogManager.Exception(ex);
+                LogJudgeFailed(ex, task.SubmitID);
                 result.JudgeDetail = ex.ToString();
                 throw ex;
             }
@@ -142,10 +130,12 @@ namespace Judger.Service
             // 检查测试数据是否为最新
             if (!TestDataManager.CheckData(task.ProblemID, task.DataVersion))
             {
-                LogManager.Info("Invalid test data, fetch new data. ProblemID: " + task.ProblemID);
+                LogInvalidTestData(task.ProblemID);
+
                 ITestDataFetcher fetcher = FetcherFactory.CreateTestDataFetcher();
                 TestDataManager.WriteTestData(task.ProblemID, fetcher.Fetch(task));
-                LogManager.Info("Problem " + task.ProblemID + " data fetched");
+
+                LogTestDataFetched(task.ProblemID);
             }
         }
 
@@ -179,9 +169,53 @@ namespace Judger.Service
         {
             if (RunningCount == 0)
             {
-                LogManager.Info("Run GC");
+                LogGC();
                 GC.Collect();
             }
+        }
+
+        private void LogAddTask(JudgeTask task)
+        {
+            LogManager.Info(string.Format("New task: SubmitID:{0} Language:{1} CodeLength:{2} ProblemID:{3} Author:{4}",
+                                task.SubmitID, task.Language, task.SourceCode.Length, task.ProblemID, task.Author));
+        }
+
+        private void LogJudgeResult(JudgeResult result)
+        {
+            LogManager.Info(string.Format("Task {0} result: Time:{1} Mem:{2} Code:{3} PassRate:{4} Details:{5} ",
+                                result.SubmitID, result.TimeCost, result.MemoryCost, result.ResultCode,
+                                result.PassRate, result.JudgeDetail));
+        }
+
+        private void LogInvalidTestData(int problemID)
+        {
+            LogManager.Info("Invalid test data, fetch new data. ProblemID: " + problemID);
+        }
+
+        private void LogTestDataFetched(int problemID)
+        {
+            LogManager.Info("Problem " + problemID + " data fetched");
+        }
+
+        private void LogStartJudgeTask(int submitID)
+        {
+            LogManager.Info("Judge task " + submitID);
+        }
+
+        private void LogJudgeFailed(Exception ex, int submitID)
+        {
+            LogManager.Info("Judge failed, SubmitID: " + submitID);
+            LogManager.Exception(ex);
+        }
+
+        private void LogGC()
+        {
+            LogManager.Info("Run GC");
+        }
+
+        private void LogException(Exception ex)
+        {
+            LogManager.Exception(ex);
         }
     }
 }

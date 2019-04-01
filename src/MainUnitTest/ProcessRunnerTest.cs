@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading;
 using Xunit;
 using Judger.Utils;
 
@@ -8,27 +7,37 @@ namespace MainUnitTest
 {
     public class ProcessRunnerTest
     {
+        /// <summary>
+        /// 测试ProcessRunner杀死进程
+        /// </summary>
         [Fact]
         public void TestProcessRunnerKill()
         {
             using (ProcessRunner pr = new ProcessRunner("cmd", "", ""))
             {
-                new System.Threading.Thread(() => { System.Threading.Thread.Sleep(1000); pr.Process.Kill(); }).Start();
-                int code = pr.Run("ping 127.0.0.1\nping 127.0.0.1", out string output, out string error);
+                new Thread(() =>
+                {
+                    Thread.Sleep(1000);
+                    pr.Process.Kill();
+                }).Start();
+                int exitcode = pr.Run("ping 127.0.0.1\nping 127.0.0.1", out string output, out string error);
 
-                Assert.True(code == -1);
+                Assert.True(exitcode == -1);
             }
         }
 
+        /// <summary>
+        /// 测试ProcessRunner运行
+        /// </summary>
         [Fact]
         public void TestProcessRunnerRun()
         {
             using (ProcessRunner pr = new ProcessRunner("cmd", "", ""))
             {
-                //new System.Threading.Thread(() => { System.Threading.Thread.Sleep(1000); pr.Process.Kill(); }).Start();
-                int code = pr.Run("ping 127.0.0.1\nping 127.0.0.1", out string output, out string error);
+                string cmd = "ping 127.0.0.1\nping 127.0.0.1";
+                int exitcode = pr.Run(cmd, out string output, out string error);
 
-                Assert.True(code == 0 && output.IndexOf("127.0.0.1") != -1);
+                Assert.True(exitcode == 0 && output.IndexOf("127.0.0.1") != -1);
             }
         }
     }

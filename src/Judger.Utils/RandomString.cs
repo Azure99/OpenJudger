@@ -40,9 +40,10 @@ namespace Judger.Utils
             Random random = new Random();
             StringBuilder sb = new StringBuilder();
 
-            for (int i = 0; i < length; i++) 
+            for (int i = 0; i < length; i++)
             {
-                sb.Append(_chars[random.Next(0, _chars.Length - 1)]);
+                char chr = _chars[random.Next(0, _chars.Length - 1)];
+                sb.Append(chr);
             }
 
             return sb.ToString();

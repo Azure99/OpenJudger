@@ -5,7 +5,7 @@ using System.Text;
 namespace Judger.Utils
 {
     /// <summary>
-    /// 扩展的 WebClient
+    /// 扩展的 WebClient, 支持自动重试, 限制读写时间, 定义ContentType, Cookie
     /// </summary>
     public class HttpWebClient : WebClient
     {
@@ -43,6 +43,7 @@ namespace Judger.Utils
         {
             int tryCount = 0;
             Exception lastEx = new Exception();
+
             while (tryCount++ < maxTry)
             {
                 try
@@ -68,6 +69,7 @@ namespace Judger.Utils
         {
             int tryCount = 0;
             Exception lastEx = new Exception();
+
             while (tryCount++ < maxTry)
             {
                 try
@@ -187,6 +189,7 @@ namespace Judger.Utils
         {
             int tryCount = 0;
             Exception lastEx = new Exception();
+
             while (tryCount++ < maxTry)
             {
                 try
@@ -205,13 +208,16 @@ namespace Judger.Utils
         protected override WebRequest GetWebRequest(Uri address)
         {
             HttpWebRequest request = (HttpWebRequest)base.GetWebRequest(address);
+
             request.Timeout = Timeout;
             request.ReadWriteTimeout = ReadWriteTimeout;
             request.CookieContainer = CookieContainer;
 
-            if (string.IsNullOrEmpty(request.ContentType)) //如果请求无ContentType
+            //请求无ContentType
+            if (string.IsNullOrEmpty(request.ContentType))
             {
-                if (!string.IsNullOrEmpty(DefaultContentType)) //如果设置了DefaultContentType
+                //设置了DefaultContentType
+                if (!string.IsNullOrEmpty(DefaultContentType))
                 {
                     request.ContentType = DefaultContentType;
                 }

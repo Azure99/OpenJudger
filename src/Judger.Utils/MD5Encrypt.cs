@@ -16,7 +16,7 @@ namespace Judger.Utils
         /// <returns>计算结果</returns>
         public static string EncryptToHexString(string str)
         {
-            if(str == null)
+            if (str == null)
             {
                 str = "";
             }
@@ -28,7 +28,7 @@ namespace Judger.Utils
             }
 
             StringBuilder sb = new StringBuilder();
-            foreach(byte b in res)
+            foreach (byte b in res)
             {
                 sb.Append(b.ToString("x2"));
             }

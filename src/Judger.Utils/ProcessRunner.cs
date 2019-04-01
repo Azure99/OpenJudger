@@ -51,7 +51,7 @@ namespace Judger.Utils
             {
                 Process.StartInfo.Arguments = args;
             }
-            
+
             Process.StartInfo.RedirectStandardInput = true;
             Process.StartInfo.RedirectStandardOutput = true;
             Process.StartInfo.RedirectStandardError = true;
@@ -67,7 +67,7 @@ namespace Judger.Utils
         /// <param name="stdError">重定向的标准错误</param>
         /// <param name="priorityClass">进程优先级</param>
         /// <returns>进程退出码</returns>
-        public int Run(string stdInput, out string stdOutput, out string stdError, 
+        public int Run(string stdInput, out string stdOutput, out string stdError,
                        ProcessPriorityClass priorityClass = ProcessPriorityClass.Normal)
         {
             Process.Start();
@@ -80,12 +80,12 @@ namespace Judger.Utils
             }
 
             Task<string> readOutputTask = new Task<string>(
-                             TryReadStreamToEnd, Process.StandardOutput, 
+                             TryReadStreamToEnd, Process.StandardOutput,
                              TaskCreationOptions.LongRunning);
             readOutputTask.Start();
 
             Task<string> readErrorTask = new Task<string>(
-                             TryReadStreamToEnd, Process.StandardError, 
+                             TryReadStreamToEnd, Process.StandardError,
                              TaskCreationOptions.LongRunning);
             readErrorTask.Start();
 
@@ -105,8 +105,12 @@ namespace Judger.Utils
         {
             Process.Dispose();
         }
-
-
+        
+        /// <summary>
+        /// 尝试调用StreamWriter写入数据
+        /// </summary>
+        /// <param name="writer">StreamWriter</param>
+        /// <param name="data">数据</param>
         private void TryWriteToStream(StreamWriter writer, string data)
         {
             try
@@ -156,7 +160,7 @@ namespace Judger.Utils
             int sumLength = 0;
 
             int len = 0;
-            while ((len = reader.Read(buffer, 0, buffer.Length)) > 0) 
+            while ((len = reader.Read(buffer, 0, buffer.Length)) > 0)
             {
                 sb.Append(buffer, 0, len);
 

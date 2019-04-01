@@ -17,8 +17,11 @@ namespace MainUnitTest
         private const string CONNECTION_STRING = "Server=lo11calhost;Database=judger;User=root;Password=961523404;CharSet=utf8;";
         private const string COMMAND = "SELECT * FROM student";
 
+        /// <summary>
+        /// 创建DbJudge测试数据(临时使用)
+        /// </summary>
         //[Fact]
-        public void Test()
+        public void CreateTestData()
         {
             BaseDbOperator oper = CreateDbOperator();
             oper.ExecuteNonQuery(File.ReadAllText(INPUT_FILE));

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 using Judger.Utils;
 
@@ -8,6 +6,9 @@ namespace MainUnitTest
 {
     public class JsonSerializaerTest
     {
+        /// <summary>
+        /// 测试序列化反序列化功能
+        /// </summary>
         [Fact]
         public void TestSerializer()
         {
@@ -21,18 +22,21 @@ namespace MainUnitTest
             string json = SampleJsonSerializaer.Serialize(classA, typeof(TempTestClass));
             string json2 = SampleJsonSerializaer.Serialize<TempTestClass>(classA);
 
-            Assert.True(json == json2);//序列化是否成功
+            //序列化是否成功
+            Assert.True(json == json2);
 
             TempTestClass classB = SampleJsonSerializaer.DeSerialize(json2, typeof(TempTestClass)) as TempTestClass;
             TempTestClass classC = SampleJsonSerializaer.DeSerialize<TempTestClass>(json);
 
-            Assert.True(Compare(classA, classB) && Compare(classA, classB));//反序列化是否成功
+            //反序列化是否成功
+            Assert.True(Compare(classA, classB) && Compare(classA, classB));
 
             json = json.Replace("NNN", "A");
             classB = SampleJsonSerializaer.DeSerialize<TempTestClass>(json);
             classC = SampleJsonSerializaer.DeSerialize<TempTestClass>(json2);
 
-            Assert.False(Compare(classB, classC));//修改json的情况下是否正确
+            //修改json的情况下是否正确
+            Assert.False(Compare(classB, classC));
         }
 
         private bool Compare(TempTestClass a, TempTestClass b)

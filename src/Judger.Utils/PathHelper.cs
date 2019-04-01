@@ -16,7 +16,7 @@ namespace Judger.Utils
         public static string GetBaseAbsolutePath(string path)
         {
             // 绝对路径不处理
-            if (path.IndexOf(':') != -1 || path.StartsWith('/') || path.StartsWith('\\')) 
+            if (path.IndexOf(':') != -1 || path.StartsWith('/') || path.StartsWith('\\'))
             {
                 return path;
             }
@@ -33,6 +33,7 @@ namespace Judger.Utils
         public static string FindFileIgnoreCase(string directory, string filename)
         {
             string[] files = Directory.GetFiles(directory);
+
             foreach (string file in files)
             {
                 if (Path.GetFileName(file).ToLower() == filename.ToLower())

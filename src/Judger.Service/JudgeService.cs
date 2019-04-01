@@ -11,30 +11,26 @@ namespace Judger.Service
     /// </summary>
     public class JudgeService : IDisposable
     {
-        /// <summary>
-        /// 服务是否在运行
-        /// </summary>
-        public bool Working
-        {
-            get
-            {
-                return _workTimer.Enabled;
-            }
-        }
-
-        /// <summary>
-        /// 并发判题管理器
-        /// </summary>
-        public JudgeController Controller { get; } = new JudgeController();
-
         private readonly Configuration _config = ConfigManager.Config;
-
         private ITaskFetcher _taskFetcher;
         private Timer _workTimer;
 
         // 指示当前OnWork代码段是否正在执行
         private bool _innerWorking = false;
         private object _innerWorkLock = new object();
+
+        /// <summary>
+        /// 服务是否在运行
+        /// </summary>
+        public bool Working
+        {
+            get { return _workTimer.Enabled; }
+        }
+
+        /// <summary>
+        /// 并发判题管理器
+        /// </summary>
+        public JudgeController Controller { get; } = new JudgeController();
 
         /// <summary>
         /// 评测服务
@@ -83,13 +79,14 @@ namespace Judger.Service
                 {
                     System.IO.Directory.Delete(lang.JudgeDirectory, true);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     LogManager.Error("Can not clear temp directory!");
                     LogManager.Exception(ex);
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -104,7 +101,7 @@ namespace Judger.Service
                 return;
             }
 
-            lock(_innerWorkLock)
+            lock (_innerWorkLock)
             {
                 _innerWorking = true;
 
@@ -112,7 +109,7 @@ namespace Judger.Service
                 {
                     FetchJudgeTask();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     LogManager.Exception(ex);
                 }
@@ -132,13 +129,13 @@ namespace Judger.Service
             }
 
             JudgeTask[] tasks = _taskFetcher.Fetch();
-            foreach(var task in tasks)
+            foreach (var task in tasks)
             {
                 Controller.AddTask(task);
             }
 
             // 若当前成功取到任务, 不等待继续尝试取回任务
-            if (tasks.Length > 0) 
+            if (tasks.Length > 0)
             {
                 FetchJudgeTask();
             }

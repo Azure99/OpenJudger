@@ -99,13 +99,13 @@ namespace Judger.Utils
         {
             try//防止无效操作异常
             {
-                if(Process.HasExited)
+                if (Process.HasExited)
                 {
                     Stop();
                     return;
                 }
 
-                if (!CheckTimeCost() || !CheckMemoryCost()) 
+                if (!CheckTimeCost() || !CheckMemoryCost())
                 {
                     Process.Kill();
                 }
@@ -131,7 +131,7 @@ namespace Judger.Utils
 
             return true;
         }
-        
+
         private bool CheckMemoryCost()
         {
             int nowMemoryCost;

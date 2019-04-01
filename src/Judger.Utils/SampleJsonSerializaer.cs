@@ -11,7 +11,7 @@ namespace Judger.Utils
     public static class SampleJsonSerializaer
     {
         private static JsonSerializer _serializer = new JsonSerializer();
-        
+
         static SampleJsonSerializaer()
         {
             _serializer.Formatting = Formatting.Indented;
@@ -22,7 +22,7 @@ namespace Judger.Utils
         /// </summary>
         /// <param name="obj">对象</param>
         /// <param name="type">类型</param>
-        /// <returns>序列化后的Json文本</returns>
+        /// <returns>序列化后的Json字符串</returns>
         public static string Serialize(object obj, Type type)
         {
             StringBuilder sb = new StringBuilder();
@@ -39,7 +39,7 @@ namespace Judger.Utils
         /// </summary>
         /// <typeparam name="T">类型</typeparam>
         /// <param name="obj">对象</param>
-        /// <returns>序列化后的Json文本</returns>
+        /// <returns>序列化后的Json字符串</returns>
         public static string Serialize<T>(T obj)
         {
             StringBuilder sb = new StringBuilder();
@@ -53,7 +53,7 @@ namespace Judger.Utils
         /// <summary>
         /// 反序列化对象
         /// </summary>
-        /// <param name="jsonObject">对象的Json文本</param>
+        /// <param name="jsonObject">对象的Json字符串</param>
         /// <param name="type">类型</param>
         /// <returns>反序列化的对象</returns>
         public static object DeSerialize(string jsonObject, Type type)
@@ -68,7 +68,7 @@ namespace Judger.Utils
         /// 反序列化对象
         /// </summary>
         /// <typeparam name="T">类型</typeparam>
-        /// <param name="jsonObject">Json对象</param>
+        /// <param name="jsonObject">对象的Json字符串</param>
         /// <returns>反序列化后的对象</returns>
         public static T DeSerialize<T>(string jsonObject)
         {
@@ -77,6 +77,6 @@ namespace Judger.Utils
                 return (T)_serializer.Deserialize(sr, typeof(T));
             }
         }
-        
+
     }
 }
