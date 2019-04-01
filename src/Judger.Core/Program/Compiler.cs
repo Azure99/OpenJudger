@@ -33,6 +33,7 @@ namespace Judger.Core.Program
 
                 RuntimeMonitor monitor = new RuntimeMonitor(runner.Process, 50);
                 monitor.TimeLimit = JudgeTask.LangConfig.MaxCompileTime;
+                monitor.TotalTimeLimit = JudgeTask.LangConfig.MaxCompileTime;
 
                 monitor.Start();
 
