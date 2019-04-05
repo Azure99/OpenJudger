@@ -96,7 +96,7 @@ namespace Judger.Core.Database
             MainOperator.CreateUser(_dbUser, _dbPassword);
             MainOperator.GeneratePrivileges(_dbName, _dbUser);
 
-            DbConfiguration dbConfig = DbManager.GetDbConfiguration(JudgeTask.Language);
+            DbLangConfig dbConfig = DbManager.GetDbConfiguration(JudgeTask.Language);
             dbConfig.Database = _dbName;
             dbConfig.User = _dbUser;
             dbConfig.Password = _dbPassword;

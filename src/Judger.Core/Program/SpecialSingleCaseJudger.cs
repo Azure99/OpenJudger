@@ -12,7 +12,9 @@ namespace Judger.Core.Program
     public class SpecialSingleCaseJudger
     {
         public JudgeTask JudgeTask { get; }
+        public ProgramLangConfig LangConfig { get { return JudgeTask.LangConfig as ProgramLangConfig; } }
         public JudgeTask SPJTask { get; }
+        public ProgramLangConfig SPJLangConfig { get { return SPJTask.LangConfig as ProgramLangConfig; } }
 
         private const string SPJ_INPUT_NAME = "input.txt";
         private const string SPJ_OUTPUT_NAME = "output.txt";
@@ -23,11 +25,11 @@ namespace Judger.Core.Program
         /// </summary>
         private const int TOTAL_TIME_LIMIT_TUPLING = 3;
 
-        private LanguageConfiguration _langConfig;
+        private ProgramLangConfig _langConfig;
         public SpecialSingleCaseJudger(JudgeTask judgeTask, JudgeTask spjTask)
         {
             JudgeTask = judgeTask;
-            _langConfig = judgeTask.LangConfig;
+            _langConfig = judgeTask.LangConfig as ProgramLangConfig;
             SPJTask = spjTask;
         }
 
@@ -41,7 +43,7 @@ namespace Judger.Core.Program
             using (ProcessRunner runner = CreateProcessRunner())
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
-                if (JudgeTask.LangConfig.UseUTF8)
+                if (LangConfig.UseUTF8)
                 {
                     runner.Encoding = Encoding.UTF8;
                 }
@@ -131,7 +133,7 @@ namespace Judger.Core.Program
                 };
                 monitor.Start();
 
-                runner.OutputLimit = SPJTask.LangConfig.OutputLimit;
+                runner.OutputLimit = SPJLangConfig.OutputLimit;
                 exitcode = runner.Run("", out string o, out string e, ProcessPriorityClass.RealTime);
                 monitor.Dispose();
             }
@@ -178,9 +180,9 @@ namespace Judger.Core.Program
             string dataArgs = string.Format(" \"{0}\" \"{1}\" \"{2}\"", inputPath, outputPath, userOutputPath);
 
             return new ProcessRunner(
-                SPJTask.LangConfig.RunnerPath,
-                SPJTask.LangConfig.RunnerWorkDirectory,
-                SPJTask.LangConfig.RunnerArgs + dataArgs);
+                SPJLangConfig.RunnerPath,
+                SPJLangConfig.RunnerWorkDirectory,
+                SPJLangConfig.RunnerArgs + dataArgs);
         }
     }
 }

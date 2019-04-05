@@ -68,7 +68,7 @@ namespace Judger.Entity
         /// <summary>
         /// 编程语言配置信息
         /// </summary>
-        public LanguageConfiguration LangConfig { get; set; }
+        public ILangConfig LangConfig { get; set; }
 
         /// <summary>
         /// 判题所用临时目录
@@ -78,7 +78,7 @@ namespace Judger.Entity
         public object Clone()
         {
             JudgeTask task = this.MemberwiseClone() as JudgeTask;
-            task.LangConfig = this.LangConfig.Clone() as LanguageConfiguration;
+            task.LangConfig = this.LangConfig.Clone() as ILangConfig;
             return task as object;
         }
     }

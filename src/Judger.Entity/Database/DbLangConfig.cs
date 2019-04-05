@@ -9,12 +9,17 @@ namespace Judger.Entity
     /// 数据库配置
     /// </summary>
     [Serializable]
-    public class DbConfiguration : ICloneable
+    public class DbLangConfig : ILangConfig
     {
         /// <summary>
         /// 数据库管理系统名称
         /// </summary>
-        public string DbName { get; set; } = DatabaseType.mysql.ToString();
+        public string Name { get; set; } = DatabaseType.mysql.ToString();
+
+        /// <summary>
+        /// 是否为数据库配置
+        /// </summary>
+        public bool IsDbConfig { get; set; } = true;
 
         /// <summary>
         /// 数据库驱动路径

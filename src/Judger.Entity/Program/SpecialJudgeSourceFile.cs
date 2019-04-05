@@ -6,7 +6,7 @@ namespace Judger.Entity
 {
     public class SpecialJudgeSourceFile
     {
-        public LanguageConfiguration LangConfiguration { get; set; }
+        public ProgramLangConfig LangConfiguration { get; set; }
         public string SourceCode { get; set; }
     }
 }

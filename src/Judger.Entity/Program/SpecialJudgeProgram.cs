@@ -12,7 +12,7 @@ namespace Judger.Entity
         /// <summary>
         /// SPJ程序的语言信息
         /// </summary>
-        public LanguageConfiguration LangConfiguration { get; set; }
+        public ProgramLangConfig LangConfiguration { get; set; }
 
         /// <summary>
         /// SPJ程序

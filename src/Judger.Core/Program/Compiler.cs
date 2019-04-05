@@ -12,9 +12,12 @@ namespace Judger.Core.Program
     {
         public JudgeTask JudgeTask { get; set; }
 
+        public ProgramLangConfig LangConfig { get; private set; }
+
         public Compiler(JudgeTask task)
         {
             JudgeTask = task;
+            LangConfig = JudgeTask.LangConfig as ProgramLangConfig;
         }
 
         /// <summary>
@@ -26,14 +29,14 @@ namespace Judger.Core.Program
             using (ProcessRunner runner = CreateProcessRunner())
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
-                if(JudgeTask.LangConfig.UseUTF8)
+                if(LangConfig.UseUTF8)
                 {
                     runner.Encoding = Encoding.UTF8;
                 }
 
                 RuntimeMonitor monitor = new RuntimeMonitor(runner.Process, 50);
-                monitor.TimeLimit = JudgeTask.LangConfig.MaxCompileTime;
-                monitor.TotalTimeLimit = JudgeTask.LangConfig.MaxCompileTime;
+                monitor.TimeLimit = LangConfig.MaxCompileTime;
+                monitor.TotalTimeLimit = LangConfig.MaxCompileTime;
 
                 monitor.Start();
 
@@ -74,9 +77,9 @@ namespace Judger.Core.Program
         private ProcessRunner CreateProcessRunner()
         {
             return new ProcessRunner(
-                JudgeTask.LangConfig.CompilerPath,
-                JudgeTask.LangConfig.CompilerWorkDirectory,
-                JudgeTask.LangConfig.CompilerArgs);
+                LangConfig.CompilerPath,
+                LangConfig.CompilerWorkDirectory,
+                LangConfig.CompilerArgs);
         }
     }
 }

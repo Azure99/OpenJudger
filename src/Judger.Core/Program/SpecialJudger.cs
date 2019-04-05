@@ -15,9 +15,12 @@ namespace Judger.Core.Program
         /// </summary>
         private JudgeTask SPJTask;
 
+        private ProgramLangConfig LangConfig{ get; set; }
+
         public SpecialJudger(JudgeTask task) : base(task)
         {
             JudgeTask.ProcessorAffinity = ProcessorAffinityManager.GetUseage();
+            LangConfig = JudgeTask.LangConfig as ProgramLangConfig;
             SPJTask = SPJManager.CreateSPJJudgeTask(task);
         }
 
@@ -50,11 +53,11 @@ namespace Judger.Core.Program
             BuildSpecialJudgeProgram();
 
             //写出源代码
-            string sourceFileName = JudgeTask.TempJudgeDirectory + Path.DirectorySeparatorChar + JudgeTask.LangConfig.SourceCodeFileName;
+            string sourceFileName = JudgeTask.TempJudgeDirectory + Path.DirectorySeparatorChar + LangConfig.SourceCodeFileName;
             File.WriteAllText(sourceFileName, JudgeTask.SourceCode);
 
             //编译代码
-            if (JudgeTask.LangConfig.NeedCompile)
+            if (LangConfig.NeedCompile)
             {
                 Compiler compiler = new Compiler(JudgeTask);
                 string compileRes = compiler.Compile();
@@ -91,7 +94,7 @@ namespace Judger.Core.Program
                     SingleJudgeResult singleRes = judger.Judge(input, output);//测试此测试点
 
                     //计算有时间补偿的总时间
-                    result.TimeCost = Math.Max(result.TimeCost, (int)(singleRes.TimeCost * JudgeTask.LangConfig.TimeCompensation));
+                    result.TimeCost = Math.Max(result.TimeCost, (int)(singleRes.TimeCost * LangConfig.TimeCompensation));
                     result.MemoryCost = Math.Max(result.MemoryCost, singleRes.MemoryCost);
 
                     if (singleRes.ResultCode == JudgeResultCode.Accepted)
@@ -132,10 +135,10 @@ namespace Judger.Core.Program
         private void BuildSpecialJudgeProgram()
         {
             File.WriteAllText(
-                Path.Combine(SPJTask.TempJudgeDirectory, SPJTask.LangConfig.SourceCodeFileName), 
+                Path.Combine(SPJTask.TempJudgeDirectory, LangConfig.SourceCodeFileName), 
                 SPJTask.SourceCode);
 
-            if (SPJTask.LangConfig.NeedCompile)
+            if (LangConfig.NeedCompile)
             {
                 //构建SPJ程序
                 if (TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemID) == null)
@@ -165,7 +168,7 @@ namespace Judger.Core.Program
             }
 
             string spjProgramPath =
-                Path.Combine(SPJTask.TempJudgeDirectory, SPJTask.LangConfig.ProgramFileName);
+                Path.Combine(SPJTask.TempJudgeDirectory, LangConfig.ProgramFileName);
 
             if (!File.Exists(spjProgramPath))
             {
@@ -174,7 +177,7 @@ namespace Judger.Core.Program
 
             SpecialJudgeProgram spjProgram = new SpecialJudgeProgram
             {
-                LangConfiguration = SPJTask.LangConfig,
+                LangConfiguration = LangConfig,
                 Program = File.ReadAllBytes(spjProgramPath)
             };
 

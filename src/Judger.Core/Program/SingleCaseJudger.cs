@@ -15,17 +15,19 @@ namespace Judger.Core.Program
     {
         public JudgeTask JudgeTask { get; set; }
 
+        public ProgramLangConfig LangConfig { get { return JudgeTask.LangConfig as ProgramLangConfig; } }
+
         /// <summary>
         /// 最大总时间为CPU总时间的倍数
         /// </summary>
         private const int TOTAL_TIME_LIMIT_TUPLING = 3;
 
-        private LanguageConfiguration _langConfig;
+        private ProgramLangConfig _langConfig;
 
         public SingleCaseJudger(JudgeTask task)
         {
             JudgeTask = task;
-            _langConfig = task.LangConfig;
+            _langConfig = task.LangConfig as ProgramLangConfig;
         }
 
         public SingleJudgeResult Judge(string input, string output)
@@ -38,7 +40,7 @@ namespace Judger.Core.Program
             using (ProcessRunner runner = CreateProcessRunner())
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
-                if (JudgeTask.LangConfig.UseUTF8)
+                if (LangConfig.UseUTF8)
                 {
                     runner.Encoding = Encoding.UTF8;
                 }

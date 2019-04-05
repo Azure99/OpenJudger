@@ -97,13 +97,13 @@ namespace Judger.Entity
         /// <summary>
         /// 语言(编译/运行)配置
         /// </summary>
-        public LanguageConfiguration[] Languages { get; set; } = 
-            new LanguageConfiguration[]{ new LanguageConfiguration() };
+        public ProgramLangConfig[] Languages { get; set; } = 
+            new ProgramLangConfig[]{ new ProgramLangConfig() };
 
         /// <summary>
         /// 数据库配置
         /// </summary>
-        public DbConfiguration[] Databases { get; set; } =
-            new DbConfiguration[] { new DbConfiguration() };
+        public DbLangConfig[] Databases { get; set; } =
+            new DbLangConfig[] { new DbLangConfig() };
     }
 }

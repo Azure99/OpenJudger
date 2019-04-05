@@ -16,7 +16,7 @@ namespace Judger.Core.Database.Internal
         {
             if (dbName == DatabaseType.mysql.ToString())
             {
-                DbConfiguration config = DbManager.GetDbConfiguration(dbName);
+                DbLangConfig config = DbManager.GetDbConfiguration(dbName);
                 return Create(config);
             }
             else
@@ -30,18 +30,18 @@ namespace Judger.Core.Database.Internal
         /// </summary>
         /// <param name="dbConfig">数据库配置</param>
         /// <returns>数据库操作器</returns>
-        public static BaseDbOperator Create(DbConfiguration dbConfig)
+        public static BaseDbOperator Create(DbLangConfig dbConfig)
         {
             string connString = dbConfig.ConnectionString;
             DbDriver driver = DbDriverLoader.Load(dbConfig.DriverPath);
 
-            if (dbConfig.DbName == DatabaseType.mysql.ToString()) 
+            if (dbConfig.Name == DatabaseType.mysql.ToString()) 
             {
                 return new MySQL5xOperator(connString, driver);
             }
             else
             {
-                throw new NotImplementedException("Db operator not implemented: " + dbConfig.DbName);
+                throw new NotImplementedException("Db operator not implemented: " + dbConfig.Name);
             }
         }
     }

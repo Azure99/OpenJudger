@@ -147,7 +147,7 @@ namespace Judger.Fetcher.HUSTOJ
         {
             HashSet<string> extensionSet = new HashSet<string>();
 
-            foreach (LanguageConfiguration lang in Config.Languages)
+            foreach (ProgramLangConfig lang in Config.Languages)
             {
                 string[] extensions = lang.SourceCodeFileExtension.Split('|');
                 foreach (string ext in extensions)

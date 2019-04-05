@@ -6,12 +6,17 @@ namespace Judger.Entity
     /// 语言配置信息
     /// </summary>
     [Serializable]
-    public class LanguageConfiguration : ICloneable
+    public class ProgramLangConfig : ILangConfig
     {
         /// <summary>
         /// 语言名称
         /// </summary>
-        public string Language { get; set; } = "cpp";
+        public string Name { get; set; } = "cpp";
+
+        /// <summary>
+        /// 是否为数据库配置
+        /// </summary>
+        public bool IsDbConfig { get; set; } = false;
 
         /// <summary>
         /// 是否需要编译(脚本语言不需要)

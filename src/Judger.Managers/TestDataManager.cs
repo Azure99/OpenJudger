@@ -228,7 +228,7 @@ namespace Judger.Managers
                 return null;
             }
 
-            LanguageConfiguration langConfig = SPJManager.GetLangConfigBySourceFilePath(sourceFilePath);
+            ProgramLangConfig langConfig = SPJManager.GetLangConfigBySourceFilePath(sourceFilePath);
             if (langConfig == null)
             {
                 return null;
@@ -276,7 +276,7 @@ namespace Judger.Managers
                     return null;
                 }
 
-                LanguageConfiguration langConfig = SPJManager.GetLangConfigByProgramPath(programPath);
+                ProgramLangConfig langConfig = SPJManager.GetLangConfigByProgramPath(programPath);
                 if (langConfig == null)
                 {
                     return null;

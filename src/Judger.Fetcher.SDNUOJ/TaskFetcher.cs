@@ -37,11 +37,11 @@ namespace Judger.Fetcher.SDNUOJ
             StringBuilder langBuilder = new StringBuilder();
             foreach (var lang in Config.Languages)
             {
-                langBuilder.Append(lang.Language + "[],");
+                langBuilder.Append(lang.Name + "[],");
             }
             foreach (var lang in Config.Databases)
             {
-                langBuilder.Append(lang.DbName + "[],");
+                langBuilder.Append(lang.Name + "[],");
             }
             langBuilder.Remove(langBuilder.Length - 1, 1);
 

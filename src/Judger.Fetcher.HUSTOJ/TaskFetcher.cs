@@ -72,7 +72,7 @@ namespace Judger.Fetcher.HUSTOJ
             bodyBuilder.Append("oj_lang_set=");
             foreach(var lang in Config.Languages)
             {
-                bodyBuilder.Append(lang.Language + ",");
+                bodyBuilder.Append(lang.Name + ",");
             }
             bodyBuilder.Remove(bodyBuilder.Length - 1, 1);
             bodyBuilder.Append("&");

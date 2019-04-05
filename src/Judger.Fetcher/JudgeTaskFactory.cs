@@ -30,34 +30,38 @@ namespace Judger.Fetcher
                                        string author = "", int timeLimit = 1000, int memoryLimit = 262144, 
                                        bool judgeAllCases = false, bool specialJudge = false, bool dbJudge = false)
         {
-            LanguageConfiguration langConfig = ConfigManager.GetLanguageConfig(language);
+            ILangConfig langConfig = ConfigManager.GetLanguageConfig(language);
 
             // 分配评测临时目录
             string tempDirectory = RandomString.Next(16);
             
-            if (langConfig != null && dbJudge == false)
+            if (langConfig is ProgramLangConfig)
             {
-                tempDirectory = GetTempDirectory(langConfig.JudgeDirectory);
+                ProgramLangConfig langcfg = langConfig as ProgramLangConfig;
+
+                tempDirectory = GetTempDirectory(langcfg.JudgeDirectory);
                 if (!Directory.Exists(tempDirectory))
                 {
                     Directory.CreateDirectory(tempDirectory);
                     // 替换<tempdir>字段
-                    langConfig.CompilerPath = langConfig.CompilerPath.Replace("<tempdir>", tempDirectory);
-                    langConfig.CompilerWorkDirectory = langConfig.CompilerWorkDirectory.Replace("<tempdir>", tempDirectory);
-                    langConfig.CompilerArgs = langConfig.CompilerArgs.Replace("<tempdir>", tempDirectory);
-                    langConfig.RunnerPath = langConfig.RunnerPath.Replace("<tempdir>", tempDirectory);
-                    langConfig.RunnerWorkDirectory = langConfig.RunnerWorkDirectory.Replace("<tempdir>", tempDirectory);
-                    langConfig.RunnerArgs = langConfig.RunnerArgs.Replace("<tempdir>", tempDirectory);
+                    langcfg.CompilerPath = langcfg.CompilerPath.Replace("<tempdir>", tempDirectory);
+                    langcfg.CompilerWorkDirectory = langcfg.CompilerWorkDirectory.Replace("<tempdir>", tempDirectory);
+                    langcfg.CompilerArgs = langcfg.CompilerArgs.Replace("<tempdir>", tempDirectory);
+                    langcfg.RunnerPath = langcfg.RunnerPath.Replace("<tempdir>", tempDirectory);
+                    langcfg.RunnerWorkDirectory = langcfg.RunnerWorkDirectory.Replace("<tempdir>", tempDirectory);
+                    langcfg.RunnerArgs = langcfg.RunnerArgs.Replace("<tempdir>", tempDirectory);
 
                     // 使用绝对路径
-                    langConfig.CompilerPath = PathHelper.GetBaseAbsolutePath(langConfig.CompilerPath);
-                    langConfig.CompilerWorkDirectory = PathHelper.GetBaseAbsolutePath(langConfig.CompilerWorkDirectory);
-                    langConfig.RunnerWorkDirectory = PathHelper.GetBaseAbsolutePath(langConfig.RunnerWorkDirectory);
-                    langConfig.RunnerPath = PathHelper.GetBaseAbsolutePath(langConfig.RunnerPath);
+                    langcfg.CompilerPath = PathHelper.GetBaseAbsolutePath(langcfg.CompilerPath);
+                    langcfg.CompilerWorkDirectory = PathHelper.GetBaseAbsolutePath(langcfg.CompilerWorkDirectory);
+                    langcfg.RunnerWorkDirectory = PathHelper.GetBaseAbsolutePath(langcfg.RunnerWorkDirectory);
+                    langcfg.RunnerPath = PathHelper.GetBaseAbsolutePath(langcfg.RunnerPath);
                 }
             }
 
-            double timeCompensation = langConfig != null ? langConfig.TimeCompensation : 1;
+            double timeCompensation = langConfig is ProgramLangConfig ? 
+                                      (langConfig as ProgramLangConfig).TimeCompensation :
+                                      1;
 
             JudgeTask task = new JudgeTask
             {

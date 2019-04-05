@@ -17,16 +17,19 @@ namespace Judger.Managers
         static ConfigManager()
         {
             FileHelper.TryReadAllText("Config.json", out string configJson);
+
             if(string.IsNullOrEmpty(configJson))//创建新配置文件
             {
                 Config = new Configuration();
                 Config.Password = RandomString.Next(16);
                 Config.AdditionalConfig.Add("SampleKey", "SampleValue");
-                SaveConfig();
-                return;
             }
-
-            Config = SampleJsonSerializaer.DeSerialize<Configuration>(configJson);
+            else
+            {
+                Config = SampleJsonSerializaer.DeSerialize<Configuration>(configJson);
+            }
+            
+            SetIsDbConfigField();
             SaveConfig();
         }
 
@@ -39,18 +42,43 @@ namespace Judger.Managers
         }
 
         /// <summary>
+        /// 设置语言配置中的IsDbConfig字段
+        /// </summary>
+        private static void SetIsDbConfigField()
+        {
+            foreach (ILangConfig item in Config.Languages)
+            {
+                item.IsDbConfig = false;
+            }
+
+            foreach (ILangConfig item in Config.Databases)
+            {
+                item.IsDbConfig = true;
+            }
+        }
+
+        /// <summary>
         /// 获取语言配置信息
         /// </summary>
         /// <param name="languageName">语言名称</param>
         /// <returns>语言对应的配置信息</returns>
-        public static LanguageConfiguration GetLanguageConfig(string languageName)
+        public static ILangConfig GetLanguageConfig(string languageName)
         {
-            LanguageConfiguration[] configs = Config.Languages;
-            foreach(var item in configs)
+            ProgramLangConfig[] programConfigs = Config.Languages;
+            foreach(var item in programConfigs)
             {
-                if(item.Language == languageName)
+                if(item.Name == languageName)
                 {
-                    return item.Clone() as LanguageConfiguration;
+                    return item.Clone() as ProgramLangConfig;
+                }
+            }
+
+            DbLangConfig[] dbConfigs = Config.Databases;
+            foreach (var item in dbConfigs)
+            {
+                if(item.Name == languageName)
+                {
+                    return item.Clone() as DbLangConfig;
                 }
             }
 
@@ -62,27 +90,27 @@ namespace Judger.Managers
             return GetLanguageConfig(languageName) != null;
         }
 
-        public static Dictionary<string, LanguageConfiguration> GetLanguageDictionary()
+        public static Dictionary<string, ProgramLangConfig> GetLanguageDictionary()
         {
-            Dictionary<string, LanguageConfiguration> langDic = new Dictionary<string, LanguageConfiguration>();
+            Dictionary<string, ProgramLangConfig> langDic = new Dictionary<string, ProgramLangConfig>();
 
-            LanguageConfiguration[] languages = ConfigManager.Config.Languages;
+            ProgramLangConfig[] languages = ConfigManager.Config.Languages;
             foreach (var lang in languages)
             {
-                if (!langDic.ContainsKey(lang.Language))
+                if (!langDic.ContainsKey(lang.Name))
                 {
-                    langDic.Add(lang.Language, lang.Clone() as LanguageConfiguration);
+                    langDic.Add(lang.Name, lang.Clone() as ProgramLangConfig);
                 }
             }
 
             return langDic;
         }
 
-        public static Dictionary<string, LanguageConfiguration> GetLangSourceExtensionDictionary()
+        public static Dictionary<string, ProgramLangConfig> GetLangSourceExtensionDictionary()
         {
-            Dictionary<string, LanguageConfiguration> extDic = new Dictionary<string, LanguageConfiguration>();
+            Dictionary<string, ProgramLangConfig> extDic = new Dictionary<string, ProgramLangConfig>();
 
-            LanguageConfiguration[] languages = ConfigManager.Config.Languages;
+            ProgramLangConfig[] languages = ConfigManager.Config.Languages;
             foreach (var lang in languages)
             {
                 string[] extensions = lang.SourceCodeFileExtension.Split('|');
@@ -90,14 +118,14 @@ namespace Judger.Managers
                 {
                     if (!extDic.ContainsKey(ex))
                     {
-                        extDic.Add(ex, lang.Clone() as LanguageConfiguration);
+                        extDic.Add(ex, lang.Clone() as ProgramLangConfig);
                     }
                     else
                     {
                         LogManager.Warning(
                             "Source file extension conflict!" + Environment.NewLine +
                             "Extension: " + ex + Environment.NewLine +
-                            "Languages: " + lang.Language + ", " + extDic[ex].Language);
+                            "Languages: " + lang.Name + ", " + extDic[ex].Name);
                     }
                 }
             }
