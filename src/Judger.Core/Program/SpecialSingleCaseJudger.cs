@@ -11,6 +11,16 @@ namespace Judger.Core.Program
 {
     public class SpecialSingleCaseJudger
     {
+        /// <summary>
+        /// 最大总时间为CPU总时间的倍数
+        /// </summary>
+        private const int TOTAL_TIME_LIMIT_TUPLING = 5;
+
+        /// <summary>
+        /// 总时间限制x倍数的最小值
+        /// </summary>
+        private const int MIN_TOTAL_TIME_LIMIT = 20000;
+
         public JudgeTask JudgeTask { get; }
         public ProgramLangConfig LangConfig { get { return JudgeTask.LangConfig as ProgramLangConfig; } }
         public JudgeTask SPJTask { get; }
@@ -19,11 +29,6 @@ namespace Judger.Core.Program
         private const string SPJ_INPUT_NAME = "input.txt";
         private const string SPJ_OUTPUT_NAME = "output.txt";
         private const string SPJ_USEROUTPUT_NAME = "user.txt";
-
-        /// <summary>
-        /// 最大总时间为CPU总时间的倍数
-        /// </summary>
-        private const int TOTAL_TIME_LIMIT_TUPLING = 3;
 
         private ProgramLangConfig _langConfig;
         public SpecialSingleCaseJudger(JudgeTask judgeTask, JudgeTask spjTask)
@@ -49,10 +54,11 @@ namespace Judger.Core.Program
                 }
 
                 // 创建监视器
+                int totalTimeLimit = Math.Max(JudgeTask.TimeLimit * TOTAL_TIME_LIMIT_TUPLING, MIN_TOTAL_TIME_LIMIT);
                 monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval)
                 {
                     TimeLimit = JudgeTask.TimeLimit,
-                    TotalTimeLimit = JudgeTask.TimeLimit * TOTAL_TIME_LIMIT_TUPLING,
+                    TotalTimeLimit = totalTimeLimit,
                     MemoryLimit = JudgeTask.MemoryLimit
                 };
                 monitor.Start();
