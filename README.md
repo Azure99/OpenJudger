@@ -5,7 +5,7 @@
 
 ## Introduction
 OpenJudger is a universal program judger designed to simplify Online Judge System development.<br>
-It is now used to judge solutions on the [SDNUOJ](http://www.acmicpc.sdnu.edu.cn/).
+It is now used to judge solutions on the [SDNUOJ](http://www.acmicpc.sdnu.edu.cn/) and [itoI](http://itoi.cf/).
 
 ## Overview
 * Based on .Net Core: cross platform.
