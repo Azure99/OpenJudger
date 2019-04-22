@@ -90,6 +90,7 @@ namespace Judger.Utils
         /// </summary>
         /// <param name="address">地址</param>
         /// <param name="data">Post发送的数据</param>
+        /// <param name="result">响应结果</param>
         /// <returns>是否成功</returns>
         public bool TryUploadString(string address, string data, out string result)
         {
@@ -111,6 +112,7 @@ namespace Judger.Utils
         /// <param name="address">地址</param>
         /// <param name="data">Post发送的数据</param>
         /// <param name="maxTry">最大尝试次数</param>
+        /// <param name="result">响应结果</param>
         /// <returns>是否成功</returns>
         public bool TryUploadString(string address, string data, int maxTry, out string result)
         {

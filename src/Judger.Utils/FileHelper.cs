@@ -12,7 +12,7 @@ namespace Judger.Utils
         /// 尝试读取文件文本
         /// </summary>
         /// <param name="path">文件路径</param>
-        /// <param name="text">文本内容</param>
+        /// <param name="contents">文本内容</param>
         /// <returns>是否成功</returns>
         public static bool TryReadAllText(string path, out string contents)
         {
@@ -32,7 +32,7 @@ namespace Judger.Utils
         /// 尝试写出文本文件
         /// </summary>
         /// <param name="path">文件路径</param>
-        /// <param name="text">欲写入的文本</param>
+        /// <param name="contents">欲写入的文本</param>
         /// <returns>是否成功</returns>
         public static bool TryWriteAllText(string path, string contents)
         {
