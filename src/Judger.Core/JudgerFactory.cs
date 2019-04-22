@@ -17,17 +17,12 @@ namespace Judger.Core
         /// <returns>Judger实例</returns>
         public static BaseJudger Create(JudgeTask task)
         {
-            if(task.DbJudge)
+            switch (task.JudgeType)
             {
-                return new DbJudger(task);
-            }
-            else if(task.SpecialJudge)
-            {
-                return new SpecialJudger(task);
-            }
-            else
-            {
-                return new ProgramJudger(task);
+                case JudgeType.ProgramJudge: return new ProgramJudger(task);
+                case JudgeType.SpecialJudge: return new SpecialJudger(task);
+                case JudgeType.DbJudge: return new DbJudger(task);
+                default: throw new JudgeException("Unknown JudgeType!");
             }
         }
     }

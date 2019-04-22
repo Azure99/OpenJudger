@@ -50,7 +50,7 @@ namespace Judger.Fetcher.Generic
             JudgeTask task = JudgeTaskFactory.Create(
                 tempTask.SubmitID, tempTask.ProblemID, tempTask.DataVersion,
                 tempTask.Language, tempTask.SourceCode, tempTask.Author,
-                tempTask.TimeLimit, tempTask.MemoryLimit, tempTask.SpecialJudge);
+                tempTask.TimeLimit, tempTask.MemoryLimit, tempTask.JudgeAllCases, tempTask.JudgeType);
 
             return new JudgeTask[1] { task };
         }

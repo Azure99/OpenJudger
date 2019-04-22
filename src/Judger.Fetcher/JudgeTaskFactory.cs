@@ -11,6 +11,7 @@ namespace Judger.Fetcher
     /// </summary>
     public static class JudgeTaskFactory
     {
+        
         /// <summary>
         /// 创建JudgeTask实例
         /// </summary>
@@ -29,6 +30,37 @@ namespace Judger.Fetcher
         public static JudgeTask Create(int submitID, int problemID, string dataVersion, string language, string sourceCode,
                                        string author = "", int timeLimit = 1000, int memoryLimit = 262144, 
                                        bool judgeAllCases = false, bool specialJudge = false, bool dbJudge = false)
+        {
+            JudgeType judgeType = JudgeType.ProgramJudge;
+            if (dbJudge)
+            {
+                judgeType = JudgeType.DbJudge;
+            }
+            else if (specialJudge)
+            {
+                judgeType = JudgeType.SpecialJudge;
+            }
+            
+            return Create(submitID, problemID, dataVersion, language, sourceCode, author, timeLimit, memoryLimit, judgeAllCases, judgeType);
+        }
+       
+        /// <summary>
+        /// 创建JudgeTask实例
+        /// </summary>
+        /// <param name="submitID">提交ID</param>
+        /// <param name="problemID">问题ID</param>
+        /// <param name="dataVersion">测试数据版本</param>
+        /// <param name="language">语言</param>
+        /// <param name="sourceCode">源代码</param>
+        /// <param name="author">作者</param>
+        /// <param name="timeLimit">时间限制</param>
+        /// <param name="memoryLimit">内存限制</param>
+        /// <param name="judgeAllCases">是否评测全部样例(即使遇到错误答案)</param>
+        /// <param name="judgeType">评测类型</param>
+        /// <returns>JudgeTask实例</returns>
+        public static JudgeTask Create(int submitID, int problemID, string dataVersion, string language, string sourceCode,
+                                       string author = "", int timeLimit = 1000, int memoryLimit = 262144, 
+                                       bool judgeAllCases = false, JudgeType judgeType = JudgeType.ProgramJudge)
         {
             ILangConfig langConfig = ConfigManager.GetLanguageConfig(language);
 
@@ -74,8 +106,7 @@ namespace Judger.Fetcher
                 TimeLimit = (int)(timeLimit / timeCompensation),
                 MemoryLimit = memoryLimit,
                 JudgeAllCases = judgeAllCases,
-                SpecialJudge = specialJudge,
-                DbJudge = dbJudge,
+                JudgeType = judgeType,
                 LangConfig = langConfig,
                 TempJudgeDirectory = tempDirectory
             };

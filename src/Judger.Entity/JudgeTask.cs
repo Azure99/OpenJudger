@@ -46,14 +46,9 @@ namespace Judger.Entity
         public bool JudgeAllCases { get; set; } = false;
 
         /// <summary>
-        /// 是否为SpecialJudge
+        /// 评测类型
         /// </summary>
-        public bool SpecialJudge { get; set; } = false;
-
-        /// <summary>
-        /// 是否为数据库评测
-        /// </summary>
-        public bool DbJudge { get; set; } = false;
+        public JudgeType JudgeType { get; set; } = JudgeType.ProgramJudge;
 
         /// <summary>
         /// 源代码
