@@ -1,7 +1,6 @@
-﻿using System;
-using Judger.Entity;
+﻿using Judger.Entity;
 
-namespace Judger.Core.Program.Entity
+namespace Judger.Core.Program.Internal.Entity
 {
     /// <summary>
     /// 单例Judge结果

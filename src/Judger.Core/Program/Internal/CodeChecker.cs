@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using Judger.Entity;
 using Judger.Managers;
 
-namespace Judger.Core.Program
+namespace Judger.Core.Program.Internal
 {
     /// <summary>
     /// 基于正则的恶意代码检查器

@@ -2,9 +2,10 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Judger.Core.Program.Internal;
+using Judger.Core.Program.Internal.Entity;
 using Judger.Entity;
 using Judger.Managers;
-using Judger.Core.Program.Entity;
 
 namespace Judger.Core.Program
 {

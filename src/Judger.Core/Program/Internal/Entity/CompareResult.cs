@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Judger.Core.Program.Entity
+﻿namespace Judger.Core.Program.Internal.Entity
 {
     /// <summary>
     /// 对比结果

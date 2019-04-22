@@ -3,7 +3,7 @@ using System.Text;
 using Judger.Entity;
 using Judger.Utils;
 
-namespace Judger.Core.Program
+namespace Judger.Core.Program.Internal
 {
     /// <summary>
     /// 程序编译器

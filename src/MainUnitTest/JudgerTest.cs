@@ -1,7 +1,8 @@
 ﻿using System;
 using Xunit;
 using Judger.Core.Program;
-using Judger.Core.Program.Entity;
+using Judger.Core.Program.Internal;
+using Judger.Core.Program.Internal.Entity;
 
 namespace MainUnitTest
 {

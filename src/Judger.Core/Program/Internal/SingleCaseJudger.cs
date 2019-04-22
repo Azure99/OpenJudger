@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
+using Judger.Core.Program.Internal.Entity;
 using Judger.Entity;
-using Judger.Core.Program.Entity;
 using Judger.Managers;
 using Judger.Utils;
 
-namespace Judger.Core.Program
+namespace Judger.Core.Program.Internal
 {
     /// <summary>
     /// 单例Judger

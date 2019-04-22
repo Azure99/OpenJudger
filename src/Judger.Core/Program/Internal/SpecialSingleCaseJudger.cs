@@ -2,12 +2,12 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using Judger.Core.Program.Entity;
+using Judger.Core.Program.Internal.Entity;
 using Judger.Entity;
 using Judger.Managers;
 using Judger.Utils;
 
-namespace Judger.Core.Program
+namespace Judger.Core.Program.Internal
 {
     public class SpecialSingleCaseJudger
     {
