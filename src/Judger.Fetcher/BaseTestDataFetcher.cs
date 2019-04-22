@@ -1,5 +1,4 @@
-﻿using System;
-using Judger.Entity;
+﻿using Judger.Entity;
 using Judger.Managers;
 using Judger.Utils;
 

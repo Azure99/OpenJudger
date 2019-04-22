@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Judger.Entity;
+using Judger.Entity.Database;
+using Judger.Entity.Program;
 using Judger.Utils;
 
 namespace Judger.Managers
@@ -38,7 +40,7 @@ namespace Judger.Managers
         /// </summary>
         public static void SaveConfig()
         {
-            FileHelper.TryWriteAllText("Config.json", SampleJsonSerializaer.Serialize<Configuration>(Config));
+            FileHelper.TryWriteAllText("Config.json", SampleJsonSerializaer.Serialize(Config));
         }
 
         /// <summary>
@@ -94,7 +96,7 @@ namespace Judger.Managers
         {
             Dictionary<string, ProgramLangConfig> langDic = new Dictionary<string, ProgramLangConfig>();
 
-            ProgramLangConfig[] languages = ConfigManager.Config.Languages;
+            ProgramLangConfig[] languages = Config.Languages;
             foreach (var lang in languages)
             {
                 if (!langDic.ContainsKey(lang.Name))
@@ -110,7 +112,7 @@ namespace Judger.Managers
         {
             Dictionary<string, ProgramLangConfig> extDic = new Dictionary<string, ProgramLangConfig>();
 
-            ProgramLangConfig[] languages = ConfigManager.Config.Languages;
+            ProgramLangConfig[] languages = Config.Languages;
             foreach (var lang in languages)
             {
                 string[] extensions = lang.SourceCodeFileExtension.Split('|');

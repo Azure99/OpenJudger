@@ -1,5 +1,4 @@
-﻿using System;
-using Judger.Entity;
+﻿using Judger.Entity;
 
 namespace Judger.Fetcher.SDNUOJ
 {
@@ -34,16 +33,16 @@ namespace Judger.Fetcher.SDNUOJ
                 case JudgeResultCode.WrongAnswer: resultCode = 8; break;
             }
 
-            int sid = result.SubmitID;
+            int sid = result.SubmitId;
             string detail = result.JudgeDetail;
             int timeCost = result.TimeCost;
             int memCost = result.MemoryCost;
-            int pid = result.ProblemID;
+            int pid = result.ProblemId;
             string username = result.Author;
             string body = string.Format("sid={0}&resultcode={1}&detail={2}&timecost={3}&memorycost={4}&pid={5}&username={6}",
                                           sid, resultCode, detail, timeCost, memCost, pid, username);
 
-            return body.ToString();
+            return body;
         }
     }
 }

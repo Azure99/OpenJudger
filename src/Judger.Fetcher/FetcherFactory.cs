@@ -16,9 +16,9 @@ namespace Judger.Fetcher
         private static Configuration _config = ConfigManager.Config;
         static FetcherFactory()
         {
-            LogManager.Info("Load fetcher: " + _config.FetcherDLLPath);
+            LogManager.Info("Load fetcher: " + _config.FetcherDllPath);
 
-            string dllPath = Path.GetFullPath(_config.FetcherDLLPath);
+            string dllPath = Path.GetFullPath(_config.FetcherDllPath);
             _fetcherAssembly = Assembly.LoadFile(dllPath);
         }
 

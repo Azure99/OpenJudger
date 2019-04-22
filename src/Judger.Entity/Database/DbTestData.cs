@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Judger.Entity
+﻿namespace Judger.Entity.Database
 {
     /// <summary>
     /// 数据库测试数据

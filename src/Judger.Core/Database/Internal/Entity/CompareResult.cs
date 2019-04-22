@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Judger.Core.Database.Internal.Entity
+﻿namespace Judger.Core.Database.Internal.Entity
 {
     public enum CompareResult
     {

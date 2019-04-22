@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Xunit;
 using Judger.Utils;
 
@@ -13,7 +12,7 @@ namespace MainUnitTest
         [Fact]
         public void TestProcessRunnerKill()
         {
-            using (ProcessRunner pr = new ProcessRunner("cmd", "", ""))
+            using (ProcessRunner pr = new ProcessRunner("cmd"))
             {
                 new Thread(() =>
                 {
@@ -32,7 +31,7 @@ namespace MainUnitTest
         [Fact]
         public void TestProcessRunnerRun()
         {
-            using (ProcessRunner pr = new ProcessRunner("cmd", "", ""))
+            using (ProcessRunner pr = new ProcessRunner("cmd"))
             {
                 string cmd = "ping 127.0.0.1\nping 127.0.0.1";
                 int exitcode = pr.Run(cmd, out string output, out string error);

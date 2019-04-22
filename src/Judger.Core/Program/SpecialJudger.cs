@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Judger.Core.Program.Internal;
 using Judger.Core.Program.Internal.Entity;
 using Judger.Entity;
+using Judger.Entity.Program;
 using Judger.Managers;
 
 namespace Judger.Core.Program
@@ -22,7 +23,7 @@ namespace Judger.Core.Program
         {
             JudgeTask.ProcessorAffinity = ProcessorAffinityManager.GetUseage();
             LangConfig = JudgeTask.LangConfig as ProgramLangConfig;
-            SPJTask = SPJManager.CreateSPJJudgeTask(task);
+            SPJTask = SpjManager.CreateSpjJudgeTask(task);
         }
 
         public override JudgeResult Judge()
@@ -30,8 +31,8 @@ namespace Judger.Core.Program
             //判题结果
             JudgeResult result = new JudgeResult
             {
-                SubmitID = JudgeTask.SubmitID,
-                ProblemID = JudgeTask.ProblemID,
+                SubmitId = JudgeTask.SubmitId,
+                ProblemId = JudgeTask.ProblemId,
                 Author = JudgeTask.Author,
                 JudgeDetail = "",
                 MemoryCost = 0,
@@ -76,7 +77,7 @@ namespace Judger.Core.Program
             SpecialSingleCaseJudger judger = new SpecialSingleCaseJudger(JudgeTask, SPJTask);
 
             //获取所有测试点文件名
-            Tuple<string, string>[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemID);
+            Tuple<string, string>[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemId);
             if (dataFiles.Length == 0)//无测试数据
             {
                 result.ResultCode = JudgeResultCode.JudgeFailed;
@@ -90,7 +91,7 @@ namespace Judger.Core.Program
             {
                 try
                 {
-                    TestDataManager.GetTestData(JudgeTask.ProblemID, dataFiles[i].Item1, dataFiles[i].Item2, out string input, out string output);//读入测试数据
+                    TestDataManager.GetTestData(JudgeTask.ProblemId, dataFiles[i].Item1, dataFiles[i].Item2, out string input, out string output);//读入测试数据
 
                     SingleJudgeResult singleRes = judger.Judge(input, output);//测试此测试点
 
@@ -142,7 +143,7 @@ namespace Judger.Core.Program
             if (LangConfig.NeedCompile)
             {
                 //构建SPJ程序
-                if (TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemID) == null)
+                if (TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemId) == null)
                 {
                     if (!CompileSpecialJudgeProgram())
                     {
@@ -150,7 +151,7 @@ namespace Judger.Core.Program
                     }
                 }
 
-                SpecialJudgeProgram spjProgram = TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemID);
+                SpecialJudgeProgram spjProgram = TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemId);
                 File.WriteAllBytes(Path.Combine(SPJTask.TempJudgeDirectory, spjProgram.LangConfiguration.ProgramFileName), spjProgram.Program);
             }
         }
@@ -182,9 +183,9 @@ namespace Judger.Core.Program
                 Program = File.ReadAllBytes(spjProgramPath)
             };
 
-            TestDataManager.WriteSpecialJudgeProgramFile(JudgeTask.ProblemID, spjProgram);
+            TestDataManager.WriteSpecialJudgeProgramFile(JudgeTask.ProblemId, spjProgram);
 
-            return TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemID) != null;
+            return TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemId) != null;
         }
 
         public override void Dispose()

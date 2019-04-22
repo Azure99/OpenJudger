@@ -1,6 +1,6 @@
 ﻿using System;
 using Judger.Core.Database.Internal.DbOperator;
-using Judger.Entity;
+using Judger.Entity.Database;
 using Judger.Managers;
 
 namespace Judger.Core.Database.Internal

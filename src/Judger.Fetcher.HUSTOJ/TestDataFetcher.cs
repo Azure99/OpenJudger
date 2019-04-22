@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using Judger.Entity;
+using Judger.Entity.Program;
 using Judger.Managers;
 using Judger.Utils;
 
@@ -18,21 +19,21 @@ namespace Judger.Fetcher.HUSTOJ
 
         public override byte[] Fetch(JudgeTask task)
         {
-            return Fetch(task.ProblemID);
+            return Fetch(task.ProblemId);
         }
 
-        public byte[] Fetch(int problemID)
+        public byte[] Fetch(int problemId)
         {
-            string[] fileNames = GetTestDataList(problemID);
+            string[] fileNames = GetTestDataList(problemId);
             Tuple<string, byte[]>[] files = new Tuple<string, byte[]>[fileNames.Length];
 
             for (int i = 0; i < files.Length; i++)
             {
                 string fileName = fileNames[i];
-                files[i] = new Tuple<string, byte[]>(fileName, GetTestDataFile(problemID, fileName));
+                files[i] = new Tuple<string, byte[]>(fileName, GetTestDataFile(problemId, fileName));
             }
 
-            return CreateZIP(files, GetTestDataMD5(problemID));
+            return CreateZip(files, GetTestDataMd5(problemId));
         }
 
         /// <summary>
@@ -75,7 +76,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// </summary>
         /// <param name="files">测试数据文件</param>
         /// <param name="dataVersion">测试数据版本号</param>
-        private byte[] CreateZIP(Tuple<string, byte[]>[] files, string dataVersion)
+        private byte[] CreateZip(Tuple<string, byte[]>[] files, string dataVersion)
         {
             byte[] zipData;
             using (MemoryStream ms = new MemoryStream())
@@ -95,7 +96,7 @@ namespace Judger.Fetcher.HUSTOJ
                         }
                         else if (CheckSpecialJudgeFile(file.Item1))
                         {
-                            entry = zip.CreateEntry("spj/" + SPJManager.SPJ_SOURCE_FILENAME + Path.GetExtension(file.Item1));
+                            entry = zip.CreateEntry("spj/" + SpjManager.SPJ_SOURCE_FILENAME + Path.GetExtension(file.Item1));
                         }
 
                         if (entry != null)
@@ -130,12 +131,12 @@ namespace Judger.Fetcher.HUSTOJ
         /// 根据题目ID获取测试数据的MD5
         /// </summary>
         /// <param name="pid">题目ID</param>
-        private string GetTestDataMD5(int pid)
+        private string GetTestDataMd5(int pid)
         {
             string requestBody = string.Format("gettestdatalist=1&pid={0}&time=1", pid);
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
 
-            return MD5Encrypt.EncryptToHexString(response);
+            return Md5Encrypt.EncryptToHexString(response);
         }
 
         /// <summary>

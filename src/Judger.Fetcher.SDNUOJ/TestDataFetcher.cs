@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
 using Judger.Entity;
 using Judger.Utils;
@@ -18,12 +17,12 @@ namespace Judger.Fetcher.SDNUOJ
 
         public override byte[] Fetch(JudgeTask task)
         {
-            return Fetch(task.ProblemID.ToString());
+            return Fetch(task.ProblemId.ToString());
         }
 
-        public byte[] Fetch(string problemID)
+        public byte[] Fetch(string problemId)
         {
-            string body = CreateRequestBody(problemID);
+            string body = CreateRequestBody(problemId);
 
             byte[] result = HttpClient.UploadData(Config.TestDataFetchUrl, body, 3);
             result = ChangeVersionFileName(result);
@@ -32,9 +31,9 @@ namespace Judger.Fetcher.SDNUOJ
         }
 
         //创建请求Body
-        private string CreateRequestBody(string problemID)
+        private string CreateRequestBody(string problemId)
         {
-            return "pid=" + problemID;
+            return "pid=" + problemId;
         }
 
         /// <summary>

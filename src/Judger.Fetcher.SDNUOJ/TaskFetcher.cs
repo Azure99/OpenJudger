@@ -73,11 +73,11 @@ namespace Judger.Fetcher.SDNUOJ
             SDNUOJTaskEntity taskEntity = jObject.ToObject<SDNUOJTaskEntity>();
 
             JudgeTask task = JudgeTaskFactory.Create(
-                Int32.Parse(taskEntity.SubmitID), Int32.Parse(taskEntity.ProblemID), taskEntity.DataVersion,
+                Int32.Parse(taskEntity.SubmitId), Int32.Parse(taskEntity.ProblemId), taskEntity.DataVersion,
                 taskEntity.Language.Substring(0, taskEntity.Language.Length - 2), taskEntity.SourceCode, taskEntity.Author,
                 Int32.Parse(taskEntity.TimeLimit), Int32.Parse(taskEntity.MemoryLimit), false, false, bool.Parse(taskEntity.DbJudge));
 
-            return new JudgeTask[1] { task };
+            return new JudgeTask[] { task };
         }
 
         /// <summary>

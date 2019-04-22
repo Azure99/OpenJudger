@@ -19,6 +19,8 @@ namespace Judger.Core.Program.Internal
         private Dictionary<string, List<string>> _langRulesDic = new Dictionary<string, List<string>>();
 
         private Configuration _config = ConfigManager.Config;
+        
+        private const string LANG_START = "[Language=";
         private CodeChecker()
         {
             if(_config.InterceptUnsafeCode)
@@ -29,8 +31,6 @@ namespace Judger.Core.Program.Internal
 
         private void InitRulesDictionary()
         {
-            const string LANG_START = "[Language=";
-
             if (!File.Exists(_config.InterceptionRules)) 
             {
                 File.WriteAllText(_config.InterceptionRules, "");

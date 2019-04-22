@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Judger.Entity;
+using Judger.Entity.Program;
 using Judger.Utils;
 
 namespace Judger.Managers
 {
-    public static class SPJManager
+    public static class SpjManager
     {
         //program.cpp.exe
         public const string SPJ_PROGRAM_FILENAME = "program";
@@ -22,7 +22,7 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="task">评测任务</param>
         /// <returns>SPJ目录</returns>
-        public static string GetSPJDirectoryInJudger(JudgeTask task)
+        public static string GetSpjDirectoryInJudger(JudgeTask task)
         {
             if (task.TempJudgeDirectory.EndsWith(SPJ_DIRECTORY))
             {
@@ -34,11 +34,11 @@ namespace Judger.Managers
         /// <summary>
         /// 获取测试数据目录下的SPJ目录
         /// </summary>
-        /// <param name="problemID">题目ID</param>
+        /// <param name="problemId">题目ID</param>
         /// <returns>SPJ目录</returns>
-        public static string GetSPJDirectoryInTestData(int problemID)
+        public static string GetSpjDirectoryInTestData(int problemId)
         {
-            return Path.Combine(_config.TestDataDirectory, problemID.ToString(), SPJ_TESTDATA_DIR);
+            return Path.Combine(_config.TestDataDirectory, problemId.ToString(), SPJ_TESTDATA_DIR);
         }
 
         /// <summary>
@@ -46,21 +46,21 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="task">评测任务</param>
         /// <returns>SPJ源文件名</returns>
-        public static string GetSPJSourceFileInJudger(JudgeTask task)
+        public static string GetSpjSourceFileInJudger(JudgeTask task)
         {
-            return Path.Combine(GetSPJDirectoryInJudger(task), (task.LangConfig as ProgramLangConfig).SourceCodeFileName);
+            return Path.Combine(GetSpjDirectoryInJudger(task), (task.LangConfig as ProgramLangConfig).SourceCodeFileName);
         }
 
         /// <summary>
         /// 寻找测试数据目录下的SPJ源文件
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="index">索引</param>
         /// <returns>SPJ源文件路径</returns>
-        public static string FindSPJSourceFileInTestData(int problemID, int index = 0)
+        public static string FindSpjSourceFileInTestData(int problemId, int index = 0)
         {
             Dictionary<string, ProgramLangConfig> extDic = ConfigManager.GetLangSourceExtensionDictionary();
-            string spjDirectory = GetSPJDirectoryInTestData(problemID);
+            string spjDirectory = GetSpjDirectoryInTestData(problemId);
 
             string[] files = Directory.GetFiles(spjDirectory);
             List<string> spjSourceFiles = new List<string>();
@@ -87,9 +87,9 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="task">评测任务</param>
         /// <returns>SPJ程序路径</returns>
-        public static string FindSPJProgramInJudger(JudgeTask task)
+        public static string FindSpjProgramInJudger(JudgeTask task)
         {
-            string compileDirectory = GetSPJDirectoryInJudger(task);
+            string compileDirectory = GetSpjDirectoryInJudger(task);
             string[] files = Directory.GetFiles(compileDirectory);
 
             if (files.Length > 2)
@@ -114,13 +114,13 @@ namespace Judger.Managers
         /// <summary>
         /// 寻找测试数据目录下的SPJ程序
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="index">索引</param>
         /// <returns>SPJ程序</returns>
-        public static string FindSPJProgramInTestData(int problemID, int index = 0)
+        public static string FindSpjProgramInTestData(int problemId, int index = 0)
         {
             Dictionary<string, ProgramLangConfig> extDic = ConfigManager.GetLangSourceExtensionDictionary();
-            string spjDirectory = GetSPJDirectoryInTestData(problemID);
+            string spjDirectory = GetSpjDirectoryInTestData(problemId);
 
             List<string> spjSourceFiles = new List<string>();
             string[] files = Directory.GetFiles(spjDirectory);
@@ -149,9 +149,9 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="task">评测任务</param>
         /// <returns>SPJ程序路径</returns>
-        public static string GetSPJProgramPathInJudger(JudgeTask task)
+        public static string GetSpjProgramPathInJudger(JudgeTask task)
         {
-            string spjDirectory = GetSPJDirectoryInJudger(task);
+            string spjDirectory = GetSpjDirectoryInJudger(task);
             string path = Path.Combine(spjDirectory, (task.LangConfig as ProgramLangConfig).ProgramFileName);
 
             return PathHelper.GetBaseAbsolutePath(path);
@@ -160,12 +160,12 @@ namespace Judger.Managers
         /// <summary>
         /// 获取测试数据目录下的SPJ程序路径
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="lang">语言</param>
         /// <returns>SPJ程序路径</returns>
-        public static string GetSPJProgramPathInTestData(int problemID, ProgramLangConfig lang)
+        public static string GetSpjProgramPathInTestData(int problemId, ProgramLangConfig lang)
         {
-            string spjDirectory = GetSPJDirectoryInTestData(problemID);
+            string spjDirectory = GetSpjDirectoryInTestData(problemId);
             string programExt = Path.GetExtension(lang.ProgramFileName).TrimStart('.').ToLower();
             string sourceExt = lang.SourceCodeFileExtension.Split('|')[0].ToLower();
             string path = Path.Combine(spjDirectory, SPJ_PROGRAM_FILENAME + "." + sourceExt + "." + programExt);
@@ -178,11 +178,11 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="originTask">源评测任务</param>
         /// <returns>SPJ的JudgeTask</returns>
-        public static JudgeTask CreateSPJJudgeTask(JudgeTask originTask)
+        public static JudgeTask CreateSpjJudgeTask(JudgeTask originTask)
         {
             JudgeTask newTask = originTask.Clone() as JudgeTask;
 
-            string spjSourceFilePath = FindSPJSourceFileInTestData(newTask.ProblemID);
+            string spjSourceFilePath = FindSpjSourceFileInTestData(newTask.ProblemId);
             if (spjSourceFilePath == null) //没有SPJ程序源代码, 无法评测
             {
                 throw new JudgeException("No special judge program exception!");
@@ -193,7 +193,7 @@ namespace Judger.Managers
             ProgramLangConfig langConfig = newTask.LangConfig as ProgramLangConfig;
             newTask.Language = newTask.LangConfig.Name;
 
-            string spjDir = GetSPJDirectoryInJudger(originTask) + "\\";
+            string spjDir = GetSpjDirectoryInJudger(originTask) + "\\";
 
             // 替换<tempdir>字段
             langConfig.CompilerPath = langConfig.CompilerPath.Replace("<tempdir>", spjDir);

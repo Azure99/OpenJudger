@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Judger.Entity
+﻿namespace Judger.Entity
 {
     /// <summary>
     /// 判题结果
@@ -10,12 +8,12 @@ namespace Judger.Entity
         /// <summary>
         /// 提交ID
         /// </summary>
-        public int SubmitID { get; set; }
+        public int SubmitId { get; set; }
 
         /// <summary>
         /// 问题ID
         /// </summary>
-        public int ProblemID { get; set; }
+        public int ProblemId { get; set; }
 
         /// <summary>
         /// 提交者

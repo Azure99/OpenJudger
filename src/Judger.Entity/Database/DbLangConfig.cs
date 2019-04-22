@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Newtonsoft.Json;
 
-namespace Judger.Entity
+namespace Judger.Entity.Database
 {
     /// <summary>
     /// 数据库配置
@@ -71,7 +69,7 @@ namespace Judger.Entity
 
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 }

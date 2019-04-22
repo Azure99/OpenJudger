@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Text;
 using Judger.Core.Database.Internal.Entity;
 
 namespace Judger.Core.Database.Internal.DbOperator
@@ -83,7 +82,7 @@ namespace Judger.Core.Database.Internal.DbOperator
                 datas[i] = GetTableData(tablesName[i]);
             }
 
-            Array.Sort(datas, (a, b) => a.Name.CompareTo(b.Name));
+            Array.Sort(datas, (a, b) => String.Compare(a.Name, b.Name, StringComparison.Ordinal));
 
             return new DbData
             {

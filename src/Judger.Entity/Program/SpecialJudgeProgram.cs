@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Judger.Entity
+﻿namespace Judger.Entity.Program
 {
     /// <summary>
     /// SpecialJudge程序文件

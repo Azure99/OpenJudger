@@ -6,7 +6,7 @@ namespace Judger
 {
     class Program
     {
-        private static JudgeService Service;
+        private static JudgeService Service { get; set; }
 
         static void Main(string[] args)
         {

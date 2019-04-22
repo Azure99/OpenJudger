@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace Judger.Utils
@@ -7,7 +6,7 @@ namespace Judger.Utils
     /// <summary>
     /// MD5加密辅助类
     /// </summary>
-    public static class MD5Encrypt
+    public static class Md5Encrypt
     {
         /// <summary>
         /// 计算String的MD5(小写32位)

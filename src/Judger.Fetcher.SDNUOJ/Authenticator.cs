@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using Judger.Entity;
 using Judger.Fetcher.SDNUOJ.Entity;
 using Judger.Managers;

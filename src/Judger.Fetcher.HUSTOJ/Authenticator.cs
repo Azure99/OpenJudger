@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using Judger.Entity;
 using Judger.Managers;
 using Judger.Utils;
@@ -16,7 +15,7 @@ namespace Judger.Fetcher.HUSTOJ
         private Configuration _config = ConfigManager.Config;
         private string loginUrl = "http://localhost/login.php";
 
-        private int delayCheckCount = 0;
+        private int _delayCheckCount = 0;
         static Authenticator()
         {
             Singleton = new Authenticator();
@@ -53,7 +52,7 @@ namespace Judger.Fetcher.HUSTOJ
             string requestBody = string.Format("user_id={0}&password={1}", _config.JudgerName, _config.Password);
             try
             {
-                string response = _httpClient.UploadString(loginUrl, requestBody, 3);
+                _httpClient.UploadString(loginUrl, requestBody, 3);
             }
             catch { }
 
@@ -82,9 +81,9 @@ namespace Judger.Fetcher.HUSTOJ
         /// </summary>
         public void CheckAndLogin()
         {
-            if(delayCheckCount++ > 10)
+            if(_delayCheckCount++ > 10)
             {
-                delayCheckCount = 0;
+                _delayCheckCount = 0;
                 Login();
             }
         }
@@ -106,7 +105,7 @@ namespace Judger.Fetcher.HUSTOJ
 
             try
             {
-                string response = _httpClient.UploadString(_config.TaskFetchUrl, requestBody, 3);
+                _httpClient.UploadString(_config.TaskFetchUrl, requestBody, 3);
             }
             catch { }
         }

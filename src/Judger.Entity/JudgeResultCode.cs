@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Judger.Entity
+﻿namespace Judger.Entity
 {
     /// <summary>
     /// 判题结果码

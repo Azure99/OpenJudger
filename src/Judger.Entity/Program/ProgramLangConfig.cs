@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Judger.Entity
+namespace Judger.Entity.Program
 {
     /// <summary>
     /// 语言配置信息
@@ -96,7 +96,7 @@ namespace Judger.Entity
 
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 }

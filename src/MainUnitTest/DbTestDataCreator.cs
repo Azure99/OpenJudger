@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Xunit;
+﻿using System.IO;
 using Judger.Core.Database.Internal;
 using Judger.Core.Database.Internal.DbOperator;
 using Judger.Core.Database.Internal.Entity;
@@ -31,8 +29,8 @@ namespace MainUnitTest
             DbQueryData query = BaseDbOperator.ReadQueryData(reader);
             DbData output = oper.ReadDbData();
 
-            string outputData = SampleJsonSerializaer.Serialize<DbData>(output);
-            string queryData = SampleJsonSerializaer.Serialize<DbQueryData>(query);
+            string outputData = SampleJsonSerializaer.Serialize(output);
+            string queryData = SampleJsonSerializaer.Serialize(query);
 
             File.WriteAllText(OUTPUT_FILE, outputData);
             File.WriteAllText(QUERY_FILE, queryData);

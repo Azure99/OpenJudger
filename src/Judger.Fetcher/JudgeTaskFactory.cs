@@ -1,6 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Judger.Entity;
+using Judger.Entity.Program;
 using Judger.Managers;
 using Judger.Utils;
 
@@ -15,8 +15,8 @@ namespace Judger.Fetcher
         /// <summary>
         /// 创建JudgeTask实例
         /// </summary>
-        /// <param name="submitID">提交ID</param>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="submitId">提交ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="dataVersion">测试数据版本</param>
         /// <param name="language">语言</param>
         /// <param name="sourceCode">源代码</param>
@@ -27,7 +27,7 @@ namespace Judger.Fetcher
         /// <param name="specialJudge">是否为SpecialJudge</param>
         /// <param name="dbJudge">是否为数据库评测</param>
         /// <returns>JudgeTask实例</returns>
-        public static JudgeTask Create(int submitID, int problemID, string dataVersion, string language, string sourceCode,
+        public static JudgeTask Create(int submitId, int problemId, string dataVersion, string language, string sourceCode,
                                        string author = "", int timeLimit = 1000, int memoryLimit = 262144, 
                                        bool judgeAllCases = false, bool specialJudge = false, bool dbJudge = false)
         {
@@ -41,14 +41,14 @@ namespace Judger.Fetcher
                 judgeType = JudgeType.SpecialJudge;
             }
             
-            return Create(submitID, problemID, dataVersion, language, sourceCode, author, timeLimit, memoryLimit, judgeAllCases, judgeType);
+            return Create(submitId, problemId, dataVersion, language, sourceCode, author, timeLimit, memoryLimit, judgeAllCases, judgeType);
         }
        
         /// <summary>
         /// 创建JudgeTask实例
         /// </summary>
-        /// <param name="submitID">提交ID</param>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="submitId">提交ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="dataVersion">测试数据版本</param>
         /// <param name="language">语言</param>
         /// <param name="sourceCode">源代码</param>
@@ -58,7 +58,7 @@ namespace Judger.Fetcher
         /// <param name="judgeAllCases">是否评测全部样例(即使遇到错误答案)</param>
         /// <param name="judgeType">评测类型</param>
         /// <returns>JudgeTask实例</returns>
-        public static JudgeTask Create(int submitID, int problemID, string dataVersion, string language, string sourceCode,
+        public static JudgeTask Create(int submitId, int problemId, string dataVersion, string language, string sourceCode,
                                        string author = "", int timeLimit = 1000, int memoryLimit = 262144, 
                                        bool judgeAllCases = false, JudgeType judgeType = JudgeType.ProgramJudge)
         {
@@ -97,8 +97,8 @@ namespace Judger.Fetcher
 
             JudgeTask task = new JudgeTask
             {
-                SubmitID = submitID,
-                ProblemID = problemID,
+                SubmitId = submitId,
+                ProblemId = problemId,
                 DataVersion = dataVersion,
                 Language = language,
                 SourceCode = sourceCode,
@@ -116,9 +116,9 @@ namespace Judger.Fetcher
 
         private static string GetTempDirectory(string judgeDir)
         {
-            return System.IO.Path.Combine(
+            return Path.Combine(
                 PathHelper.GetBaseAbsolutePath(judgeDir), 
-                RandomString.Next(32)) + System.IO.Path.DirectorySeparatorChar;
+                RandomString.Next(32)) + Path.DirectorySeparatorChar;
         }
     }
 }

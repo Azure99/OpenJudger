@@ -16,12 +16,12 @@ namespace Judger.Fetcher.Generic
 
         public override byte[] Fetch(JudgeTask task)
         {
-            return Fetch(task.ProblemID.ToString());
+            return Fetch(task.ProblemId.ToString());
         }
 
-        public byte[] Fetch(string problemID)
+        public byte[] Fetch(string problemId)
         {
-            string requestBody = CreateRequestBody(problemID);
+            string requestBody = CreateRequestBody(problemId);
 
             return HttpClient.UploadData(Config.TestDataFetchUrl, requestBody, 3);
         }
@@ -29,13 +29,13 @@ namespace Judger.Fetcher.Generic
         /// <summary>
         /// 创建请求Body
         /// </summary>
-        /// <param name="problemID">问题ID</param>
-        private string CreateRequestBody(string problemID)
+        /// <param name="problemId">问题ID</param>
+        private string CreateRequestBody(string problemId)
         {
             JObject body = new JObject();
             body.Add("JudgerName", Config.JudgerName);
             body.Add("Token", Token.Create());
-            body.Add("ProblemID", Int32.Parse(problemID));
+            body.Add("ProblemID", Int32.Parse(problemId));
 
             return body.ToString();
         }

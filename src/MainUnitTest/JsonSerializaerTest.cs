@@ -1,5 +1,4 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 using Judger.Utils;
 
 namespace MainUnitTest
@@ -14,13 +13,13 @@ namespace MainUnitTest
         {
             TempTestClass classA = new TempTestClass
             {
-                ID = 1,
+                Id = 1,
                 Name = "NNN",
                 Arr = new int[] { 1, 2, 3 }
             };
 
             string json = SampleJsonSerializaer.Serialize(classA, typeof(TempTestClass));
-            string json2 = SampleJsonSerializaer.Serialize<TempTestClass>(classA);
+            string json2 = SampleJsonSerializaer.Serialize(classA);
 
             //序列化是否成功
             Assert.True(json == json2);
@@ -41,7 +40,7 @@ namespace MainUnitTest
 
         private bool Compare(TempTestClass a, TempTestClass b)
         {
-            if (a.ID == b.ID && a.Name == b.Name)
+            if (a.Id == b.Id && a.Name == b.Name)
             {
                 if (a.Arr == null && b.Arr == null)
                 {
@@ -62,7 +61,7 @@ namespace MainUnitTest
 
         private class TempTestClass
         {
-            public int ID { get; set; }
+            public int Id { get; set; }
             public string Name { get; set; }
             public int[] Arr { get; set; }
         }

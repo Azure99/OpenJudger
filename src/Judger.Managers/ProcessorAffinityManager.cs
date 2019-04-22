@@ -18,7 +18,7 @@ namespace Judger.Managers
             }
         }
 
-        private static readonly object _lock = new object();
+        private static object _lock = new object();
 
         /// <summary>
         /// CPU核心数

@@ -1,5 +1,4 @@
-﻿using System;
-using Judger.Managers;
+﻿using Judger.Managers;
 using Judger.Utils;
 
 namespace Judger.Fetcher

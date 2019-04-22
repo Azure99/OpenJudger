@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using Judger.Entity;
@@ -84,19 +83,19 @@ namespace Judger.Fetcher.HUSTOJ
         /// <summary>
         /// 根据SubmitID获取JudgeTask
         /// </summary>
-        /// <param name="submitID">提交ID</param>
-        private JudgeTask GetJudgeTask(int submitID)
+        /// <param name="submitId">提交ID</param>
+        private JudgeTask GetJudgeTask(int submitId)
         {
-            GetSolutionInfo(submitID, out int problemID, out string author, out string lang);
-            string sourceCode = GetSolution(submitID);
-            GetProblemInfo(problemID, out int timeLimit, out int memoryLimit, out bool spj);
-            string dateMD5 = GetTestDataMD5(problemID);
+            GetSolutionInfo(submitId, out int problemId, out string author, out string lang);
+            string sourceCode = GetSolution(submitId);
+            GetProblemInfo(problemId, out int timeLimit, out int memoryLimit, out bool spj);
+            string dateMd5 = GetTestDataMd5(problemId);
 
             JudgeTask task = JudgeTaskFactory.Create(
-                                submitID, problemID, dateMD5, lang, sourceCode, 
+                                submitId, problemId, dateMd5, lang, sourceCode, 
                                 author, timeLimit, memoryLimit, false, spj);
 
-            Authenticator.Singleton.UpdateSolution(submitID, 3, 0, 0, 0.0);
+            Authenticator.Singleton.UpdateSolution(submitId, 3, 0, 0, 0.0);
 
             return task;
         }
@@ -105,17 +104,17 @@ namespace Judger.Fetcher.HUSTOJ
         /// 根据提交ID获取提交信息
         /// </summary>
         /// <param name="sid">提交ID</param>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="username">用户名</param>
         /// <param name="lang">编程语言</param>
-        private void GetSolutionInfo(int sid, out int problemID, out string username, out string lang)
+        private void GetSolutionInfo(int sid, out int problemId, out string username, out string lang)
         {
             string requestBody = "getsolutioninfo=1&sid=" + sid;
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
 
             string[] split = Regex.Split(response, "\r\n|\r|\n");
 
-            problemID = int.Parse(split[0]);
+            problemId = int.Parse(split[0]);
             username = split[1];
             lang = split[2];
         }
@@ -155,12 +154,12 @@ namespace Judger.Fetcher.HUSTOJ
         /// 根据问题ID获取测试数据的MD5
         /// </summary>
         /// <param name="pid">问题ID</param>
-        private string GetTestDataMD5(int pid)
+        private string GetTestDataMd5(int pid)
         {
             string requestBody = string.Format("gettestdatalist=1&pid={0}&time=1", pid);
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
             
-            return MD5Encrypt.EncryptToHexString(response);
+            return Md5Encrypt.EncryptToHexString(response);
         }
     }
 }

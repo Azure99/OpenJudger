@@ -1,5 +1,4 @@
-﻿using System;
-using Judger.Entity;
+﻿using Judger.Entity;
 
 namespace Judger.Core.Database.Internal.Entity
 {

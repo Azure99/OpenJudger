@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-
-namespace Judger.Entity
+﻿namespace Judger.Entity.Database
 {
     public enum DatabaseType
     {

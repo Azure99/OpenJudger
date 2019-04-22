@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using Judger.Entity;
+using Judger.Entity.Program;
 using Judger.Utils;
 
 namespace Judger.Core.Program.Internal

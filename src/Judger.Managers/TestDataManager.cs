@@ -4,6 +4,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using Judger.Entity;
+using Judger.Entity.Database;
+using Judger.Entity.Program;
 using Judger.Utils;
 
 namespace Judger.Managers
@@ -13,7 +15,7 @@ namespace Judger.Managers
     /// </summary>
     public static class TestDataManager
     {
-        private static readonly Configuration _config = ConfigManager.Config;
+        private static readonly Configuration Config = ConfigManager.Config;
 
         /// <summary>
         /// 数据锁字典, 防止统一题目测试数据争用
@@ -34,22 +36,22 @@ namespace Judger.Managers
         {
             _dataLockDic = new Dictionary<int, object>();
 
-            if (!Directory.Exists(_config.TestDataDirectory))
+            if (!Directory.Exists(Config.TestDataDirectory))
             {
-                Directory.CreateDirectory(_config.TestDataDirectory);
+                Directory.CreateDirectory(Config.TestDataDirectory);
             }
         }
 
         /// <summary>
         /// 检查测试数据版本是否正确, 若不正确返回false, 需要重新获取数据
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="version">欲检测版本</param>
-        public static bool CheckData(int problemID, string version)
+        public static bool CheckData(int problemId, string version)
         {
-            string path = Path.Combine(_config.TestDataDirectory, problemID.ToString());
+            string path = Path.Combine(Config.TestDataDirectory, problemId.ToString());
 
-            lock (GetDataLock(problemID))
+            lock (GetDataLock(problemId))
             {
                 if (!Directory.Exists(path) || !File.Exists(path + SepChar + "version.txt"))
                 {
@@ -64,16 +66,16 @@ namespace Judger.Managers
         /// <summary>
         /// 获取当前测试数据版本号
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <returns>版本号</returns>
-        public static string GetTestDataVersion(int problemID)
+        public static string GetTestDataVersion(int problemId)
         {
-            string path = Path.Combine(_config.TestDataDirectory,
-                                       problemID.ToString(),
+            string path = Path.Combine(Config.TestDataDirectory,
+                                       problemId.ToString(),
                                        "version.txt");
 
 
-            lock (GetDataLock(problemID))
+            lock (GetDataLock(problemId))
             {
                 if (!File.Exists(path))
                 {
@@ -88,25 +90,25 @@ namespace Judger.Managers
         /// <summary>
         /// 写出测试数据
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="zipStream">保存ZIP的Stream</param>
-        public static void WriteTestData(int problemID, Stream zipStream)
+        public static void WriteTestData(int problemId, Stream zipStream)
         {
             using (ZipArchive zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Read))
             {
-                WriteTestData(problemID, zipArchive);
+                WriteTestData(problemId, zipArchive);
             }
         }
 
         /// <summary>
         /// 写出测试数据
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="zipArchive">ZipArchive</param>
-        public static void WriteTestData(int problemID, ZipArchive zipArchive)
+        public static void WriteTestData(int problemId, ZipArchive zipArchive)
         {
-            string path = Path.Combine(_config.TestDataDirectory, problemID.ToString());
-            lock (GetDataLock(problemID))
+            string path = Path.Combine(Config.TestDataDirectory, problemId.ToString());
+            lock (GetDataLock(problemId))
             {
                 try
                 {
@@ -121,30 +123,30 @@ namespace Judger.Managers
         /// <summary>
         /// 写出测试数据
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="zipData">ZIP数据</param>
-        public static void WriteTestData(int problemID, byte[] zipData)
+        public static void WriteTestData(int problemId, byte[] zipData)
         {
             using (MemoryStream ms = new MemoryStream())
             {
                 ms.Write(zipData);
                 ms.Position = 0;
-                WriteTestData(problemID, ms);
+                WriteTestData(problemId, ms);
             }
         }
 
         /// <summary>
         /// 获取测试数据文件名列表, 使用GetTestData方法获取具体数据
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <returns>测试数据(输入/输出)文件名，使用元组数组保存</returns>
-        public static Tuple<string, string>[] GetTestDataFilesName(int problemID)
+        public static Tuple<string, string>[] GetTestDataFilesName(int problemId)
         {
-            string path = Path.Combine(_config.TestDataDirectory, problemID.ToString()) + SepChar;
+            string path = Path.Combine(Config.TestDataDirectory, problemId.ToString()) + SepChar;
 
             string[] inputFiles;
             string[] outputFiles;
-            lock (GetDataLock(problemID))
+            lock (GetDataLock(problemId))
             {
                 inputFiles = Directory.GetFiles(path + "input");
                 for (int i = 0; i < inputFiles.Length; i++)
@@ -181,16 +183,16 @@ namespace Judger.Managers
         /// <summary>
         /// 获取指定的测试数据
         /// </summary>
-        /// <param name="problemID">题目ID</param>
+        /// <param name="problemId">题目ID</param>
         /// <param name="inputName">测试输入名称</param>
         /// <param name="outputName">测试输出名称</param>
         /// <param name="input">测试输入</param>
         /// <param name="output">测试输出</param>
-        public static void GetTestData(int problemID, string inputName, string outputName, out string input, out string output)
+        public static void GetTestData(int problemId, string inputName, string outputName, out string input, out string output)
         {
-            string problemDir = Path.Combine(_config.TestDataDirectory, problemID.ToString()) + SepChar;
+            string problemDir = Path.Combine(Config.TestDataDirectory, problemId.ToString()) + SepChar;
 
-            lock (GetDataLock(problemID))
+            lock (GetDataLock(problemId))
             {
                 input = File.ReadAllText(problemDir + "input" + SepChar + inputName);
                 output = File.ReadAllText(problemDir + "output" + SepChar + outputName);
@@ -200,13 +202,13 @@ namespace Judger.Managers
         /// <summary>
         /// 检查题目是否需要SPJ
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <returns>是否需要SPJ</returns>
-        public static bool IsSpecialJudge(int problemID)
+        public static bool IsSpecialJudge(int problemId)
         {
-            string spjDir = Path.Combine(_config.TestDataDirectory, problemID.ToString(), "spj") + SepChar;
+            string spjDir = Path.Combine(Config.TestDataDirectory, problemId.ToString(), "spj") + SepChar;
 
-            lock (GetDataLock(problemID))
+            lock (GetDataLock(problemId))
             {
                 if (Directory.Exists(spjDir))
                 {
@@ -220,15 +222,15 @@ namespace Judger.Managers
         }
 
         [Obsolete]
-        public static SpecialJudgeSourceFile GetSpecialJudgeSourceFile(int problemID, int index = 0)
+        public static SpecialJudgeSourceFile GetSpecialJudgeSourceFile(int problemId, int index = 0)
         {
-            string sourceFilePath = SPJManager.FindSPJSourceFileInTestData(problemID, index);
+            string sourceFilePath = SpjManager.FindSpjSourceFileInTestData(problemId, index);
             if (sourceFilePath == null)
             {
                 return null;
             }
 
-            ProgramLangConfig langConfig = SPJManager.GetLangConfigBySourceFilePath(sourceFilePath);
+            ProgramLangConfig langConfig = SpjManager.GetLangConfigBySourceFilePath(sourceFilePath);
             if (langConfig == null)
             {
                 return null;
@@ -245,13 +247,13 @@ namespace Judger.Managers
         /// <summary>
         /// 写出SPJ可执行程序
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="programFile">SPJ程序</param>
-        public static void WriteSpecialJudgeProgramFile(int problemID, SpecialJudgeProgram programFile)
+        public static void WriteSpecialJudgeProgramFile(int problemId, SpecialJudgeProgram programFile)
         {
-            lock (GetDataLock(problemID))
+            lock (GetDataLock(problemId))
             {
-                string programPath = SPJManager.GetSPJProgramPathInTestData(problemID, programFile.LangConfiguration);
+                string programPath = SpjManager.GetSpjProgramPathInTestData(problemId, programFile.LangConfiguration);
                 if (File.Exists(programPath))
                 {
                     File.Delete(programPath);
@@ -263,20 +265,20 @@ namespace Judger.Managers
         /// <summary>
         /// 获取SPJ可执行程序
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="index">索引</param>
         /// <returns>SPJ程序</returns>
-        public static SpecialJudgeProgram GetSpecialJudgeProgramFile(int problemID, int index = 0)
+        public static SpecialJudgeProgram GetSpecialJudgeProgramFile(int problemId, int index = 0)
         {
-            lock (GetDataLock(problemID))
+            lock (GetDataLock(problemId))
             {
-                string programPath = SPJManager.FindSPJProgramInTestData(problemID, index);
+                string programPath = SpjManager.FindSpjProgramInTestData(problemId, index);
                 if (programPath == null)
                 {
                     return null;
                 }
 
-                ProgramLangConfig langConfig = SPJManager.GetLangConfigByProgramPath(programPath);
+                ProgramLangConfig langConfig = SpjManager.GetLangConfigByProgramPath(programPath);
                 if (langConfig == null)
                 {
                     return null;
@@ -293,14 +295,14 @@ namespace Judger.Managers
         /// <summary>
         /// 根据题目ID获取全部数据库测试数据的名称
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="dbType">数据库名称</param>
         /// <returns>全部测试数据的名称</returns>
-        public static string[] GetDbTestDataNames(int problemID, DatabaseType dbType)
+        public static string[] GetDbTestDataNames(int problemId, DatabaseType dbType)
         {
-            lock (GetDataLock(problemID)) 
+            lock (GetDataLock(problemId)) 
             {
-                string path = Path.Combine(_config.TestDataDirectory, problemID.ToString()) + SepChar + "db" + SepChar;
+                string path = Path.Combine(Config.TestDataDirectory, problemId.ToString()) + SepChar + "db" + SepChar;
 
                 string[] inputFiles = Directory.GetFiles(path + "input");
                 var query = from x in inputFiles
@@ -325,15 +327,15 @@ namespace Judger.Managers
         /// <summary>
         /// 根据问题ID和数据名称获取数据库测试数据
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <param name="dbType">数据库类型</param>
         /// <param name="dataName">测试数据名称</param>
         /// <returns>测试数据</returns>
-        public static DbTestData GetDbTestData(int problemID, DatabaseType dbType, string dataName)
+        public static DbTestData GetDbTestData(int problemId, DatabaseType dbType, string dataName)
         {
-            lock (GetDataLock(problemID))
+            lock (GetDataLock(problemId))
             {
-                string path = Path.Combine(_config.TestDataDirectory, problemID.ToString()) + SepChar + "db" + SepChar;
+                string path = Path.Combine(Config.TestDataDirectory, problemId.ToString()) + SepChar + "db" + SepChar;
 
                 string inputFile = PathHelper.FindFileIgnoreCase(path + "input", dataName + '.' + dbType);
                 string outputFile = PathHelper.FindFileIgnoreCase(path + "output", dataName + "." + dbType);
@@ -357,13 +359,13 @@ namespace Judger.Managers
         /// <summary>
         /// 检查题目是否为数据库题目
         /// </summary>
-        /// <param name="problemID">问题ID</param>
+        /// <param name="problemId">问题ID</param>
         /// <returns>是否为数据库题目</returns>
-        public static bool IsDatabaseJudge(int problemID)
+        public static bool IsDatabaseJudge(int problemId)
         {
-            string dbDir = Path.Combine(_config.TestDataDirectory, problemID.ToString(), "db") + SepChar;
+            string dbDir = Path.Combine(Config.TestDataDirectory, problemId.ToString(), "db") + SepChar;
 
-            lock (GetDataLock(problemID))
+            lock (GetDataLock(problemId))
             {
                 if (Directory.Exists(dbDir))
                 {
@@ -379,18 +381,18 @@ namespace Judger.Managers
         /// <summary>
         /// 获取测试数据锁, 保证每个题目的数据只能同时由一个JudgeTask访问
         /// </summary>
-        /// <param name="problemID">题目ID</param>
+        /// <param name="problemId">题目ID</param>
         /// <returns>锁</returns>
-        private static object GetDataLock(int problemID)
+        private static object GetDataLock(int problemId)
         {
             lock (_dicLock)
             {
-                if (!_dataLockDic.ContainsKey(problemID))
+                if (!_dataLockDic.ContainsKey(problemId))
                 {
-                    _dataLockDic.Add(problemID, new object());
+                    _dataLockDic.Add(problemId, new object());
                 }
 
-                return _dataLockDic[problemID];
+                return _dataLockDic[problemId];
             }
         }
     }

@@ -53,7 +53,7 @@ namespace Judger.Service
                 // 同时运行数达到限制或等待队列为空
                 if (RunningCount >= _config.MaxRunning || _judgeQueue.IsEmpty)
                 {
-                    CheckExecuteGC();
+                    CheckExecuteGc();
                     return;
                 }
 
@@ -107,7 +107,7 @@ namespace Judger.Service
 
                 using (BaseJudger judger = JudgerFactory.Create(task))
                 {
-                    LogStartJudgeTask(task.SubmitID);
+                    LogStartJudgeTask(task.SubmitId);
                     result = judger.Judge();
                 }
 
@@ -115,7 +115,7 @@ namespace Judger.Service
             }
             catch (Exception ex)//判题失败
             {
-                LogJudgeFailed(ex, task.SubmitID);
+                LogJudgeFailed(ex, task.SubmitId);
                 result.JudgeDetail = ex.ToString();
                 throw ex;
             }
@@ -128,14 +128,14 @@ namespace Judger.Service
         private void UpdateTestData(JudgeTask task)
         {
             // 检查测试数据是否为最新
-            if (!TestDataManager.CheckData(task.ProblemID, task.DataVersion))
+            if (!TestDataManager.CheckData(task.ProblemId, task.DataVersion))
             {
-                LogInvalidTestData(task.ProblemID);
+                LogInvalidTestData(task.ProblemId);
 
                 ITestDataFetcher fetcher = FetcherFactory.CreateTestDataFetcher();
-                TestDataManager.WriteTestData(task.ProblemID, fetcher.Fetch(task));
+                TestDataManager.WriteTestData(task.ProblemId, fetcher.Fetch(task));
 
-                LogTestDataFetched(task.ProblemID);
+                LogTestDataFetched(task.ProblemId);
             }
         }
 
@@ -154,8 +154,8 @@ namespace Judger.Service
                 MemoryCost = 0,
                 TimeCost = 0,
                 PassRate = 0,
-                ProblemID = task.ProblemID,
-                SubmitID = task.SubmitID,
+                ProblemId = task.ProblemId,
+                SubmitId = task.SubmitId,
                 ResultCode = JudgeResultCode.JudgeFailed
             };
 
@@ -165,7 +165,7 @@ namespace Judger.Service
         /// <summary>
         /// 若当前无运行中的任务则执行垃圾回收
         /// </summary>
-        private void CheckExecuteGC()
+        private void CheckExecuteGc()
         {
             if (RunningCount == 0)
             {
@@ -177,34 +177,34 @@ namespace Judger.Service
         private void LogAddTask(JudgeTask task)
         {
             LogManager.Info(string.Format("New task: SubmitID:{0} Language:{1} CodeLength:{2} ProblemID:{3} Author:{4}",
-                                task.SubmitID, task.Language, task.SourceCode.Length, task.ProblemID, task.Author));
+                                task.SubmitId, task.Language, task.SourceCode.Length, task.ProblemId, task.Author));
         }
 
         private void LogJudgeResult(JudgeResult result)
         {
             LogManager.Info(string.Format("Task {0} result: Time:{1} Mem:{2} Code:{3} PassRate:{4} Details:{5} ",
-                                result.SubmitID, result.TimeCost, result.MemoryCost, result.ResultCode,
+                                result.SubmitId, result.TimeCost, result.MemoryCost, result.ResultCode,
                                 result.PassRate, result.JudgeDetail));
         }
 
-        private void LogInvalidTestData(int problemID)
+        private void LogInvalidTestData(int problemId)
         {
-            LogManager.Info("Invalid test data, fetch new data. ProblemID: " + problemID);
+            LogManager.Info("Invalid test data, fetch new data. ProblemID: " + problemId);
         }
 
-        private void LogTestDataFetched(int problemID)
+        private void LogTestDataFetched(int problemId)
         {
-            LogManager.Info("Problem " + problemID + " data fetched");
+            LogManager.Info("Problem " + problemId + " data fetched");
         }
 
-        private void LogStartJudgeTask(int submitID)
+        private void LogStartJudgeTask(int submitId)
         {
-            LogManager.Info("Judge task " + submitID);
+            LogManager.Info("Judge task " + submitId);
         }
 
-        private void LogJudgeFailed(Exception ex, int submitID)
+        private void LogJudgeFailed(Exception ex, int submitId)
         {
-            LogManager.Info("Judge failed, SubmitID: " + submitID);
+            LogManager.Info("Judge failed, SubmitID: " + submitId);
             LogManager.Exception(ex);
         }
 

@@ -8,12 +8,12 @@ namespace Judger.Entity
         /// <summary>
         /// 提交ID
         /// </summary>
-        public int SubmitID { get; set; }
+        public int SubmitId { get; set; }
 
         /// <summary>
         /// 题目ID
         /// </summary>
-        public int ProblemID { get; set; }
+        public int ProblemId { get; set; }
 
         /// <summary>
         /// 测试数据版本号
@@ -72,9 +72,9 @@ namespace Judger.Entity
 
         public object Clone()
         {
-            JudgeTask task = this.MemberwiseClone() as JudgeTask;
-            task.LangConfig = this.LangConfig.Clone() as ILangConfig;
-            return task as object;
+            JudgeTask task = MemberwiseClone() as JudgeTask;
+            task.LangConfig = LangConfig.Clone() as ILangConfig;
+            return task;
         }
     }
 }

@@ -7,10 +7,10 @@ namespace Judger.Fetcher.SDNUOJ.Entity
     public class SDNUOJTaskEntity
     {
         [JsonProperty(PropertyName = "sid")]
-        public string SubmitID { get; set; }
+        public string SubmitId { get; set; }
 
         [JsonProperty(PropertyName = "pid")]
-        public string ProblemID { get; set; }
+        public string ProblemId { get; set; }
 
         [JsonProperty(PropertyName = "username")]
         public string Author { get; set; }

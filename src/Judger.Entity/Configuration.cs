@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Judger.Entity.Database;
+using Judger.Entity.Program;
 
 namespace Judger.Entity
 {
@@ -12,7 +14,7 @@ namespace Judger.Entity
         /// <summary>
         /// 启动时加载的Fetcher DLL路径
         /// </summary>
-        public string FetcherDLLPath { get; set; } = "Judger.Fetcher.Generic.dll";
+        public string FetcherDllPath { get; set; } = "Judger.Fetcher.Generic.dll";
 
         /// <summary>
         /// 评测机名称

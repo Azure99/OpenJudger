@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Judger.Entity;
 
@@ -48,11 +47,11 @@ namespace Judger.Fetcher.Generic
             JudgeTask tempTask = JObject.Parse(jsonString).ToObject<JudgeTask>();
 
             JudgeTask task = JudgeTaskFactory.Create(
-                tempTask.SubmitID, tempTask.ProblemID, tempTask.DataVersion,
+                tempTask.SubmitId, tempTask.ProblemId, tempTask.DataVersion,
                 tempTask.Language, tempTask.SourceCode, tempTask.Author,
                 tempTask.TimeLimit, tempTask.MemoryLimit, tempTask.JudgeAllCases, tempTask.JudgeType);
 
-            return new JudgeTask[1] { task };
+            return new JudgeTask[] { task };
         }
 
         /// <summary>

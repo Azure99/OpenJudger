@@ -3,6 +3,7 @@ using System.IO;
 using Judger.Core.Database.Internal;
 using Judger.Core.Database.Internal.Entity;
 using Judger.Entity;
+using Judger.Entity.Database;
 using Judger.Managers;
 using Judger.Utils;
 
@@ -29,8 +30,8 @@ namespace Judger.Core.Database
         {
             JudgeResult result = new JudgeResult
             {
-                SubmitID = JudgeTask.SubmitID,
-                ProblemID = JudgeTask.ProblemID,
+                SubmitId = JudgeTask.SubmitId,
+                ProblemId = JudgeTask.ProblemId,
                 Author = JudgeTask.Author,
                 JudgeDetail = "",
                 MemoryCost = ConfigManager.Config.MinimumMemoryCost,
@@ -39,7 +40,7 @@ namespace Judger.Core.Database
                 ResultCode = JudgeResultCode.Accepted
             };
 
-            string[] dataNames = TestDataManager.GetDbTestDataNames(JudgeTask.ProblemID, _dbType);
+            string[] dataNames = TestDataManager.GetDbTestDataNames(JudgeTask.ProblemId, _dbType);
             if (dataNames.Length == 0)
             {
                 result.ResultCode = JudgeResultCode.JudgeFailed;
@@ -75,7 +76,7 @@ namespace Judger.Core.Database
 
         private SingleJudgeResult JudgeOneCase(string dataName)
         {
-            DbTestData testData = TestDataManager.GetDbTestData(JudgeTask.ProblemID, _dbType, dataName);
+            DbTestData testData = TestDataManager.GetDbTestData(JudgeTask.ProblemId, _dbType, dataName);
             string inputData = testData.Input;
             DbData outputData = ParseDbData(testData.Output);
             DbQueryData queryData = ParseQueryData(testData.Query);
@@ -122,7 +123,7 @@ namespace Judger.Core.Database
             }
 
             DbData dbData = SampleJsonSerializaer.DeSerialize<DbData>(data);
-            Array.Sort(dbData.TablesData, (a, b) => a.Name.CompareTo(b.Name));
+            Array.Sort(dbData.TablesData, (a, b) => String.Compare(a.Name, b.Name, StringComparison.Ordinal));
 
             return dbData;
         }

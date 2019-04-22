@@ -20,8 +20,8 @@ namespace Judger.Fetcher.Generic
             string secret = ConfigManager.Config.Password;
             string date = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
-            string nameSecret = MD5Encrypt.EncryptToHexString(name + secret);
-            string token = MD5Encrypt.EncryptToHexString(nameSecret + date);
+            string nameSecret = Md5Encrypt.EncryptToHexString(name + secret);
+            string token = Md5Encrypt.EncryptToHexString(nameSecret + date);
 
             return token;
         }
