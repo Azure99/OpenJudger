@@ -128,7 +128,7 @@ namespace Judger.Core.Database.Internal
 
             for (int i = 0; i < filedCount; i++)
             {
-                if (stdQuery.FieldNames[i] != stdQuery.FieldNames[i])
+                if (stdQuery.FieldNames[i] != usrQuery.FieldNames[i])
                 {
                     return CompareResult.WrongAnswer;
                 }
