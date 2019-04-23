@@ -94,6 +94,10 @@ namespace Judger.Managers
             {
                 Console.Error.WriteLine(content);
             }
+            else if(level == "Debug")
+            {
+                System.Diagnostics.Debug.WriteLine(content);
+            }
             
             string time = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
 
