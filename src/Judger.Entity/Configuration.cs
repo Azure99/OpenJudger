@@ -29,7 +29,7 @@ namespace Judger.Entity
         /// <summary>
         /// 取回任务周期
         /// </summary>
-        public int TaskFetchInterval { get; set; } = 1000;
+        public int TaskFetchInterval { get; set; } = 1500;
 
         /// <summary>
         /// (取回/提交)任务超时时间
@@ -49,7 +49,7 @@ namespace Judger.Entity
         /// <summary>
         /// 提交判题结果接口URL
         /// </summary>
-        public string ResultSubmitUrl { get; set; } = "http://localhost/judgerapi/submitresult";
+        public string ResultSubmitUrl { get; set; } = "http://localhost/judger/submitresult";
 
         /// <summary>
         /// 测试数据存放目录
