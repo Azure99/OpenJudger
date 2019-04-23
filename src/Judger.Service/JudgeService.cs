@@ -111,6 +111,7 @@ namespace Judger.Service
                 }
                 catch (Exception ex)
                 {
+                    LogManager.Error("Can not fetch judge task!");
                     LogManager.Exception(ex);
                 }
 

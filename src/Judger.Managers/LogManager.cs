@@ -90,6 +90,11 @@ namespace Judger.Managers
 
         private static void Log(string level, string content)
         {
+            if (level == "Error")
+            {
+                Console.Error.WriteLine(content);
+            }
+            
             string time = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
 
             StringBuilder sb = new StringBuilder();
@@ -141,7 +146,10 @@ namespace Judger.Managers
                     File.AppendAllText(path, content);
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex);
+            }
         }
 
         private static string GetLogFileName(string level)
