@@ -8,16 +8,16 @@ namespace Judger.Entity
         /// <summary>
         /// 传统程序评测
         /// </summary>
-        ProgramJudge,
+        ProgramJudge = 0,
         
         /// <summary>
         /// 特殊程序评测(交由SPJ程序评测)
         /// </summary>
-        SpecialJudge,
+        SpecialJudge = 1,
         
         /// <summary>
         /// 数据库评测
         /// </summary>
-        DbJudge
+        DbJudge = 2
     }
 }
