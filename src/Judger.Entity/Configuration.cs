@@ -39,17 +39,17 @@ namespace Judger.Entity
         /// <summary>
         /// 取回判题任务接口URL
         /// </summary>
-        public string TaskFetchUrl { get; set; } = "http://localhost/judgerapi/fetchtask";
+        public string TaskFetchUrl { get; set; } = "http://localhost/judger/fetchtask";
 
         /// <summary>
         /// 取回测试数据接口URL
         /// </summary>
-        public string TestDataFetchUrl { get; set; } = "http://localhost/judgerapi/fetchdata";
+        public string TestDataFetchUrl { get; set; } = "http://localhost/judger/fetchdata";
 
         /// <summary>
         /// 提交判题结果接口URL
         /// </summary>
-        public string ResultSubmitUrl { get; set; } = "http://localhost/judgerapi/submit";
+        public string ResultSubmitUrl { get; set; } = "http://localhost/judgerapi/submitresult";
 
         /// <summary>
         /// 测试数据存放目录

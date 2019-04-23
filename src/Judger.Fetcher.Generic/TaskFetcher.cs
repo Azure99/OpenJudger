@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 using Judger.Entity;
+using Judger.Fetcher.Generic.Entity;
+using Judger.Utils;
 
 namespace Judger.Fetcher.Generic
 {
@@ -9,11 +10,18 @@ namespace Judger.Fetcher.Generic
     /// </summary>
     public class TaskFetcher : BaseTaskFetcher
     {
+        /// <summary>
+        /// JudgeTask取回器
+        /// </summary>
         public TaskFetcher()
         {
             HttpClient.DefaultContentType = "application/json";
         }
 
+        /// <summary>
+        /// 尝试取回评测任务
+        /// </summary>
+        /// <returns>评测任务</returns>
         public override JudgeTask[] Fetch()
         {
             string response = HttpClient.UploadString(Config.TaskFetchUrl, CreateRequestBody());
@@ -22,57 +30,40 @@ namespace Judger.Fetcher.Generic
         }
 
         /// <summary>
-        /// 创建请求Body
+        /// 创建取回评测任务的请求
         /// </summary>
+        /// <returns>取回评测任务的请求</returns>
         private string CreateRequestBody()
         {
-            JObject requestBody = new JObject();
-            requestBody.Add("JudgerName", Config.JudgerName);
-            requestBody.Add("Token", Token.Create());
-
-            return requestBody.ToString();
+            return Token.CreateJObject().ToString();
         }
 
         /// <summary>
-        /// 从ResponseBody中解析Task
+        /// 从Response中解析Task
         /// </summary>
+        /// <returns>JudgeTasks</returns>
         private JudgeTask[] ParseTask(string jsonString)
         {
-            JObject jObject = JObject.Parse(jsonString);
-            if(!CheckTaskJObject(jObject))
+            InnerJudgeTask[] innerJudgeTasks = SampleJsonSerializer.DeSerialize<InnerJudgeTask[]>(jsonString);
+            
+            if (innerJudgeTasks == null || innerJudgeTasks.Length == 0)
             {
                 return new JudgeTask[0];
             }
-
-            JudgeTask tempTask = JObject.Parse(jsonString).ToObject<JudgeTask>();
-
-            JudgeTask task = JudgeTaskFactory.Create(
-                tempTask.SubmitId, tempTask.ProblemId, tempTask.DataVersion,
-                tempTask.Language, tempTask.SourceCode, tempTask.Author,
-                tempTask.TimeLimit, tempTask.MemoryLimit, tempTask.JudgeAllCases, tempTask.JudgeType);
-
-            return new JudgeTask[] { task };
-        }
-
-        /// <summary>
-        /// 检查JsonObject是否符合JudgeTask规范
-        /// </summary>
-        private bool CheckTaskJObject(JObject obj)
-        {
-            HashSet<string> keySet = new HashSet<string>();
-            foreach(JProperty key in obj.Properties())
+            
+            List<JudgeTask> judgeTasks = new List<JudgeTask>();
+            foreach (var item in innerJudgeTasks)
             {
-                keySet.Add(key.Name.ToLower());
+                JudgeTask task = JudgeTaskFactory.Create(
+                    item.SubmitId, item.ProblemId, item.DataVersion, 
+                    item.Language, item.SourceCode, item.Author, 
+                    item.TimeLimit, item.MemoryLimit, 
+                    item.JudgeAllCases, item.JudgeType);
+                
+                judgeTasks.Add(task);
             }
-
-            if (!keySet.Contains("submitid")    || !keySet.Contains("problemid") ||
-                !keySet.Contains("dataversion") || !keySet.Contains("language")  ||
-                !keySet.Contains("sourcecode")) 
-            {
-                return false;
-            }
-
-            return true;
+            
+            return judgeTasks.ToArray();
         }
     }
 }
