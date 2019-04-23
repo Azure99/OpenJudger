@@ -3,7 +3,7 @@ using Judger.Utils;
 
 namespace MainUnitTest
 {
-    public class JsonSerializaerTest
+    public class JsonSerializerTest
     {
         /// <summary>
         /// 测试序列化反序列化功能
@@ -18,21 +18,21 @@ namespace MainUnitTest
                 Arr = new int[] { 1, 2, 3 }
             };
 
-            string json = SampleJsonSerializaer.Serialize(classA, typeof(TempTestClass));
-            string json2 = SampleJsonSerializaer.Serialize(classA);
+            string json = SampleJsonSerializer.Serialize(classA, typeof(TempTestClass));
+            string json2 = SampleJsonSerializer.Serialize(classA);
 
             //序列化是否成功
             Assert.True(json == json2);
 
-            TempTestClass classB = SampleJsonSerializaer.DeSerialize(json2, typeof(TempTestClass)) as TempTestClass;
-            TempTestClass classC = SampleJsonSerializaer.DeSerialize<TempTestClass>(json);
+            TempTestClass classB = SampleJsonSerializer.DeSerialize(json2, typeof(TempTestClass)) as TempTestClass;
+            TempTestClass classC = SampleJsonSerializer.DeSerialize<TempTestClass>(json);
 
             //反序列化是否成功
             Assert.True(Compare(classA, classB) && Compare(classA, classB));
 
             json = json.Replace("NNN", "A");
-            classB = SampleJsonSerializaer.DeSerialize<TempTestClass>(json);
-            classC = SampleJsonSerializaer.DeSerialize<TempTestClass>(json2);
+            classB = SampleJsonSerializer.DeSerialize<TempTestClass>(json);
+            classC = SampleJsonSerializer.DeSerialize<TempTestClass>(json2);
 
             //修改json的情况下是否正确
             Assert.False(Compare(classB, classC));

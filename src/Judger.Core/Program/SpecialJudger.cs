@@ -13,7 +13,7 @@ namespace Judger.Core.Program
     public class SpecialJudger : BaseJudger
     {
         /// <summary>
-        /// 注意:未编写:SPJTaks中的语言应对应SPJ程序，而不是JudgeTask
+        /// 注意:未编写:SPJTasks中的语言应对应SPJ程序，而不是JudgeTask
         /// </summary>
         private JudgeTask SPJTask;
 

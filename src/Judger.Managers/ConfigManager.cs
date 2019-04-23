@@ -28,7 +28,7 @@ namespace Judger.Managers
             }
             else
             {
-                Config = SampleJsonSerializaer.DeSerialize<Configuration>(configJson);
+                Config = SampleJsonSerializer.DeSerialize<Configuration>(configJson);
             }
             
             SetIsDbConfigField();
@@ -40,7 +40,7 @@ namespace Judger.Managers
         /// </summary>
         public static void SaveConfig()
         {
-            FileHelper.TryWriteAllText("Config.json", SampleJsonSerializaer.Serialize(Config));
+            FileHelper.TryWriteAllText("Config.json", SampleJsonSerializer.Serialize(Config));
         }
 
         /// <summary>

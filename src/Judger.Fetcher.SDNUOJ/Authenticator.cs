@@ -49,7 +49,7 @@ namespace Judger.Fetcher.SDNUOJ
             {
                 string response = _httpClient.UploadString(loginUrl, requestBody, 3);
 
-                ServerMessageEntity message = SampleJsonSerializaer.DeSerialize<ServerMessageEntity>(response);
+                ServerMessageEntity message = SampleJsonSerializer.DeSerialize<ServerMessageEntity>(response);
                 return message.IsSuccess;
             }
             catch

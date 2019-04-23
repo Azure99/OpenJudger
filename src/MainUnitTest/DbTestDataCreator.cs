@@ -29,8 +29,8 @@ namespace MainUnitTest
             DbQueryData query = BaseDbOperator.ReadQueryData(reader);
             DbData output = oper.ReadDbData();
 
-            string outputData = SampleJsonSerializaer.Serialize(output);
-            string queryData = SampleJsonSerializaer.Serialize(query);
+            string outputData = SampleJsonSerializer.Serialize(output);
+            string queryData = SampleJsonSerializer.Serialize(query);
 
             File.WriteAllText(OUTPUT_FILE, outputData);
             File.WriteAllText(QUERY_FILE, queryData);

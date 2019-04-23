@@ -8,11 +8,11 @@ namespace Judger.Utils
     /// <summary>
     /// 简单的JSON序列化, 反序列化辅助类
     /// </summary>
-    public static class SampleJsonSerializaer
+    public static class SampleJsonSerializer
     {
         private static JsonSerializer _serializer = new JsonSerializer();
 
-        static SampleJsonSerializaer()
+        static SampleJsonSerializer()
         {
             _serializer.Formatting = Formatting.Indented;
         }

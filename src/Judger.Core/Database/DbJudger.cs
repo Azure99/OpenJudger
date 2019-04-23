@@ -122,7 +122,7 @@ namespace Judger.Core.Database
                 return null;
             }
 
-            DbData dbData = SampleJsonSerializaer.DeSerialize<DbData>(data);
+            DbData dbData = SampleJsonSerializer.DeSerialize<DbData>(data);
             Array.Sort(dbData.TablesData, (a, b) => String.Compare(a.Name, b.Name, StringComparison.Ordinal));
 
             return dbData;
@@ -135,7 +135,7 @@ namespace Judger.Core.Database
                 return null;
             }
 
-            return SampleJsonSerializaer.DeSerialize<DbQueryData>(data);
+            return SampleJsonSerializer.DeSerialize<DbQueryData>(data);
         }
 
         public override void Dispose()
