@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Timers;
 using Judger.Entity;
 using Judger.Fetcher;
@@ -77,7 +78,10 @@ namespace Judger.Service
             {
                 try
                 {
-                    System.IO.Directory.Delete(lang.JudgeDirectory, true);
+                    if (Directory.Exists(lang.JudgeDirectory))
+                    {
+                        Directory.Delete(lang.JudgeDirectory, true);
+                    }
                 }
                 catch (Exception ex)
                 {
