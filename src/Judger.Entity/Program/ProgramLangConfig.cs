@@ -57,17 +57,17 @@ namespace Judger.Entity.Program
         /// <summary>
         /// 编译器路径
         /// </summary>
-        public string CompilerPath { get; set; } = @"Compilers\gcc\bin\g++.exe";
+        public string CompilerPath { get; set; } = @"g++";
 
         /// <summary>
         /// 编译器工作目录
         /// </summary>
-        public string CompilerWorkDirectory { get; set; } = @"Compilers\gcc\bin";
+        public string CompilerWorkDirectory { get; set; } = @"<tempdir>";
 
         /// <summary>
         /// 编译器参数
         /// </summary>
-        public string CompilerArgs { get; set; } = "<tempdir>src.cpp -o <tempdir>program.exe";
+        public string CompilerArgs { get; set; } = "src.cpp -o program.exe";
 
         /// <summary>
         /// 运行器路径
@@ -77,7 +77,7 @@ namespace Judger.Entity.Program
         /// <summary>
         /// 运行器工作目录
         /// </summary>
-        public string RunnerWorkDirectory { get; set; } = @"Compilers\gcc\bin";
+        public string RunnerWorkDirectory { get; set; } = @"<tempdir>";
 
         /// <summary>
         /// 运行器参数
