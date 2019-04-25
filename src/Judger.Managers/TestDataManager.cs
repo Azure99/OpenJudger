@@ -20,23 +20,53 @@ namespace Judger.Managers
         /// <summary>
         /// 数据锁字典, 防止统一题目测试数据争用
         /// </summary>
-        private static Dictionary<int, object> _dataLockDic;
+        private static readonly Dictionary<int, object> DataLockDic;
 
         /// <summary>
         /// 数据锁字典的锁
         /// </summary>
-        private static object _dicLock = new object();
+        private static readonly object DicLock = new object();
 
         /// <summary>
         /// 目录分隔符
         /// </summary>
         private static readonly char SepChar = Path.DirectorySeparatorChar;
 
+        /// <summary>
+        /// 版本号文件名
+        /// </summary>
+        public const string VERSION_FILENAME = "version.txt";
+
+        /// <summary>
+        /// 测试输入文件夹名
+        /// </summary>
+        public const string DIR_INPUT = "input";
+
+        /// <summary>
+        /// 测试输出文件夹名
+        /// </summary>
+        public const string DIR_OUTPUT = "output";
+
+        /// <summary>
+        /// 测试查询文件夹名
+        /// </summary>
+        public const string DIR_QUERY = "query";
+
+        /// <summary>
+        /// Special Judge数据文件夹名
+        /// </summary>
+        public const string DIR_SPJ = "spj";
+
+        /// <summary>
+        /// Database Judge数据文件夹名
+        /// </summary>
+        public const string DIR_DB = "db";
+
         static TestDataManager()
         {
-            _dataLockDic = new Dictionary<int, object>();
+            DataLockDic = new Dictionary<int, object>();
 
-            if (!Directory.Exists(Config.TestDataDirectory))
+            if (!Directory.Exists(Config.TestDataDirectory)) 
             {
                 Directory.CreateDirectory(Config.TestDataDirectory);
             }
@@ -49,41 +79,33 @@ namespace Judger.Managers
         /// <param name="version">欲检测版本</param>
         public static bool CheckData(int problemId, string version)
         {
-            string path = Path.Combine(Config.TestDataDirectory, problemId.ToString());
+            string dirPath = Cmb(Config.TestDataDirectory, problemId);
+            string verPath = Cmb(dirPath, VERSION_FILENAME);
 
             lock (GetDataLock(problemId))
             {
-                if (!Directory.Exists(path) || !File.Exists(path + SepChar + "version.txt"))
+                if (!Directory.Exists(dirPath) || !File.Exists(verPath))
                 {
                     return false;
                 }
 
-                FileHelper.TryReadAllText(path + SepChar + "version.txt", out string localVersion);
+                FileHelper.TryReadAllText(verPath, out string localVersion);
                 return localVersion == version;
             }
         }
 
         /// <summary>
-        /// 获取当前测试数据版本号
+        /// 写出测试数据
         /// </summary>
         /// <param name="problemId">问题ID</param>
-        /// <returns>版本号</returns>
-        public static string GetTestDataVersion(int problemId)
+        /// <param name="zipData">ZIP数据</param>
+        public static void WriteTestData(int problemId, byte[] zipData)
         {
-            string path = Path.Combine(Config.TestDataDirectory,
-                                       problemId.ToString(),
-                                       "version.txt");
-
-
-            lock (GetDataLock(problemId))
+            using (MemoryStream ms = new MemoryStream())
             {
-                if (!File.Exists(path))
-                {
-                    return "";
-                }
-
-                FileHelper.TryReadAllText(path, out string version);
-                return version;
+                ms.Write(zipData);
+                ms.Position = 0;
+                WriteTestData(problemId, ms);
             }
         }
 
@@ -107,31 +129,16 @@ namespace Judger.Managers
         /// <param name="zipArchive">ZipArchive</param>
         public static void WriteTestData(int problemId, ZipArchive zipArchive)
         {
-            string path = Path.Combine(Config.TestDataDirectory, problemId.ToString());
+            string dirPath = Cmb(Config.TestDataDirectory, problemId);
             lock (GetDataLock(problemId))
             {
                 try
                 {
-                    Directory.Delete(path, true);
+                    Directory.Delete(dirPath, true);
                 }
                 catch { }
 
-                zipArchive.ExtractToDirectory(path);
-            }
-        }
-
-        /// <summary>
-        /// 写出测试数据
-        /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <param name="zipData">ZIP数据</param>
-        public static void WriteTestData(int problemId, byte[] zipData)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                ms.Write(zipData);
-                ms.Position = 0;
-                WriteTestData(problemId, ms);
+                zipArchive.ExtractToDirectory(dirPath);
             }
         }
 
@@ -142,19 +149,19 @@ namespace Judger.Managers
         /// <returns>测试数据(输入/输出)文件名，使用元组数组保存</returns>
         public static Tuple<string, string>[] GetTestDataFilesName(int problemId)
         {
-            string path = Path.Combine(Config.TestDataDirectory, problemId.ToString()) + SepChar;
+            string dirPath = Cmb(Config.TestDataDirectory, problemId);
 
             string[] inputFiles;
             string[] outputFiles;
             lock (GetDataLock(problemId))
             {
-                inputFiles = Directory.GetFiles(path + "input");
+                inputFiles = Directory.GetFiles(Cmb(dirPath, DIR_INPUT));
                 for (int i = 0; i < inputFiles.Length; i++)
                 {
                     inputFiles[i] = Path.GetFileName(inputFiles[i]);
                 }
 
-                outputFiles = Directory.GetFiles(path + "output");
+                outputFiles = Directory.GetFiles(Cmb(dirPath, DIR_OUTPUT));
                 for (int i = 0; i < outputFiles.Length; i++)
                 {
                     outputFiles[i] = Path.GetFileName(outputFiles[i]);
@@ -190,12 +197,12 @@ namespace Judger.Managers
         /// <param name="output">测试输出</param>
         public static void GetTestData(int problemId, string inputName, string outputName, out string input, out string output)
         {
-            string problemDir = Path.Combine(Config.TestDataDirectory, problemId.ToString()) + SepChar;
+            string dirPath = Cmb(Config.TestDataDirectory, problemId);
 
             lock (GetDataLock(problemId))
             {
-                input = File.ReadAllText(problemDir + "input" + SepChar + inputName);
-                output = File.ReadAllText(problemDir + "output" + SepChar + outputName);
+                input = File.ReadAllText(Cmb(dirPath, DIR_INPUT, inputName));
+                output = File.ReadAllText(Cmb(dirPath, DIR_OUTPUT, outputName));
             }
         }
 
@@ -206,43 +213,17 @@ namespace Judger.Managers
         /// <returns>是否需要SPJ</returns>
         public static bool IsSpecialJudge(int problemId)
         {
-            string spjDir = Path.Combine(Config.TestDataDirectory, problemId.ToString(), "spj") + SepChar;
+            string spjDir = Cmb(Config.TestDataDirectory, problemId, DIR_SPJ);
 
             lock (GetDataLock(problemId))
             {
-                if (Directory.Exists(spjDir))
+                if (Directory.Exists(spjDir) && Directory.GetFiles(spjDir).Length > 0)
                 {
-                    if (Directory.GetFiles(spjDir).Length > 0)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
                 return false;
             }
         }
-
-        [Obsolete]
-        public static SpecialJudgeSourceFile GetSpecialJudgeSourceFile(int problemId, int index = 0)
-        {
-            string sourceFilePath = SpjManager.FindSpjSourceFileInTestData(problemId, index);
-            if (sourceFilePath == null)
-            {
-                return null;
-            }
-
-            ProgramLangConfig langConfig = SpjManager.GetLangConfigBySourceFilePath(sourceFilePath);
-            if (langConfig == null)
-            {
-                return null;
-            }
-
-            return new SpecialJudgeSourceFile
-            {
-                LangConfiguration = langConfig,
-                SourceCode = File.ReadAllText(sourceFilePath)
-            };
-        }
-
 
         /// <summary>
         /// 写出SPJ可执行程序
@@ -302,9 +283,9 @@ namespace Judger.Managers
         {
             lock (GetDataLock(problemId)) 
             {
-                string path = Path.Combine(Config.TestDataDirectory, problemId.ToString()) + SepChar + "db" + SepChar;
+                string dirPath = Cmb(Config.TestDataDirectory, problemId, DIR_DB);
 
-                string[] inputFiles = Directory.GetFiles(path + "input");
+                string[] inputFiles = Directory.GetFiles(Cmb(dirPath + DIR_INPUT));
                 var query = from x in inputFiles
                             where Path.GetExtension(x).TrimStart('.').ToLower() == dbType.ToString().ToLower()
                             select Path.GetFileNameWithoutExtension(x);
@@ -312,8 +293,8 @@ namespace Judger.Managers
                 List<string> dataNames = new List<string>();
                 foreach (var x in query)
                 {
-                    string outputFile = PathHelper.FindFileIgnoreCase(path + "output", x + "." + dbType);
-                    string queryFile = PathHelper.FindFileIgnoreCase(path + "query", x + "." + dbType);
+                    string outputFile = PathHelper.FindFileIgnoreCase(Cmb(dirPath, DIR_OUTPUT), x + "." + dbType);
+                    string queryFile = PathHelper.FindFileIgnoreCase(Cmb(dirPath + DIR_QUERY), x + "." + dbType);
                     if (outputFile != null || queryFile != null)
                     {
                         dataNames.Add(x);
@@ -335,11 +316,11 @@ namespace Judger.Managers
         {
             lock (GetDataLock(problemId))
             {
-                string path = Path.Combine(Config.TestDataDirectory, problemId.ToString()) + SepChar + "db" + SepChar;
+                string dirPath = Cmb(Config.TestDataDirectory, problemId, DIR_DB);
 
-                string inputFile = PathHelper.FindFileIgnoreCase(path + "input", dataName + '.' + dbType);
-                string outputFile = PathHelper.FindFileIgnoreCase(path + "output", dataName + "." + dbType);
-                string queryFile = PathHelper.FindFileIgnoreCase(path + "query", dataName + "." + dbType);
+                string inputFile = PathHelper.FindFileIgnoreCase(Cmb(dirPath, DIR_INPUT), dataName + '.' + dbType);
+                string outputFile = PathHelper.FindFileIgnoreCase(Cmb(dirPath, DIR_OUTPUT), dataName + "." + dbType);
+                string queryFile = PathHelper.FindFileIgnoreCase(Cmb(dirPath, DIR_QUERY), dataName + "." + dbType);
 
                 if (inputFile == null || (outputFile == null && queryFile == null))
                 {
@@ -349,9 +330,9 @@ namespace Judger.Managers
                 return new DbTestData
                 {
                     Name = dataName,
-                    Input = (inputFile != null) ? File.ReadAllText(inputFile) : null,
+                    Input =  (inputFile  != null) ? File.ReadAllText(inputFile)  : null,
                     Output = (outputFile != null) ? File.ReadAllText(outputFile) : null,
-                    Query = (queryFile != null) ? File.ReadAllText(queryFile) : null,
+                    Query =  (queryFile  != null) ? File.ReadAllText(queryFile)  : null,
                 };
             }
         }
@@ -363,16 +344,13 @@ namespace Judger.Managers
         /// <returns>是否为数据库题目</returns>
         public static bool IsDatabaseJudge(int problemId)
         {
-            string dbDir = Path.Combine(Config.TestDataDirectory, problemId.ToString(), "db") + SepChar;
+            string dbDir = Cmb(Config.TestDataDirectory, problemId, DIR_DB);
 
             lock (GetDataLock(problemId))
             {
-                if (Directory.Exists(dbDir))
+                if (Directory.Exists(dbDir) && Directory.GetDirectories(dbDir).Length > 0)
                 {
-                    if (Directory.GetDirectories(dbDir).Length > 0)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
                 return false;
             }
@@ -385,15 +363,31 @@ namespace Judger.Managers
         /// <returns>锁</returns>
         private static object GetDataLock(int problemId)
         {
-            lock (_dicLock)
+            lock (DicLock)
             {
-                if (!_dataLockDic.ContainsKey(problemId))
+                if (!DataLockDic.ContainsKey(problemId))
                 {
-                    _dataLockDic.Add(problemId, new object());
+                    DataLockDic.Add(problemId, new object());
                 }
 
-                return _dataLockDic[problemId];
+                return DataLockDic[problemId];
             }
+        }
+
+        /// <summary>
+        /// 合并路径, Path.Combine方法缩写
+        /// </summary>
+        /// <param name="paths">欲合并路径</param>
+        /// <returns>合并后的路径</returns>
+        private static string Cmb(params object[] paths)
+        {
+            string[] pathStrs = new string[paths.Length];
+            for (int i = 0; i < pathStrs.Length; i++)
+            {
+                pathStrs[i] = paths[i].ToString();
+            }
+
+            return Path.Combine(pathStrs);
         }
     }
 }
