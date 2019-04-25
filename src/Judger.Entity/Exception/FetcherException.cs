@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace Judger.Entity
+﻿namespace Judger.Entity.Exception
 {
     /// <summary>
     /// Fetcher异常
     /// </summary>
-    public class FetcherException : Exception
+    public class FetcherException : System.Exception
     {
         /// <summary>
         /// Fetcher异常

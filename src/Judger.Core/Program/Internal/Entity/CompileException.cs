@@ -1,4 +1,5 @@
 ﻿using Judger.Entity;
+using Judger.Entity.Exception;
 
 namespace Judger.Core.Program.Internal.Entity
 {

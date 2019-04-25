@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace Judger.Entity
+﻿namespace Judger.Entity.Exception
 {
     /// <summary>
     /// 判题异常
     /// </summary>
-    public class JudgeException : Exception
+    public class JudgeException : System.Exception
     {
         /// <summary>
         /// 判题异常

@@ -1,6 +1,7 @@
 ﻿using Judger.Entity;
 using Judger.Core.Program;
 using Judger.Core.Database;
+using Judger.Entity.Exception;
 
 namespace Judger.Core
 {

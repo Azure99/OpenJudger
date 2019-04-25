@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using Judger.Entity;
+using Judger.Entity.Exception;
 using Judger.Managers;
 
 namespace Judger.Fetcher

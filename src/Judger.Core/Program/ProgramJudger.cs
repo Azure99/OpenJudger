@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Judger.Core.Program.Internal;
 using Judger.Core.Program.Internal.Entity;
 using Judger.Entity;
+using Judger.Entity.Exception;
 using Judger.Entity.Program;
 using Judger.Managers;
 

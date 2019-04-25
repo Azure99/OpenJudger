@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Judger.Entity;
+using Judger.Entity.Exception;
 using Judger.Entity.Program;
 using Judger.Utils;
 

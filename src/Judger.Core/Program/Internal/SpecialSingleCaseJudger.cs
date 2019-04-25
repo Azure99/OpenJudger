@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Judger.Core.Program.Internal.Entity;
 using Judger.Entity;
+using Judger.Entity.Exception;
 using Judger.Entity.Program;
 using Judger.Managers;
 using Judger.Utils;

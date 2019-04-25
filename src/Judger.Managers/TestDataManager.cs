@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using Judger.Entity;
 using Judger.Entity.Database;
+using Judger.Entity.Exception;
 using Judger.Entity.Program;
 using Judger.Utils;
 
