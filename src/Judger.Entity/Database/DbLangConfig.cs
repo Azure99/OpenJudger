@@ -12,7 +12,7 @@ namespace Judger.Entity.Database
         /// <summary>
         /// 数据库管理系统名称
         /// </summary>
-        public string Name { get; set; } = DatabaseType.mysql.ToString();
+        public string Name { get; set; } = "";
 
         /// <summary>
         /// 是否为数据库配置
@@ -22,32 +22,32 @@ namespace Judger.Entity.Database
         /// <summary>
         /// 数据库驱动路径
         /// </summary>
-        public string DriverPath { get; set; } = "Pomelo.Data.MySql.dll";
+        public string DriverPath { get; set; } = "";
 
         /// <summary>
         /// 服务器
         /// </summary>
-        public string Server { get; set; } = "localhost";
+        public string Server { get; set; } = "";
 
         /// <summary>
         /// 数据库名
         /// </summary>
-        public string Database { get; set; } = "judger";
+        public string Database { get; set; } = "";
 
         /// <summary>
         /// 用户名
         /// </summary>
-        public string User { get; set; } = "root";
+        public string User { get; set; } = "";
 
         /// <summary>
         /// 密码
         /// </summary>
-        public string Password { get; set; } = "123456";
+        public string Password { get; set; } = "";
 
         /// <summary>
         /// 连接字符串模板
         /// </summary>
-        public string ConnStringTemplate { get; set; } = "Server=<Server>;Database=<Database>;User=<User>;Password=<Password>;CharSet=utf8;";
+        public string ConnStringTemplate { get; set; } = "";
 
         /// <summary>
         /// 数据库的连接字符串

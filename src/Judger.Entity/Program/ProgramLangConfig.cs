@@ -11,12 +11,12 @@ namespace Judger.Entity.Program
         /// <summary>
         /// 语言名称
         /// </summary>
-        public string Name { get; set; } = "cpp";
+        public string Name { get; set; } = "";
 
         /// <summary>
         /// 是否为数据库配置
         /// </summary>
-        public bool IsDbConfig { get; set; } = false;
+        public bool IsDbConfig { get; set; }
 
         /// <summary>
         /// 是否需要编译(脚本语言不需要)
@@ -26,17 +26,17 @@ namespace Judger.Entity.Program
         /// <summary>
         /// 写出的源文件名
         /// </summary>
-        public string SourceCodeFileName { get; set; } = "src.cpp";
+        public string SourceCodeFileName { get; set; } = "";
 
         /// <summary>
         /// 源代码文件扩展名(使用|分隔),用于Special Judge,必须唯一
         /// </summary>
-        public string SourceCodeFileExtension { get; set; } = "cc|cpp";
+        public string SourceCodeFileExtension { get; set; } = "";
 
         /// <summary>
         /// 编译后可执行文件名
         /// </summary>
-        public string ProgramFileName { get; set; } = "program.exe";
+        public string ProgramFileName { get; set; } = "";
 
         /// <summary>
         /// 使用UTF8编码读写流
@@ -52,32 +52,32 @@ namespace Judger.Entity.Program
         /// 判题时使用的目录
         /// </summary>
         public string JudgeDirectory { get; set; } 
-            = "JudgeTemp" + System.IO.Path.DirectorySeparatorChar + "CppJudge";
+            = "JudgeTemp" + System.IO.Path.DirectorySeparatorChar + "Judge";
 
         /// <summary>
         /// 编译器路径
         /// </summary>
-        public string CompilerPath { get; set; } = @"g++";
+        public string CompilerPath { get; set; } = "";
 
         /// <summary>
         /// 编译器工作目录
         /// </summary>
-        public string CompilerWorkDirectory { get; set; } = @"<tempdir>";
+        public string CompilerWorkDirectory { get; set; } = "";
 
         /// <summary>
         /// 编译器参数
         /// </summary>
-        public string CompilerArgs { get; set; } = "src.cpp -o program.exe";
+        public string CompilerArgs { get; set; } = "";
 
         /// <summary>
         /// 运行器路径
         /// </summary>
-        public string RunnerPath { get; set; } = "<tempdir>program.exe";
+        public string RunnerPath { get; set; } = "";
 
         /// <summary>
         /// 运行器工作目录
         /// </summary>
-        public string RunnerWorkDirectory { get; set; } = @"<tempdir>";
+        public string RunnerWorkDirectory { get; set; } = "";
 
         /// <summary>
         /// 运行器参数

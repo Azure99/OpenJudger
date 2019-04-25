@@ -23,6 +23,8 @@ namespace Judger.Managers
             if(string.IsNullOrEmpty(configJson))//创建新配置文件
             {
                 Config = new Configuration();
+                Config.Languages = GetDefaultLangConfigs();
+                Config.Databases = GetDefaultDbConfigs();
                 Config.Password = RandomString.Next(16);
                 Config.AdditionalConfig.Add("SampleKey", "SampleValue");
             }
@@ -133,6 +135,134 @@ namespace Judger.Managers
             }
 
             return extDic;
+        }
+
+        /// <summary>
+        /// 获取默认编程语言配置
+        /// </summary>
+        /// <returns>编程语言配置</returns>
+        private static ProgramLangConfig[] GetDefaultLangConfigs()
+        {
+            char sparChar = System.IO.Path.DirectorySeparatorChar;
+
+            List<ProgramLangConfig> langConfigs = new List<ProgramLangConfig>();
+
+            ProgramLangConfig c = new ProgramLangConfig
+            {
+                Name = "c",
+                IsDbConfig = false,
+                NeedCompile = true,
+                SourceCodeFileName = "src.c",
+                SourceCodeFileExtension = "c",
+                ProgramFileName = "program.exe",
+                UseUTF8 = true,
+                MaxCompileTime = 20000,
+                JudgeDirectory = "JudgeTemp" + sparChar + "CJudge",
+                CompilerPath = "gcc",
+                CompilerWorkDirectory = "<tempdir>",
+                CompilerArgs = "src.c -o program.exe",
+                RunnerPath = "<tempdir>program.exe",
+                RunnerWorkDirectory = "<tempdir>",
+                RunnerArgs = "",
+                OutputLimit = 67108864,
+                TimeCompensation = 1.0
+            };
+
+            ProgramLangConfig cpp = new ProgramLangConfig
+            {
+                Name = "cpp",
+                IsDbConfig = false,
+                NeedCompile = true,
+                SourceCodeFileName = "src.cpp",
+                SourceCodeFileExtension = "cc|cpp",
+                ProgramFileName = "program.exe",
+                UseUTF8 = true,
+                MaxCompileTime = 20000,
+                JudgeDirectory = "JudgeTemp" + sparChar + "CppJudge",
+                CompilerPath = "g++",
+                CompilerWorkDirectory = "<tempdir>",
+                CompilerArgs = "src.cpp -o program.exe",
+                RunnerPath = "<tempdir>program.exe",
+                RunnerWorkDirectory = "<tempdir>",
+                RunnerArgs = "",
+                OutputLimit = 67108864,
+                TimeCompensation = 1.0
+            };
+
+
+            ProgramLangConfig java = new ProgramLangConfig
+            {
+                Name = "java",
+                IsDbConfig = false,
+                NeedCompile = true,
+                SourceCodeFileName = "Main.java",
+                SourceCodeFileExtension = "java",
+                ProgramFileName = "Main.class",
+                UseUTF8 = false,
+                MaxCompileTime = 30000,
+                JudgeDirectory = "JudgeTemp" + sparChar + "JavaJudge",
+                CompilerPath = "javac",
+                CompilerWorkDirectory = "<tempdir>",
+                CompilerArgs = "-encoding utf-8 Main.java",
+                RunnerPath = "java",
+                RunnerWorkDirectory = "<tempdir>",
+                RunnerArgs = "Main",
+                OutputLimit = 67108864,
+                TimeCompensation = 1.0
+            };
+
+            ProgramLangConfig python = new ProgramLangConfig
+            {
+                Name = "python",
+                IsDbConfig = false,
+                NeedCompile = false,
+                SourceCodeFileName = "src.py",
+                SourceCodeFileExtension = "py",
+                ProgramFileName = "src.py",
+                UseUTF8 = true,
+                MaxCompileTime = 20000,
+                JudgeDirectory = "JudgeTemp" + sparChar + "PythonJudge",
+                CompilerPath = "",
+                CompilerWorkDirectory = "",
+                CompilerArgs = "",
+                RunnerPath = "python",
+                RunnerWorkDirectory = "<tempdir>",
+                RunnerArgs = "<tempdir>src.py",
+                OutputLimit = 67108864,
+                TimeCompensation = 1.0
+            };
+
+            langConfigs.Add(c);
+            langConfigs.Add(cpp);
+            langConfigs.Add(java);
+            langConfigs.Add(python);
+            
+            return langConfigs.ToArray();
+        }
+
+        /// <summary>
+        /// 获取默认数据库配置
+        /// </summary>
+        /// <returns>数据库配置</returns>
+        private static DbLangConfig[] GetDefaultDbConfigs()
+        {
+            List<DbLangConfig> langConfigs = new List<DbLangConfig>();
+
+            DbLangConfig mysql = new DbLangConfig
+            {
+                Name = "mysql",
+                IsDbConfig = true,
+                DriverPath = "Pomelo.Data.MySql.dll",
+                Server = "localhost",
+                Database = "judger",
+                User = "root",
+                Password = "123456",
+                ConnStringTemplate = "Server=<Server>;Database=<Database>;User=<User>;Password=<Password>;CharSet=utf8;",
+            };
+
+            langConfigs.Add(mysql);
+
+            return langConfigs.ToArray();
         }
     }
 }
