@@ -30,7 +30,7 @@ namespace Judger.Core.Program.Internal
             using (ProcessRunner runner = CreateProcessRunner())
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
-                if(LangConfig.UseUTF8)
+                if (LangConfig.UseUTF8)
                 {
                     runner.Encoding = Encoding.UTF8;
                 }
@@ -48,7 +48,7 @@ namespace Judger.Core.Program.Internal
                 {
                     exitcode = runner.Run("", out output, out error);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return ex.ToString();
                 }
@@ -57,17 +57,18 @@ namespace Judger.Core.Program.Internal
                     monitor.Dispose();
                 }
 
-                if(!string.IsNullOrEmpty(error)) //存在编译错误
+                if (!string.IsNullOrEmpty(error)) //存在编译错误
                 {
                     return error;
                 }
 
-                if(exitcode != 0)
+                if (exitcode != 0)
                 {
-                    if(monitor.LimitExceed)
+                    if (monitor.LimitExceed)
                     {
                         return "Compile timeout.";
                     }
+
                     return "Compiler runtime error.";
                 }
 

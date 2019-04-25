@@ -12,10 +12,10 @@ namespace Judger.Fetcher.Generic
     public static class Token
     {
         private static readonly Configuration Config = ConfigManager.Config;
-        
+
         private const string JOBJECT_JUDGER_NAME = "judgerName";
         private const string JOBJECT_TOKEN = "token";
-        
+
         /// <summary>
         /// 生成校验Token
         /// </summary>
@@ -42,7 +42,7 @@ namespace Judger.Fetcher.Generic
         {
             JObject jObject = new JObject();
             AddTokenToJObject(jObject);
-            
+
             return jObject;
         }
 
@@ -53,7 +53,7 @@ namespace Judger.Fetcher.Generic
         public static void AddTokenToJObject(JObject jObject)
         {
             string token = Create();
-            
+
             jObject.Add(JOBJECT_JUDGER_NAME, Config.JudgerName);
             jObject.Add(JOBJECT_TOKEN, token);
         }

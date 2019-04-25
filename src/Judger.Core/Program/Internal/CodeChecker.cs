@@ -19,11 +19,12 @@ namespace Judger.Core.Program.Internal
         private Dictionary<string, List<string>> _langRulesDic = new Dictionary<string, List<string>>();
 
         private Configuration _config = ConfigManager.Config;
-        
+
         private const string LANG_START = "[Language=";
+
         private CodeChecker()
         {
-            if(_config.InterceptUnsafeCode)
+            if (_config.InterceptUnsafeCode)
             {
                 InitRulesDictionary();
             }
@@ -31,7 +32,7 @@ namespace Judger.Core.Program.Internal
 
         private void InitRulesDictionary()
         {
-            if (!File.Exists(_config.InterceptionRules)) 
+            if (!File.Exists(_config.InterceptionRules))
             {
                 File.WriteAllText(_config.InterceptionRules, "");
             }
@@ -40,14 +41,14 @@ namespace Judger.Core.Program.Internal
             string[] rules = Regex.Split(rulesData, "\r\n|\r|\n");
 
             string nowLang = "";
-            foreach(string rule in rules)
+            foreach (string rule in rules)
             {
-                if (string.IsNullOrEmpty(rule) || rule.StartsWith("##"))//空行或注释
+                if (string.IsNullOrEmpty(rule) || rule.StartsWith("##")) //空行或注释
                 {
                     continue;
                 }
 
-                if(rule.StartsWith(LANG_START))//语言开始标识
+                if (rule.StartsWith(LANG_START)) //语言开始标识
                 {
                     try
                     {
@@ -59,11 +60,12 @@ namespace Judger.Core.Program.Internal
                         nowLang = "";
                         LogManager.Error("Can not parse interception rules!");
                     }
-                    
-                    if (!_langRulesDic.ContainsKey(nowLang)) 
+
+                    if (!_langRulesDic.ContainsKey(nowLang))
                     {
                         _langRulesDic[nowLang] = new List<string>();
                     }
+
                     continue;
                 }
 
@@ -88,19 +90,19 @@ namespace Judger.Core.Program.Internal
         {
             unsafeCode = "";
             lineIndex = -1;
-            if (!_config.InterceptUnsafeCode) 
+            if (!_config.InterceptUnsafeCode)
             {
                 return true;
             }
 
-            if (!_langRulesDic.ContainsKey(language)) 
+            if (!_langRulesDic.ContainsKey(language))
             {
                 return true;
             }
 
             string[] lines = Regex.Split(sourceCode, "\r\n|\r|\n");
             List<string> rules = _langRulesDic[language];
-            for (int i = 0; i < lines.Length; i++) 
+            for (int i = 0; i < lines.Length; i++)
             {
                 foreach (string rule in rules)
                 {

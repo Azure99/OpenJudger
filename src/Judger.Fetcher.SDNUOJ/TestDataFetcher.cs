@@ -59,17 +59,17 @@ namespace Judger.Fetcher.SDNUOJ
                     }
 
                     ZipArchiveEntry newEntry = zipArchive.CreateEntry("version.txt");
-                    using (StreamWriter writer = new StreamWriter(newEntry.Open())) 
+                    using (StreamWriter writer = new StreamWriter(newEntry.Open()))
                     {
                         writer.Write(version);
                     }
 
                     zipArchive.UpdateBaseStream();
 
-                    int nowPos = (int)ms.Position;
+                    int nowPos = (int) ms.Position;
                     res = new byte[ms.Length];
                     ms.Position = 0;
-                    ms.Read(res, 0, (int)ms.Length);
+                    ms.Read(res, 0, (int) ms.Length);
                     ms.Position = nowPos;
                 }
             }

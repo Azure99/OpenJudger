@@ -12,10 +12,7 @@ namespace Judger.Managers
         /// </summary>
         public static IntPtr DefaultAffinity
         {
-            get
-            {
-                return new IntPtr(_defaultAffinity);
-            }
+            get { return new IntPtr(_defaultAffinity); }
         }
 
         private static object _lock = new object();
@@ -52,15 +49,16 @@ namespace Judger.Managers
             lock (_lock)
             {
                 int affinity = _defaultAffinity;
-                for (int i = 0; i < _processorCount; i++)//遍历所有处理器核心
+                for (int i = 0; i < _processorCount; i++) //遍历所有处理器核心
                 {
-                    if ((_usingProcessor & (1 << i)) == 0)//判断此处理器核心是否被占用
+                    if ((_usingProcessor & (1 << i)) == 0) //判断此处理器核心是否被占用
                     {
                         affinity = (1 << i);
                         _usingProcessor |= affinity;
                         break;
                     }
                 }
+
                 return new IntPtr(affinity);
             }
         }

@@ -85,7 +85,9 @@ namespace Judger.Utils
                 CheckTimeCost();
                 CheckMemoryCost();
             }
-            catch { }
+            catch
+            { }
+
             _timer.Stop();
         }
 
@@ -97,7 +99,7 @@ namespace Judger.Utils
 
         private void OnMonitor(object sender, ElapsedEventArgs e)
         {
-            try//防止无效操作异常
+            try //防止无效操作异常
             {
                 if (Process.HasExited)
                 {
@@ -110,15 +112,16 @@ namespace Judger.Utils
                     Process.Kill();
                 }
             }
-            catch { }
+            catch
+            { }
         }
 
         private bool CheckTimeCost()
         {
             // 使用的CPU时间
-            TimeCost = (int)Process.TotalProcessorTime.TotalMilliseconds;
+            TimeCost = (int) Process.TotalProcessorTime.TotalMilliseconds;
             // 使用的总时间
-            TotalTimeCost = (int)(DateTime.Now - Process.StartTime).TotalMilliseconds;
+            TotalTimeCost = (int) (DateTime.Now - Process.StartTime).TotalMilliseconds;
 
             if ((TimeCost > TimeLimit && TimeLimit > 0) ||
                 (TotalTimeCost > TotalTimeLimit && TotalTimeLimit > 0))
@@ -135,13 +138,13 @@ namespace Judger.Utils
         private bool CheckMemoryCost()
         {
             int nowMemoryCost;
-            if (_platformIsWindows)//针对不同平台判断
+            if (_platformIsWindows) //针对不同平台判断
             {
-                nowMemoryCost = (int)(Process.PeakPagedMemorySize64 / 1024);
+                nowMemoryCost = (int) (Process.PeakPagedMemorySize64 / 1024);
             }
             else
             {
-                nowMemoryCost = (int)(Process.WorkingSet64 / 1024);
+                nowMemoryCost = (int) (Process.WorkingSet64 / 1024);
             }
 
             if (nowMemoryCost > MemoryCost)

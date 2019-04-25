@@ -53,6 +53,7 @@ namespace Judger
                 {
                     Console.WriteLine("Wrong command!");
                 }
+
                 command = Console.ReadLine();
             }
 

@@ -17,13 +17,14 @@ namespace Judger.Fetcher.HUSTOJ
         {
             List<JudgeTask> taskList = new List<JudgeTask>();
             int[] pendingSids = GetPending();
-            foreach(int sid in pendingSids)
+            foreach (int sid in pendingSids)
             {
                 try
                 {
                     taskList.Add(GetJudgeTask(sid));
                 }
-                catch { }
+                catch
+                { }
             }
 
             return taskList.ToArray();
@@ -69,10 +70,11 @@ namespace Judger.Fetcher.HUSTOJ
             bodyBuilder.Append("getpending=1&");
 
             bodyBuilder.Append("oj_lang_set=");
-            foreach(var lang in Config.Languages)
+            foreach (var lang in Config.Languages)
             {
                 bodyBuilder.Append(lang.Name + ",");
             }
+
             bodyBuilder.Remove(bodyBuilder.Length - 1, 1);
             bodyBuilder.Append("&");
 
@@ -92,8 +94,8 @@ namespace Judger.Fetcher.HUSTOJ
             string dateMd5 = GetTestDataMd5(problemId);
 
             JudgeTask task = JudgeTaskFactory.Create(
-                                submitId, problemId, dateMd5, lang, sourceCode, 
-                                author, timeLimit, memoryLimit, false, spj);
+                submitId, problemId, dateMd5, lang, sourceCode,
+                author, timeLimit, memoryLimit, false, spj);
 
             Authenticator.Singleton.UpdateSolution(submitId, 3, 0, 0, 0.0);
 
@@ -158,7 +160,7 @@ namespace Judger.Fetcher.HUSTOJ
         {
             string requestBody = string.Format("gettestdatalist=1&pid={0}&time=1", pid);
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
-            
+
             return Md5Encrypt.EncryptToHexString(response);
         }
     }

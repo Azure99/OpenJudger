@@ -25,7 +25,7 @@ namespace Judger.Fetcher.SDNUOJ
             CookieContainer = new CookieContainer();
             _httpClient.CookieContainer = CookieContainer;
 
-            if (_config.AdditionalConfig.ContainsKey("LoginUrl")) 
+            if (_config.AdditionalConfig.ContainsKey("LoginUrl"))
             {
                 loginUrl = _config.AdditionalConfig["LoginUrl"];
             }
@@ -58,5 +58,4 @@ namespace Judger.Fetcher.SDNUOJ
             }
         }
     }
-
 }

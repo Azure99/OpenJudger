@@ -69,7 +69,7 @@ namespace Judger.Core.Database
                 }
             }
 
-            result.PassRate = (double)acceptedCasesCount / dataNames.Length;
+            result.PassRate = (double) acceptedCasesCount / dataNames.Length;
 
             return result;
         }

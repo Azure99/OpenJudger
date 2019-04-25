@@ -40,12 +40,12 @@ namespace Judger.Fetcher.Generic
                 ProblemId = result.ProblemId,
                 Author = result.Author,
                 JudgeDetail = result.JudgeDetail,
-                MemoryCost =  result.MemoryCost,
+                MemoryCost = result.MemoryCost,
                 PassRate = result.PassRate,
                 ResultCode = result.ResultCode,
                 TimeCost = result.TimeCost
             };
-            
+
             JObject requestBody = JObject.FromObject(judgeResult);
             Token.AddTokenToJObject(requestBody);
 

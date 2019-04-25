@@ -51,7 +51,7 @@ namespace Judger.Entity.Program
         /// <summary>
         /// 判题时使用的目录
         /// </summary>
-        public string JudgeDirectory { get; set; } 
+        public string JudgeDirectory { get; set; }
             = "JudgeTemp" + System.IO.Path.DirectorySeparatorChar + "Judge";
 
         /// <summary>

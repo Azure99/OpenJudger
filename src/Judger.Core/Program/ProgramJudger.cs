@@ -46,7 +46,7 @@ namespace Judger.Core.Program
             }
 
             //写出源代码
-            string sourceFileName = JudgeTask.TempJudgeDirectory + Path.DirectorySeparatorChar + LangConfig.SourceCodeFileName;
+            string sourceFileName = Path.Combine(JudgeTask.TempJudgeDirectory, LangConfig.SourceCodeFileName);
             File.WriteAllText(sourceFileName, JudgeTask.SourceCode);
 
             //编译代码
@@ -58,7 +58,8 @@ namespace Judger.Core.Program
                 //检查是否有编译错误(compileRes不为空则代表有错误)
                 if (!string.IsNullOrEmpty(compileRes))
                 {
-                    result.JudgeDetail = compileRes.Replace(JudgeTask.TempJudgeDirectory, "");//去除路径信息
+                    //去除路径信息
+                    result.JudgeDetail = compileRes.Replace(JudgeTask.TempJudgeDirectory, "");
                     result.ResultCode = JudgeResultCode.CompileError;
                     return result;
                 }
@@ -69,7 +70,7 @@ namespace Judger.Core.Program
 
             //获取所有测试点文件名
             Tuple<string, string>[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemId);
-            if (dataFiles.Length == 0)//无测试数据
+            if (dataFiles.Length == 0) //无测试数据
             {
                 result.ResultCode = JudgeResultCode.JudgeFailed;
                 result.JudgeDetail = "No test data.";
@@ -77,17 +78,20 @@ namespace Judger.Core.Program
             }
 
             result.MemoryCost = ConfigManager.Config.MinimumMemoryCost;
-            int acceptedCasesCount = 0;//通过的测试点数
+            int acceptedCasesCount = 0; //通过的测试点数
             for (int i = 0; i < dataFiles.Length; i++)
             {
                 try
                 {
-                    TestDataManager.GetTestData(JudgeTask.ProblemId, dataFiles[i].Item1, dataFiles[i].Item2, out string input, out string output);//读入测试数据
+                    //读入测试数据
+                    TestDataManager.GetTestData(
+                        JudgeTask.ProblemId, dataFiles[i].Item1, dataFiles[i].Item2,
+                        out string input, out string output);
 
-                    SingleJudgeResult singleRes = judger.Judge(input, output);//测试此测试点
+                    SingleJudgeResult singleRes = judger.Judge(input, output); //测试此测试点
 
                     //计算有时间补偿的总时间
-                    result.TimeCost = Math.Max(result.TimeCost, (int)(singleRes.TimeCost * LangConfig.TimeCompensation));
+                    result.TimeCost = Math.Max(result.TimeCost, (int) (singleRes.TimeCost * LangConfig.TimeCompensation));
                     result.MemoryCost = Math.Max(result.MemoryCost, singleRes.MemoryCost);
 
                     if (singleRes.ResultCode == JudgeResultCode.Accepted)
@@ -117,7 +121,7 @@ namespace Judger.Core.Program
             result.JudgeDetail = result.JudgeDetail.Replace(JudgeTask.TempJudgeDirectory, "");
 
             //通过率
-            result.PassRate = (double)acceptedCasesCount / dataFiles.Length;
+            result.PassRate = (double) acceptedCasesCount / dataFiles.Length;
 
             return result;
         }
@@ -134,14 +138,15 @@ namespace Judger.Core.Program
         /// </summary>
         private void DeleteTempDirectory()
         {
-            new Task(() => //判题结束时文件可能仍然被占用，尝试删除
+            //判题结束时文件可能仍然被占用，尝试删除
+            new Task(() => 
             {
                 int tryCount = 0;
                 while (true)
                 {
                     try
                     {
-                        Directory.Delete(JudgeTask.TempJudgeDirectory, true);//删除判题临时目录
+                        Directory.Delete(JudgeTask.TempJudgeDirectory, true);
                         break;
                     }
                     catch (DirectoryNotFoundException)
@@ -154,10 +159,10 @@ namespace Judger.Core.Program
                         {
                             throw new JudgeException("Cannot delete temp directory");
                         }
+
                         Thread.Sleep(500);
                     }
                 }
-
             }, TaskCreationOptions.LongRunning).Start();
         }
     }

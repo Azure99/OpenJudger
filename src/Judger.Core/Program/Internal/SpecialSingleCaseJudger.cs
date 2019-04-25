@@ -23,15 +23,25 @@ namespace Judger.Core.Program.Internal
         private const int MIN_TOTAL_TIME_LIMIT = 20000;
 
         public JudgeTask JudgeTask { get; }
-        public ProgramLangConfig LangConfig { get { return JudgeTask.LangConfig as ProgramLangConfig; } }
+
+        public ProgramLangConfig LangConfig
+        {
+            get { return JudgeTask.LangConfig as ProgramLangConfig; }
+        }
+
         public JudgeTask SpjTask { get; }
-        public ProgramLangConfig SpjLangConfig { get { return SpjTask.LangConfig as ProgramLangConfig; } }
+
+        public ProgramLangConfig SpjLangConfig
+        {
+            get { return SpjTask.LangConfig as ProgramLangConfig; }
+        }
 
         private const string SPJ_INPUT_NAME = "input.txt";
         private const string SPJ_OUTPUT_NAME = "output.txt";
         private const string SPJ_USEROUTPUT_NAME = "user.txt";
 
         private ProgramLangConfig _langConfig;
+
         public SpecialSingleCaseJudger(JudgeTask judgeTask, JudgeTask spjTask)
         {
             JudgeTask = judgeTask;
@@ -78,7 +88,7 @@ namespace Judger.Core.Program.Internal
             };
 
             if ((userOutput.Length >= _langConfig.OutputLimit ||
-                userError.Length >= _langConfig.OutputLimit))
+                 userError.Length >= _langConfig.OutputLimit))
             {
                 result.ResultCode = JudgeResultCode.OutputLimitExceed;
                 return result;
@@ -86,19 +96,19 @@ namespace Judger.Core.Program.Internal
 
             if (monitor.LimitExceed)
             {
-                result.ResultCode = (JudgeTask.TimeLimit == monitor.TimeCost) ?
-                                     JudgeResultCode.TimeLimitExceed :
-                                     JudgeResultCode.MemoryLimitExceed;
+                result.ResultCode = (JudgeTask.TimeLimit == monitor.TimeCost)
+                    ? JudgeResultCode.TimeLimitExceed
+                    : JudgeResultCode.MemoryLimitExceed;
                 return result;
             }
 
-            if (exitcode != 0)//判断是否运行错误
+            if (exitcode != 0) //判断是否运行错误
             {
                 result.ResultCode = JudgeResultCode.RuntimeError;
                 return result;
             }
 
-            CompareResult cmpResult = CompareAnswerBySpj(input, output, userOutput);//对比答案输出
+            CompareResult cmpResult = CompareAnswerBySpj(input, output, userOutput); //对比答案输出
             if (cmpResult == CompareResult.Accepted)
             {
                 result.ResultCode = JudgeResultCode.Accepted;
@@ -144,7 +154,7 @@ namespace Judger.Core.Program.Internal
                 exitcode = runner.Run("", out string o, out string e, ProcessPriorityClass.RealTime);
                 monitor.Dispose();
             }
-            
+
 
             File.Delete(inputPath);
             File.Delete(outputPath);
@@ -164,8 +174,8 @@ namespace Judger.Core.Program.Internal
 
             switch (exitcode)
             {
-                case 0:  return CompareResult.Accepted;
-                case 2:  return CompareResult.PresentationError;
+                case 0: return CompareResult.Accepted;
+                case 2: return CompareResult.PresentationError;
                 default: return CompareResult.WrongAnswer;
             }
         }

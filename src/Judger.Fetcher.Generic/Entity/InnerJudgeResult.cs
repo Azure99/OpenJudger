@@ -36,7 +36,7 @@ namespace Judger.Fetcher.Generic.Entity
         /// 判题详情(包含错误详情)
         /// </summary>
         [JsonProperty(PropertyName = "judgeDetail")]
-        public string JudgeDetail{ get; set; }
+        public string JudgeDetail { get; set; }
 
         /// <summary>
         /// 通过率, 标识通过了几组数据

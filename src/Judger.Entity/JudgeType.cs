@@ -9,12 +9,12 @@ namespace Judger.Entity
         /// 传统程序评测
         /// </summary>
         ProgramJudge = 0,
-        
+
         /// <summary>
         /// 特殊程序评测(交由SPJ程序评测)
         /// </summary>
         SpecialJudge = 1,
-        
+
         /// <summary>
         /// 数据库评测
         /// </summary>

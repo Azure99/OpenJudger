@@ -44,7 +44,7 @@ namespace Judger.Core.Database.Internal
                 sw.Start();
                 reader = UserOperator.ExecuteReader(JudgeTask.SourceCode, JudgeTask.TimeLimit);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new SingleJudgeResult
                 {
@@ -62,11 +62,14 @@ namespace Judger.Core.Database.Internal
             DbData usrOutput = UserOperator.ReadDbData();
 
             CompareResult result = CompareAnswer(stdOutput, stdQuery, usrOutput, usrQuery);
+            JudgeResultCode resultCode = (result == CompareResult.Accepted) 
+                ? JudgeResultCode.Accepted 
+                : JudgeResultCode.WrongAnswer;
 
             return new SingleJudgeResult
             {
-                ResultCode = (result == CompareResult.Accepted) ? JudgeResultCode.Accepted : JudgeResultCode.WrongAnswer,
-                TimeCost = (int)sw.ElapsedMilliseconds
+                ResultCode = resultCode,
+                TimeCost = (int) sw.ElapsedMilliseconds
             };
         }
 
@@ -106,7 +109,7 @@ namespace Judger.Core.Database.Internal
                     return CompareResult.WrongAnswer;
                 }
 
-                if(CompareQuery(stdOutput.TablesData[i], usrOutput.TablesData[i]) == CompareResult.WrongAnswer)
+                if (CompareQuery(stdOutput.TablesData[i], usrOutput.TablesData[i]) == CompareResult.WrongAnswer)
                 {
                     return CompareResult.WrongAnswer;
                 }
@@ -117,7 +120,7 @@ namespace Judger.Core.Database.Internal
 
         private CompareResult CompareQuery(DbQueryData stdQuery, DbQueryData usrQuery)
         {
-            if (stdQuery.FieldCount != usrQuery.FieldCount || 
+            if (stdQuery.FieldCount != usrQuery.FieldCount ||
                 stdQuery.Records.Count != usrQuery.Records.Count)
             {
                 return CompareResult.WrongAnswer;

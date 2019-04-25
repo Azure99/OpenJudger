@@ -28,7 +28,7 @@
         /// <summary>
         /// 判题详情(用于获取错误详情)
         /// </summary>
-        public string JudgeDetail{ get; set; }
+        public string JudgeDetail { get; set; }
 
         /// <summary>
         /// 通过率, 标识通过了几组数据

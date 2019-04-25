@@ -66,7 +66,7 @@ namespace Judger.Managers
         {
             DataLockDic = new Dictionary<int, object>();
 
-            if (!Directory.Exists(Config.TestDataDirectory)) 
+            if (!Directory.Exists(Config.TestDataDirectory))
             {
                 Directory.CreateDirectory(Config.TestDataDirectory);
             }
@@ -136,7 +136,9 @@ namespace Judger.Managers
                 {
                     Directory.Delete(dirPath, true);
                 }
-                catch { }
+                catch
+                {
+                }
 
                 zipArchive.ExtractToDirectory(dirPath);
             }
@@ -169,14 +171,14 @@ namespace Judger.Managers
             }
 
             var query = from input in inputFiles
-                        from output in outputFiles
-                        where Path.GetFileNameWithoutExtension(input) ==
-                              Path.GetFileNameWithoutExtension(output)
-                        select new
-                        {
-                            InputFile = input,
-                            OutputFile = output
-                        };
+                from output in outputFiles
+                where Path.GetFileNameWithoutExtension(input) ==
+                      Path.GetFileNameWithoutExtension(output)
+                select new
+                {
+                    InputFile = input,
+                    OutputFile = output
+                };
 
             List<Tuple<string, string>> matchedFiles = new List<Tuple<string, string>>();
             foreach (var testData in query)
@@ -195,7 +197,8 @@ namespace Judger.Managers
         /// <param name="outputName">测试输出名称</param>
         /// <param name="input">测试输入</param>
         /// <param name="output">测试输出</param>
-        public static void GetTestData(int problemId, string inputName, string outputName, out string input, out string output)
+        public static void GetTestData(int problemId, string inputName, string outputName,
+            out string input, out string output)
         {
             string dirPath = Cmb(Config.TestDataDirectory, problemId);
 
@@ -221,6 +224,7 @@ namespace Judger.Managers
                 {
                     return true;
                 }
+
                 return false;
             }
         }
@@ -239,6 +243,7 @@ namespace Judger.Managers
                 {
                     File.Delete(programPath);
                 }
+
                 File.WriteAllBytes(programPath, programFile.Program);
             }
         }
@@ -281,14 +286,14 @@ namespace Judger.Managers
         /// <returns>全部测试数据的名称</returns>
         public static string[] GetDbTestDataNames(int problemId, DatabaseType dbType)
         {
-            lock (GetDataLock(problemId)) 
+            lock (GetDataLock(problemId))
             {
                 string dirPath = Cmb(Config.TestDataDirectory, problemId, DIR_DB);
 
                 string[] inputFiles = Directory.GetFiles(Cmb(dirPath + DIR_INPUT));
                 var query = from x in inputFiles
-                            where Path.GetExtension(x).TrimStart('.').ToLower() == dbType.ToString().ToLower()
-                            select Path.GetFileNameWithoutExtension(x);
+                    where Path.GetExtension(x).TrimStart('.').ToLower() == dbType.ToString().ToLower()
+                    select Path.GetFileNameWithoutExtension(x);
 
                 List<string> dataNames = new List<string>();
                 foreach (var x in query)
@@ -330,9 +335,9 @@ namespace Judger.Managers
                 return new DbTestData
                 {
                     Name = dataName,
-                    Input =  (inputFile  != null) ? File.ReadAllText(inputFile)  : null,
+                    Input = (inputFile != null) ? File.ReadAllText(inputFile) : null,
                     Output = (outputFile != null) ? File.ReadAllText(outputFile) : null,
-                    Query =  (queryFile  != null) ? File.ReadAllText(queryFile)  : null,
+                    Query = (queryFile != null) ? File.ReadAllText(queryFile) : null,
                 };
             }
         }
@@ -352,6 +357,7 @@ namespace Judger.Managers
                 {
                     return true;
                 }
+
                 return false;
             }
         }

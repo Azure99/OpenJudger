@@ -95,12 +95,11 @@ namespace Judger.Core.Database.Internal
         /// 从Reader中读取此次查询的所有数据
         /// </summary>
         /// <returns>查询数据</returns>
-
         public static DbQueryData ReadQueryData(DbDataReader reader, string name = "")
         {
             int fieldCount = reader.FieldCount;
             string[] fieldNames = new string[fieldCount];
-            for(int i = 0; i < fieldCount; i++)
+            for (int i = 0; i < fieldCount; i++)
             {
                 fieldNames[i] = reader.GetName(i);
             }

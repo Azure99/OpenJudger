@@ -11,6 +11,7 @@ namespace Judger.Managers
     {
         //program.cpp.exe
         public const string SPJ_PROGRAM_FILENAME = "program";
+
         //source.cpp
         public const string SPJ_SOURCE_FILENAME = "source";
         public const string SPJ_TESTDATA_DIR = "spj";
@@ -60,6 +61,7 @@ namespace Judger.Managers
             {
                 return task.TempJudgeDirectory;
             }
+
             return Path.Combine(task.TempJudgeDirectory, SPJ_DIRECTORY);
         }
 
@@ -80,7 +82,9 @@ namespace Judger.Managers
         /// <returns>SPJ源文件名</returns>
         public static string GetSpjSourceFileInJudger(JudgeTask task)
         {
-            return Path.Combine(GetSpjDirectoryInJudger(task), (task.LangConfig as ProgramLangConfig).SourceCodeFileName);
+            return Path.Combine(
+                GetSpjDirectoryInJudger(task),
+                (task.LangConfig as ProgramLangConfig).SourceCodeFileName);
         }
 
         /// <summary>
@@ -96,7 +100,7 @@ namespace Judger.Managers
 
             string[] files = Directory.GetFiles(spjDirectory);
             List<string> spjSourceFiles = new List<string>();
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 string fileName = Path.GetFileNameWithoutExtension(file).ToLower();
                 string fileExt = Path.GetExtension(file).TrimStart('.').ToLower();
@@ -219,6 +223,7 @@ namespace Judger.Managers
             {
                 throw new JudgeException("No special judge program exception!");
             }
+
             newTask.SourceCode = File.ReadAllText(spjSourceFilePath);
 
             newTask.LangConfig = GetLangConfigBySourceFilePath(spjSourceFilePath);
@@ -243,7 +248,7 @@ namespace Judger.Managers
 
             newTask.TempJudgeDirectory = spjDir;
 
-            if (!Directory.Exists(spjDir)) 
+            if (!Directory.Exists(spjDir))
             {
                 Directory.CreateDirectory(spjDir);
             }
@@ -267,7 +272,7 @@ namespace Judger.Managers
             {
                 return extDic[fileExt];
             }
-            
+
             return null;
         }
 

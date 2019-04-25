@@ -14,12 +14,13 @@ namespace Judger.Managers
         /// <summary>
         /// 配置信息实例
         /// </summary>
-        public static Configuration Config { get; } 
+        public static Configuration Config { get; }
+
         static ConfigManager()
         {
             FileHelper.TryReadAllText("Config.json", out string configJson);
 
-            if(string.IsNullOrEmpty(configJson))//创建新配置文件
+            if (string.IsNullOrEmpty(configJson)) //创建新配置文件
             {
                 Config = new Configuration();
                 Config.Languages = GetDefaultLangConfigs();
@@ -31,7 +32,7 @@ namespace Judger.Managers
             {
                 Config = SampleJsonSerializer.DeSerialize<Configuration>(configJson);
             }
-            
+
             SetIsDbConfigField();
             SaveConfig();
         }
@@ -68,9 +69,9 @@ namespace Judger.Managers
         public static ILangConfig GetLanguageConfig(string languageName)
         {
             ProgramLangConfig[] programConfigs = Config.Languages;
-            foreach(var item in programConfigs)
+            foreach (var item in programConfigs)
             {
-                if(item.Name == languageName)
+                if (item.Name == languageName)
                 {
                     return item.Clone() as ProgramLangConfig;
                 }
@@ -79,7 +80,7 @@ namespace Judger.Managers
             DbLangConfig[] dbConfigs = Config.Databases;
             foreach (var item in dbConfigs)
             {
-                if(item.Name == languageName)
+                if (item.Name == languageName)
                 {
                     return item.Clone() as DbLangConfig;
                 }
@@ -187,7 +188,7 @@ namespace Judger.Managers
             langConfigs.Add(cpp);
             langConfigs.Add(java);
             langConfigs.Add(python);
-            
+
             return langConfigs.ToArray();
         }
 

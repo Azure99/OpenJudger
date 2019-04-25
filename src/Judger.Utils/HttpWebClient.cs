@@ -29,9 +29,6 @@ namespace Judger.Utils
         /// </summary>
         public CookieContainer CookieContainer { get; set; } = new CookieContainer();
 
-        public HttpWebClient() : base()
-        { }
-
         /// <summary>
         /// 将指定的字符串上载到指定的资源使用 POST 方法
         /// </summary>
@@ -209,7 +206,7 @@ namespace Judger.Utils
 
         protected override WebRequest GetWebRequest(Uri address)
         {
-            HttpWebRequest request = (HttpWebRequest)base.GetWebRequest(address);
+            HttpWebRequest request = (HttpWebRequest) base.GetWebRequest(address);
 
             request.Timeout = Timeout;
             request.ReadWriteTimeout = ReadWriteTimeout;

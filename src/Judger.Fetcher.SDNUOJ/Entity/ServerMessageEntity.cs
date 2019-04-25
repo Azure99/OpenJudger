@@ -17,10 +17,7 @@ namespace Judger.Fetcher.SDNUOJ.Entity
         /// </summary>
         public bool IsSuccess
         {
-            get
-            {
-                return Status == "success";
-            }
+            get { return Status == "success"; }
         }
     }
 }

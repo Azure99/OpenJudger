@@ -9,7 +9,7 @@ namespace Judger.Fetcher.Generic
     public class TestDataFetcher : BaseTestDataFetcher
     {
         private const string JOBJECT_PROBLEM_ID = "problemId";
-        
+
         /// <summary>
         /// TestData获取器
         /// </summary>

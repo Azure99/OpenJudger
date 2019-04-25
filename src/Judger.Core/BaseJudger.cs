@@ -9,6 +9,7 @@ namespace Judger.Core
     public abstract class BaseJudger : IDisposable
     {
         protected JudgeTask JudgeTask { get; }
+
         public BaseJudger(JudgeTask task)
         {
             JudgeTask = task;

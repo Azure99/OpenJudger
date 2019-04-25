@@ -15,7 +15,7 @@ namespace MainUnitTest
             {
                 Id = 1,
                 Name = "NNN",
-                Arr = new int[] { 1, 2, 3 }
+                Arr = new int[] {1, 2, 3}
             };
 
             string json = SampleJsonSerializer.Serialize(classA, typeof(TempTestClass));
@@ -54,8 +54,10 @@ namespace MainUnitTest
                         return false;
                     }
                 }
+
                 return true;
             }
+
             return false;
         }
 

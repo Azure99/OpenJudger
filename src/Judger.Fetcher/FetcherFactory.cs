@@ -14,6 +14,7 @@ namespace Judger.Fetcher
         //Fetcher程序集
         private static Assembly _fetcherAssembly;
         private static Configuration _config = ConfigManager.Config;
+
         static FetcherFactory()
         {
             LogManager.Info("Load fetcher: " + _config.FetcherDllPath);
@@ -27,10 +28,10 @@ namespace Judger.Fetcher
         /// </summary>
         public static ITaskFetcher CreateTaskFetcher()
         {
-            foreach(Type type in _fetcherAssembly.ExportedTypes)
+            foreach (Type type in _fetcherAssembly.ExportedTypes)
             {
-                if(type.BaseType == typeof(BaseTaskFetcher) ||
-                   type.GetInterface(typeof(ITaskFetcher).FullName) != null)
+                if (type.BaseType == typeof(BaseTaskFetcher) ||
+                    type.GetInterface(typeof(ITaskFetcher).FullName) != null)
                 {
                     return _fetcherAssembly.CreateInstance(type.FullName) as ITaskFetcher;
                 }
@@ -63,7 +64,7 @@ namespace Judger.Fetcher
         {
             foreach (Type type in _fetcherAssembly.ExportedTypes)
             {
-                if (type.BaseType == typeof(BaseTestDataFetcher) || 
+                if (type.BaseType == typeof(BaseTestDataFetcher) ||
                     type.GetInterface(typeof(ITestDataFetcher).FullName) != null)
                 {
                     return _fetcherAssembly.CreateInstance(type.FullName) as ITestDataFetcher;

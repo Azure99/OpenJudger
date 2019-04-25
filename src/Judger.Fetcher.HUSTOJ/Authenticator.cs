@@ -16,6 +16,7 @@ namespace Judger.Fetcher.HUSTOJ
         private string loginUrl = "http://localhost/login.php";
 
         private int _delayCheckCount = 0;
+
         static Authenticator()
         {
             Singleton = new Authenticator();
@@ -54,7 +55,8 @@ namespace Judger.Fetcher.HUSTOJ
             {
                 _httpClient.UploadString(loginUrl, requestBody, 3);
             }
-            catch { }
+            catch
+            { }
 
             return CheckLogin();
         }
@@ -81,7 +83,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// </summary>
         public void CheckAndLogin()
         {
-            if(_delayCheckCount++ > 10)
+            if (_delayCheckCount++ > 10)
             {
                 _delayCheckCount = 0;
                 Login();
@@ -98,7 +100,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// <param name="passRate">通过率</param>
         public void UpdateSolution(int sid, int result, int time, int memory, double passRate)
         {
-            string requestBody = 
+            string requestBody =
                 string.Format(
                     "update_solution=1&sid={0}&result={1}&time={2}&memory={3}&sim=0&simid=0&pass_rate={4}",
                     sid, result, time, memory, passRate);
@@ -107,7 +109,8 @@ namespace Judger.Fetcher.HUSTOJ
             {
                 _httpClient.UploadString(_config.TaskFetchUrl, requestBody, 3);
             }
-            catch { }
+            catch
+            { }
         }
     }
 }

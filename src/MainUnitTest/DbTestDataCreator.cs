@@ -12,7 +12,9 @@ namespace MainUnitTest
         private const string OUTPUT_FILE = "output.mysql";
         private const string QUERY_FILE = "query.mysql";
         private const string DRIVER_FILE = "Pomelo.Data.MySql.dll";
+
         private const string CONNECTION_STRING = "Server=lo11calhost;Database=judger;User=root;Password=961523404;CharSet=utf8;";
+
         private const string COMMAND = "SELECT * FROM student";
 
         /// <summary>

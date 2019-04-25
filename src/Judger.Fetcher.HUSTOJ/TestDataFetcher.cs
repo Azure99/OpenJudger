@@ -83,7 +83,7 @@ namespace Judger.Fetcher.HUSTOJ
             {
                 using (ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create))
                 {
-                    foreach(var file in files)
+                    foreach (var file in files)
                     {
                         ZipArchiveEntry entry = null;
                         if (file.Item1.EndsWith(".in"))
@@ -115,11 +115,11 @@ namespace Judger.Fetcher.HUSTOJ
                     }
 
                     zip.UpdateBaseStream();
-                    
+
                     zipData = new byte[ms.Length];
-                    int nowPos = (int)ms.Position;
+                    int nowPos = (int) ms.Position;
                     ms.Position = 0;
-                    ms.Read(zipData, 0, (int)ms.Length);
+                    ms.Read(zipData, 0, (int) ms.Length);
                     ms.Position = nowPos;
                 }
             }
@@ -163,9 +163,9 @@ namespace Judger.Fetcher.HUSTOJ
             string name = Path.GetFileNameWithoutExtension(fileName).ToLower();
             string extension = Path.GetExtension(fileName).TrimStart('.').ToLower();
 
-            if(name == "spj")
+            if (name == "spj")
             {
-                if(extensionSet.Contains(extension))
+                if (extensionSet.Contains(extension))
                 {
                     return true;
                 }

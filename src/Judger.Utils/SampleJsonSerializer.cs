@@ -74,9 +74,8 @@ namespace Judger.Utils
         {
             using (StringReader sr = new StringReader(jsonObject))
             {
-                return (T)_serializer.Deserialize(sr, typeof(T));
+                return (T) _serializer.Deserialize(sr, typeof(T));
             }
         }
-
     }
 }

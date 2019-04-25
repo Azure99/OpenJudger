@@ -11,6 +11,7 @@ namespace Judger.Core.Database.Internal.DbOperator
     public class MySQL5xOperator : BaseDbOperator
     {
         private DbConnection _connection;
+
         public MySQL5xOperator(string connectionString, DbDriver driver) : base(connectionString, driver)
         {
             _connection = DbDriver.CreateConnection(ConnectionString);

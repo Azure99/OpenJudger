@@ -70,7 +70,7 @@ namespace Judger.Service
             _workTimer.Dispose();
         }
 
-        private bool ClearTempDirectory()//清空临时目录
+        private bool ClearTempDirectory() //清空临时目录
         {
             LogManager.Info("Clear temp directory");
 

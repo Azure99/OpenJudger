@@ -24,10 +24,7 @@ namespace Judger.Core.Database.Internal.Entity
         [JsonIgnore]
         public int FieldCount
         {
-            get
-            {
-                return FieldNames.Length;
-            }
+            get { return FieldNames.Length; }
         }
 
         /// <summary>

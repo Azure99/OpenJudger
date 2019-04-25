@@ -12,9 +12,9 @@ namespace Judger.Managers
 
         static DbManager()
         {
-            foreach(var dbConf in _config.Databases)
+            foreach (var dbConf in _config.Databases)
             {
-                if (!_dbDic.ContainsKey(dbConf.Name))  
+                if (!_dbDic.ContainsKey(dbConf.Name))
                 {
                     _dbDic.Add(dbConf.Name, dbConf);
                 }

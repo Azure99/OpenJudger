@@ -22,15 +22,33 @@ namespace Judger.Fetcher.SDNUOJ
             int resultCode = 0;
             switch (result.ResultCode)
             {
-                case JudgeResultCode.Accepted: resultCode = 10; break;
-                case JudgeResultCode.CompileError: resultCode = 3; break;
-                case JudgeResultCode.JudgeFailed: resultCode = 255; break;
-                case JudgeResultCode.MemoryLimitExceed: resultCode = 6; break;
-                case JudgeResultCode.OutputLimitExceed: resultCode = 7; break;
-                case JudgeResultCode.PresentationError: resultCode = 9; break;
-                case JudgeResultCode.RuntimeError: resultCode = 4; break;
-                case JudgeResultCode.TimeLimitExceed: resultCode = 5; break;
-                case JudgeResultCode.WrongAnswer: resultCode = 8; break;
+                case JudgeResultCode.Accepted:
+                    resultCode = 10;
+                    break;
+                case JudgeResultCode.CompileError:
+                    resultCode = 3;
+                    break;
+                case JudgeResultCode.JudgeFailed:
+                    resultCode = 255;
+                    break;
+                case JudgeResultCode.MemoryLimitExceed:
+                    resultCode = 6;
+                    break;
+                case JudgeResultCode.OutputLimitExceed:
+                    resultCode = 7;
+                    break;
+                case JudgeResultCode.PresentationError:
+                    resultCode = 9;
+                    break;
+                case JudgeResultCode.RuntimeError:
+                    resultCode = 4;
+                    break;
+                case JudgeResultCode.TimeLimitExceed:
+                    resultCode = 5;
+                    break;
+                case JudgeResultCode.WrongAnswer:
+                    resultCode = 8;
+                    break;
             }
 
             int sid = result.SubmitId;
@@ -39,8 +57,9 @@ namespace Judger.Fetcher.SDNUOJ
             int memCost = result.MemoryCost;
             int pid = result.ProblemId;
             string username = result.Author;
-            string body = string.Format("sid={0}&resultcode={1}&detail={2}&timecost={3}&memorycost={4}&pid={5}&username={6}",
-                                          sid, resultCode, detail, timeCost, memCost, pid, username);
+            string body = string.Format(
+                "sid={0}&resultcode={1}&detail={2}&timecost={3}&memorycost={4}&pid={5}&username={6}",
+                sid, resultCode, detail, timeCost, memCost, pid, username);
 
             return body;
         }

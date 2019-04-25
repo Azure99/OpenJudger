@@ -14,6 +14,7 @@ namespace Judger.Service
     public class JudgeController
     {
         private readonly Configuration _config = ConfigManager.Config;
+
         // 评测任务等待队列
         private ConcurrentQueue<JudgeTask> _judgeQueue = new ConcurrentQueue<JudgeTask>();
         private object _queueLock = new object();
@@ -47,7 +48,6 @@ namespace Judger.Service
         /// </summary>
         public void CheckTask()
         {
-
             lock (_queueLock)
             {
                 // 同时运行数达到限制或等待队列为空
@@ -113,7 +113,7 @@ namespace Judger.Service
 
                 LogJudgeResult(result);
             }
-            catch (Exception ex)//判题失败
+            catch (Exception ex) //判题失败
             {
                 LogJudgeFailed(ex, task.SubmitId);
                 result.JudgeDetail = ex.ToString();
@@ -176,15 +176,17 @@ namespace Judger.Service
 
         private void LogAddTask(JudgeTask task)
         {
-            LogManager.Info(string.Format("New task: SubmitID:{0} Language:{1} CodeLength:{2} ProblemID:{3} Author:{4}",
-                                task.SubmitId, task.Language, task.SourceCode.Length, task.ProblemId, task.Author));
+            LogManager.Info(string.Format(
+                "New task: SubmitID:{0} Language:{1} CodeLength:{2} ProblemID:{3} Author:{4}",
+                task.SubmitId, task.Language, task.SourceCode.Length, task.ProblemId, task.Author));
         }
 
         private void LogJudgeResult(JudgeResult result)
         {
-            LogManager.Info(string.Format("Task {0} result: Time:{1} Mem:{2} Code:{3} PassRate:{4} Details:{5} ",
-                                result.SubmitId, result.TimeCost, result.MemoryCost, result.ResultCode,
-                                result.PassRate, result.JudgeDetail));
+            LogManager.Info(string.Format(
+                "Task {0} result: Time:{1} Mem:{2} Code:{3} PassRate:{4} Details:{5} ",
+                result.SubmitId, result.TimeCost, result.MemoryCost, result.ResultCode,
+                result.PassRate, result.JudgeDetail));
         }
 
         private void LogInvalidTestData(int problemId)

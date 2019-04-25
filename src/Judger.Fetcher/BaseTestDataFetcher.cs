@@ -4,7 +4,7 @@ using Judger.Utils;
 
 namespace Judger.Fetcher
 {
-    public abstract class BaseTestDataFetcher :ITestDataFetcher
+    public abstract class BaseTestDataFetcher : ITestDataFetcher
     {
         protected Configuration Config { get; } = ConfigManager.Config;
 

@@ -77,7 +77,7 @@ namespace Judger.Managers
                     sb.AppendLine(ex.StackTrace);
                 }
 
-                if(ex.InnerException != null)
+                if (ex.InnerException != null)
                 {
                     sb.Append("-->Caused by:");
                 }
@@ -94,11 +94,11 @@ namespace Judger.Managers
             {
                 Console.Error.WriteLine(content);
             }
-            else if(level == "Debug")
+            else if (level == "Debug")
             {
                 System.Diagnostics.Debug.WriteLine(content);
             }
-            
+
             string time = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
 
             StringBuilder sb = new StringBuilder();
@@ -164,7 +164,7 @@ namespace Judger.Managers
             {
                 return date + "-" + "Info.txt";
             }
-            else if(level == "Debug")
+            else if (level == "Debug")
             {
                 return date + "-" + "Debug.txt";
             }
@@ -174,7 +174,7 @@ namespace Judger.Managers
 
         private static void AutoFlush()
         {
-            while(true)
+            while (true)
             {
                 Flush();
                 Thread.Sleep(5000);

@@ -45,24 +45,24 @@ namespace Judger.Fetcher.Generic
         private JudgeTask[] ParseTask(string jsonString)
         {
             InnerJudgeTask[] innerJudgeTasks = SampleJsonSerializer.DeSerialize<InnerJudgeTask[]>(jsonString);
-            
+
             if (innerJudgeTasks == null || innerJudgeTasks.Length == 0)
             {
                 return new JudgeTask[0];
             }
-            
+
             List<JudgeTask> judgeTasks = new List<JudgeTask>();
             foreach (var item in innerJudgeTasks)
             {
                 JudgeTask task = JudgeTaskFactory.Create(
-                    item.SubmitId, item.ProblemId, item.DataVersion, 
-                    item.Language, item.SourceCode, item.Author, 
-                    item.TimeLimit, item.MemoryLimit, 
+                    item.SubmitId, item.ProblemId, item.DataVersion,
+                    item.Language, item.SourceCode, item.Author,
+                    item.TimeLimit, item.MemoryLimit,
                     item.JudgeAllCases, item.JudgeType);
-                
+
                 judgeTasks.Add(task);
             }
-            
+
             return judgeTasks.ToArray();
         }
     }

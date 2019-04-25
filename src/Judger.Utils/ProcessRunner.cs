@@ -47,6 +47,7 @@ namespace Judger.Utils
             {
                 Process.StartInfo.WorkingDirectory = workDirectory;
             }
+
             if (!string.IsNullOrEmpty(args))
             {
                 Process.StartInfo.Arguments = args;
@@ -68,7 +69,7 @@ namespace Judger.Utils
         /// <param name="priorityClass">进程优先级</param>
         /// <returns>进程退出码</returns>
         public int Run(string stdInput, out string stdOutput, out string stdError,
-                       ProcessPriorityClass priorityClass = ProcessPriorityClass.Normal)
+            ProcessPriorityClass priorityClass = ProcessPriorityClass.Normal)
         {
             Process.Start();
             Process.PriorityClass = priorityClass;
@@ -80,13 +81,13 @@ namespace Judger.Utils
             }
 
             Task<string> readOutputTask = new Task<string>(
-                             TryReadStreamToEnd, Process.StandardOutput,
-                             TaskCreationOptions.LongRunning);
+                TryReadStreamToEnd, Process.StandardOutput,
+                TaskCreationOptions.LongRunning);
             readOutputTask.Start();
 
             Task<string> readErrorTask = new Task<string>(
-                             TryReadStreamToEnd, Process.StandardError,
-                             TaskCreationOptions.LongRunning);
+                TryReadStreamToEnd, Process.StandardError,
+                TaskCreationOptions.LongRunning);
             readErrorTask.Start();
 
             TryWriteToStream(Process.StandardInput, stdInput);
@@ -105,7 +106,7 @@ namespace Judger.Utils
         {
             Process.Dispose();
         }
-        
+
         /// <summary>
         /// 尝试调用StreamWriter写入数据
         /// </summary>
@@ -119,7 +120,8 @@ namespace Judger.Utils
                 writer.Flush();
                 writer.Close();
             }
-            catch { }
+            catch
+            { }
         }
 
         /// <summary>
@@ -141,7 +143,9 @@ namespace Judger.Utils
                 {
                     return ReadStreamToEnd(reader);
                 }
-                catch { }
+                catch
+                { }
+
                 Thread.Sleep(10);
             }
         }
@@ -165,7 +169,7 @@ namespace Judger.Utils
                 sb.Append(buffer, 0, len);
 
                 sumLength += len;
-                if (sumLength > OutputLimit)//检查输出超限
+                if (sumLength > OutputLimit) //检查输出超限
                 {
                     reader.Close();
                     return sb.ToString();

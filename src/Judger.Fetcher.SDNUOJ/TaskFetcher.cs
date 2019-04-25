@@ -39,10 +39,12 @@ namespace Judger.Fetcher.SDNUOJ
             {
                 langBuilder.Append(lang.Name + "[],");
             }
+
             foreach (var lang in Config.Databases)
             {
                 langBuilder.Append(lang.Name + "[],");
             }
+
             langBuilder.Remove(langBuilder.Length - 1, 1);
 
             bodyBuilder.Append(System.Web.HttpUtility.UrlEncode(langBuilder.ToString()));
@@ -74,10 +76,11 @@ namespace Judger.Fetcher.SDNUOJ
 
             JudgeTask task = JudgeTaskFactory.Create(
                 Int32.Parse(taskEntity.SubmitId), Int32.Parse(taskEntity.ProblemId), taskEntity.DataVersion,
-                taskEntity.Language.Substring(0, taskEntity.Language.Length - 2), taskEntity.SourceCode, taskEntity.Author,
-                Int32.Parse(taskEntity.TimeLimit), Int32.Parse(taskEntity.MemoryLimit), false, false, bool.Parse(taskEntity.DbJudge));
+                taskEntity.Language.Substring(0, taskEntity.Language.Length - 2), taskEntity.SourceCode,
+                taskEntity.Author, Int32.Parse(taskEntity.TimeLimit), Int32.Parse(taskEntity.MemoryLimit),
+                false, false, bool.Parse(taskEntity.DbJudge));
 
-            return new JudgeTask[] { task };
+            return new JudgeTask[] {task};
         }
 
         /// <summary>
@@ -91,8 +94,10 @@ namespace Judger.Fetcher.SDNUOJ
                 keySet.Add(key.Name.ToLower());
             }
 
-            if (!keySet.Contains("sid")         || !keySet.Contains("pid")      ||
-                !keySet.Contains("dataversion") || !keySet.Contains("language") ||
+            if (!keySet.Contains("sid") ||
+                !keySet.Contains("pid") ||
+                !keySet.Contains("dataversion") ||
+                !keySet.Contains("language") ||
                 !keySet.Contains("sourcecode"))
             {
                 return false;
