@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Judger.Entity;
 using Judger.Entity.Program;
@@ -16,6 +17,37 @@ namespace Judger.Managers
         public const string SPJ_DIRECTORY = "spj";
 
         private static Configuration _config = ConfigManager.Config;
+
+        /// <summary>
+        /// 获取语言名-源文件扩展名字典
+        /// </summary>
+        /// <returns>语言名-源文件扩展名字典</returns>
+        public static Dictionary<string, ProgramLangConfig> GetLangSourceExtensionDictionary()
+        {
+            Dictionary<string, ProgramLangConfig> extDic = new Dictionary<string, ProgramLangConfig>();
+
+            ProgramLangConfig[] languages = _config.Languages;
+            foreach (var lang in languages)
+            {
+                string[] extensions = lang.SourceCodeFileExtension.Split('|');
+                foreach (var ex in extensions)
+                {
+                    if (!extDic.ContainsKey(ex))
+                    {
+                        extDic.Add(ex, lang.Clone() as ProgramLangConfig);
+                    }
+                    else
+                    {
+                        LogManager.Warning(
+                            "Source file extension conflict!" + Environment.NewLine +
+                            "Extension: " + ex + Environment.NewLine +
+                            "Languages: " + lang.Name + ", " + extDic[ex].Name);
+                    }
+                }
+            }
+
+            return extDic;
+        }
 
         /// <summary>
         /// 获取评测目录下的SPJ目录
@@ -59,7 +91,7 @@ namespace Judger.Managers
         /// <returns>SPJ源文件路径</returns>
         public static string FindSpjSourceFileInTestData(int problemId, int index = 0)
         {
-            Dictionary<string, ProgramLangConfig> extDic = ConfigManager.GetLangSourceExtensionDictionary();
+            Dictionary<string, ProgramLangConfig> extDic = SpjManager.GetLangSourceExtensionDictionary();
             string spjDirectory = GetSpjDirectoryInTestData(problemId);
 
             string[] files = Directory.GetFiles(spjDirectory);
@@ -119,7 +151,7 @@ namespace Judger.Managers
         /// <returns>SPJ程序</returns>
         public static string FindSpjProgramInTestData(int problemId, int index = 0)
         {
-            Dictionary<string, ProgramLangConfig> extDic = ConfigManager.GetLangSourceExtensionDictionary();
+            Dictionary<string, ProgramLangConfig> extDic = SpjManager.GetLangSourceExtensionDictionary();
             string spjDirectory = GetSpjDirectoryInTestData(problemId);
 
             List<string> spjSourceFiles = new List<string>();
@@ -226,7 +258,7 @@ namespace Judger.Managers
         /// <returns>语言配置</returns>
         public static ProgramLangConfig GetLangConfigByProgramPath(string path)
         {
-            Dictionary<string, ProgramLangConfig> extDic = ConfigManager.GetLangSourceExtensionDictionary();
+            Dictionary<string, ProgramLangConfig> extDic = SpjManager.GetLangSourceExtensionDictionary();
 
             string fileName = Path.GetFileNameWithoutExtension(path).ToLower();
             string fileExt = Path.GetExtension(fileName).TrimStart('.');
@@ -246,7 +278,7 @@ namespace Judger.Managers
         /// <returns>语言配置</returns>
         public static ProgramLangConfig GetLangConfigBySourceFilePath(string path)
         {
-            Dictionary<string, ProgramLangConfig> extDic = ConfigManager.GetLangSourceExtensionDictionary();
+            Dictionary<string, ProgramLangConfig> extDic = SpjManager.GetLangSourceExtensionDictionary();
 
             string fileExt = Path.GetExtension(path).TrimStart('.').ToLower();
 

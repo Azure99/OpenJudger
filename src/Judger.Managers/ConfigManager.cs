@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Judger.Entity;
 using Judger.Entity.Database;
 using Judger.Entity.Program;
@@ -38,14 +37,6 @@ namespace Judger.Managers
         }
 
         /// <summary>
-        /// 保存配置信息
-        /// </summary>
-        public static void SaveConfig()
-        {
-            FileHelper.TryWriteAllText("Config.json", SampleJsonSerializer.Serialize(Config));
-        }
-
-        /// <summary>
         /// 设置语言配置中的IsDbConfig字段
         /// </summary>
         private static void SetIsDbConfigField()
@@ -59,6 +50,14 @@ namespace Judger.Managers
             {
                 item.IsDbConfig = true;
             }
+        }
+
+        /// <summary>
+        /// 保存配置信息
+        /// </summary>
+        public static void SaveConfig()
+        {
+            FileHelper.TryWriteAllText("Config.json", SampleJsonSerializer.Serialize(Config));
         }
 
         /// <summary>
@@ -87,54 +86,6 @@ namespace Judger.Managers
             }
 
             return null;
-        }
-
-        public static bool HasLanguage(string languageName)
-        {
-            return GetLanguageConfig(languageName) != null;
-        }
-
-        public static Dictionary<string, ProgramLangConfig> GetLanguageDictionary()
-        {
-            Dictionary<string, ProgramLangConfig> langDic = new Dictionary<string, ProgramLangConfig>();
-
-            ProgramLangConfig[] languages = Config.Languages;
-            foreach (var lang in languages)
-            {
-                if (!langDic.ContainsKey(lang.Name))
-                {
-                    langDic.Add(lang.Name, lang.Clone() as ProgramLangConfig);
-                }
-            }
-
-            return langDic;
-        }
-
-        public static Dictionary<string, ProgramLangConfig> GetLangSourceExtensionDictionary()
-        {
-            Dictionary<string, ProgramLangConfig> extDic = new Dictionary<string, ProgramLangConfig>();
-
-            ProgramLangConfig[] languages = Config.Languages;
-            foreach (var lang in languages)
-            {
-                string[] extensions = lang.SourceCodeFileExtension.Split('|');
-                foreach(var ex in extensions)
-                {
-                    if (!extDic.ContainsKey(ex))
-                    {
-                        extDic.Add(ex, lang.Clone() as ProgramLangConfig);
-                    }
-                    else
-                    {
-                        LogManager.Warning(
-                            "Source file extension conflict!" + Environment.NewLine +
-                            "Extension: " + ex + Environment.NewLine +
-                            "Languages: " + lang.Name + ", " + extDic[ex].Name);
-                    }
-                }
-            }
-
-            return extDic;
         }
 
         /// <summary>
