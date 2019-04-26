@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Judger.Entity
 {
+    /// <summary>
+    /// 语言配置接口
+    /// </summary>
     public interface ILangConfig : ICloneable
     {
         /// <summary>

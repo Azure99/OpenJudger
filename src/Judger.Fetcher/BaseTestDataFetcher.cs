@@ -4,18 +4,30 @@ using Judger.Utils;
 
 namespace Judger.Fetcher
 {
+    /// <summary>
+    /// TestDataFetcher基类
+    /// </summary>
     public abstract class BaseTestDataFetcher : ITestDataFetcher
     {
+        /// <summary>
+        /// 配置信息
+        /// </summary>
         protected Configuration Config { get; } = ConfigManager.Config;
 
+        /// <summary>
+        /// Http客户端
+        /// </summary>
         protected HttpWebClient HttpClient { get; } = ConfiguredClient.Create();
 
         /// <summary>
         /// 最大测试数据下载时间
         /// </summary>
         private const int MAX_DOWNLOAD_TIME = 600000;
-
-        public BaseTestDataFetcher()
+        
+        /// <summary>
+        /// TestDataFetcher基类
+        /// </summary>
+        protected BaseTestDataFetcher()
         {
             HttpClient.ReadWriteTimeout = MAX_DOWNLOAD_TIME;
         }

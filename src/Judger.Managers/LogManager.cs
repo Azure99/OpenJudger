@@ -11,8 +11,19 @@ namespace Judger.Managers
     /// </summary>
     public static class LogManager
     {
+        /// <summary>
+        /// 信息缓冲区
+        /// </summary>
         private static StringBuilder _infoBuffer = new StringBuilder();
+        
+        /// <summary>
+        /// 写操作锁
+        /// </summary>
         private static object _writeLock = new object();
+        
+        /// <summary>
+        /// 自动刷新缓冲区任务
+        /// </summary>
         private static Task _autoFlushTask = new Task(AutoFlush, TaskCreationOptions.LongRunning);
 
         // 仅对Info级日志进行缓冲输出

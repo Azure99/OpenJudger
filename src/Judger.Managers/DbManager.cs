@@ -5,9 +5,16 @@ using Judger.Entity.Database;
 
 namespace Judger.Managers
 {
+    /// <summary>
+    /// Database Judge管理器
+    /// </summary>
     public static class DbManager
     {
         private static Configuration _config = ConfigManager.Config;
+        
+        /// <summary>
+        /// 数据库配置字典
+        /// </summary>
         private static Dictionary<string, DbLangConfig> _dbDic = new Dictionary<string, DbLangConfig>();
 
         static DbManager()

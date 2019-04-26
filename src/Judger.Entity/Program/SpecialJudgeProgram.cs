@@ -1,7 +1,7 @@
 ﻿namespace Judger.Entity.Program
 {
     /// <summary>
-    /// SpecialJudge程序文件
+    /// Special Judge程序文件
     /// </summary>
     public class SpecialJudgeProgram
     {
@@ -11,7 +11,7 @@
         public ProgramLangConfig LangConfiguration { get; set; }
 
         /// <summary>
-        /// SPJ程序
+        /// 二进制SPJ程序
         /// </summary>
         public byte[] Program { get; set; }
     }

@@ -8,12 +8,17 @@ using Judger.Utils;
 
 namespace Judger.Managers
 {
+    /// <summary>
+    /// Special Judge管理器
+    /// </summary>
     public static class SpjManager
     {
         //program.cpp.exe
         public const string SPJ_PROGRAM_FILENAME = "program";
 
-        //source.cpp
+        /// <summary>
+        /// SPJ程序源文件名(无扩展名)
+        /// </summary>
         public const string SPJ_SOURCE_FILENAME = "source";
         public const string SPJ_TESTDATA_DIR = "spj";
         public const string SPJ_DIRECTORY = "spj";

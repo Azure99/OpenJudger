@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Judger.Entity.Program
 {
@@ -16,10 +17,11 @@ namespace Judger.Entity.Program
         /// <summary>
         /// 是否为数据库配置
         /// </summary>
+        [JsonIgnore]
         public bool IsDbConfig { get; set; }
 
         /// <summary>
-        /// 是否需要编译(脚本语言不需要)
+        /// 是否需要编译(脚本语言(如Python)不需要)
         /// </summary>
         public bool NeedCompile { get; set; } = true;
 

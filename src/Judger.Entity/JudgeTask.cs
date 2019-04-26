@@ -2,6 +2,9 @@
 
 namespace Judger.Entity
 {
+    /// <summary>
+    /// 评测任务
+    /// </summary>
     [Serializable]
     public class JudgeTask : ICloneable
     {

@@ -12,7 +12,9 @@ namespace Judger.Fetcher
     /// </summary>
     public static class FetcherFactory
     {
-        //Fetcher程序集
+        /// <summary>
+        /// Fetcher程序集
+        /// </summary>
         private static Assembly _fetcherAssembly;
         private static Configuration _config = ConfigManager.Config;
 

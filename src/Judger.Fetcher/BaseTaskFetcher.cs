@@ -4,10 +4,19 @@ using Judger.Utils;
 
 namespace Judger.Fetcher
 {
+    /// <summary>
+    /// TaskFetcher基类
+    /// </summary>
     public abstract class BaseTaskFetcher : ITaskFetcher
     {
+        /// <summary>
+        /// 配置信息
+        /// </summary>
         protected Configuration Config { get; } = ConfigManager.Config;
 
+        /// <summary>
+        /// Http客户端
+        /// </summary>
         protected HttpWebClient HttpClient { get; } = ConfiguredClient.Create();
 
         /// <summary>
