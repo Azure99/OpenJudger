@@ -6,6 +6,7 @@ using Judger.Core.Database.Internal.DbOperator;
 using Judger.Core.Database.Internal.Entity;
 using Judger.Entity;
 using Judger.Entity.Database;
+using Judger.Entity.Exception;
 using Judger.Managers;
 using Judger.Utils;
 
@@ -116,7 +117,7 @@ namespace Judger.Core.Database
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new JudgeException("Build Db test data failed!" + ex);
             }
             finally
             {
