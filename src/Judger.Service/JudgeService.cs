@@ -12,7 +12,7 @@ namespace Judger.Service
     /// </summary>
     public class JudgeService : IDisposable
     {
-        private readonly Configuration _config = ConfigManager.Config;
+        private Configuration Config { get; } = ConfigManager.Config;
         private ITaskFetcher _taskFetcher;
         private Timer _workTimer;
 
@@ -39,7 +39,7 @@ namespace Judger.Service
         public JudgeService()
         {
             _taskFetcher = FetcherFactory.CreateTaskFetcher();
-            _workTimer = new Timer(_config.TaskFetchInterval);
+            _workTimer = new Timer(Config.TaskFetchInterval);
             _workTimer.Elapsed += OnWork;
         }
 
@@ -74,7 +74,7 @@ namespace Judger.Service
         {
             LogManager.Info("Clear temp directory");
 
-            foreach (var lang in _config.Languages)
+            foreach (var lang in Config.Languages)
             {
                 try
                 {
@@ -128,7 +128,7 @@ namespace Judger.Service
         /// </summary>
         private void FetchJudgeTask()
         {
-            if (Controller.InQueueCount >= _config.MaxQueueSize)
+            if (Controller.InQueueCount >= Config.MaxQueueSize)
             {
                 return;
             }

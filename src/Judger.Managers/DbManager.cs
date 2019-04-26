@@ -10,8 +10,8 @@ namespace Judger.Managers
     /// </summary>
     public static class DbManager
     {
-        private static Configuration _config = ConfigManager.Config;
-        
+        private static Configuration Config { get; } = ConfigManager.Config;
+
         /// <summary>
         /// 数据库配置字典
         /// </summary>
@@ -19,7 +19,7 @@ namespace Judger.Managers
 
         static DbManager()
         {
-            foreach (var dbConf in _config.Databases)
+            foreach (var dbConf in Config.Databases)
             {
                 if (!_dbDic.ContainsKey(dbConf.Name))
                 {

@@ -16,13 +16,13 @@ namespace Judger.Fetcher
         /// Fetcher程序集
         /// </summary>
         private static Assembly _fetcherAssembly;
-        private static Configuration _config = ConfigManager.Config;
+        private static Configuration Config { get; } = ConfigManager.Config;
 
         static FetcherFactory()
         {
-            LogManager.Info("Load fetcher: " + _config.FetcherDllPath);
+            LogManager.Info("Load fetcher: " + Config.FetcherDllPath);
 
-            string dllPath = Path.GetFullPath(_config.FetcherDllPath);
+            string dllPath = Path.GetFullPath(Config.FetcherDllPath);
             _fetcherAssembly = Assembly.LoadFile(dllPath);
         }
 

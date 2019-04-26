@@ -16,15 +16,15 @@ namespace Judger.Core.Program.Internal
         /// </summary>
         public static CodeChecker Singleton { get; private set; } = new CodeChecker();
 
-        private Dictionary<string, List<string>> _langRulesDic = new Dictionary<string, List<string>>();
+        private Configuration Config { get; } = ConfigManager.Config;
 
-        private Configuration _config = ConfigManager.Config;
+        private Dictionary<string, List<string>> _langRulesDic = new Dictionary<string, List<string>>();
 
         private const string LANG_START = "[Language=";
 
         private CodeChecker()
         {
-            if (_config.InterceptUnsafeCode)
+            if (Config.InterceptUnsafeCode)
             {
                 InitRulesDictionary();
             }
@@ -32,12 +32,12 @@ namespace Judger.Core.Program.Internal
 
         private void InitRulesDictionary()
         {
-            if (!File.Exists(_config.InterceptionRules))
+            if (!File.Exists(Config.InterceptionRules))
             {
-                File.WriteAllText(_config.InterceptionRules, "");
+                File.WriteAllText(Config.InterceptionRules, "");
             }
 
-            string rulesData = File.ReadAllText(_config.InterceptionRules);
+            string rulesData = File.ReadAllText(Config.InterceptionRules);
             string[] rules = Regex.Split(rulesData, "\r\n|\r|\n");
 
             string nowLang = "";
@@ -90,7 +90,7 @@ namespace Judger.Core.Program.Internal
         {
             unsafeCode = "";
             lineIndex = -1;
-            if (!_config.InterceptUnsafeCode)
+            if (!Config.InterceptUnsafeCode)
             {
                 return true;
             }

@@ -13,7 +13,7 @@ namespace Judger.Service
     /// </summary>
     public class JudgeController
     {
-        private readonly Configuration _config = ConfigManager.Config;
+        private Configuration Config { get; } = ConfigManager.Config;
 
         // 评测任务等待队列
         private ConcurrentQueue<JudgeTask> _judgeQueue = new ConcurrentQueue<JudgeTask>();
@@ -51,7 +51,7 @@ namespace Judger.Service
             lock (_queueLock)
             {
                 // 同时运行数达到限制或等待队列为空
-                if (RunningCount >= _config.MaxRunning || _judgeQueue.IsEmpty)
+                if (RunningCount >= Config.MaxRunning || _judgeQueue.IsEmpty)
                 {
                     CheckExecuteGc();
                     return;

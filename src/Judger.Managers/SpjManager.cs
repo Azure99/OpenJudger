@@ -20,10 +20,11 @@ namespace Judger.Managers
         /// SPJ程序源文件名(无扩展名)
         /// </summary>
         public const string SPJ_SOURCE_FILENAME = "source";
+
         public const string SPJ_TESTDATA_DIR = "spj";
         public const string SPJ_DIRECTORY = "spj";
 
-        private static Configuration _config = ConfigManager.Config;
+        private static Configuration Config { get; } = ConfigManager.Config;
 
         /// <summary>
         /// 获取语言名-源文件扩展名字典
@@ -33,7 +34,7 @@ namespace Judger.Managers
         {
             Dictionary<string, ProgramLangConfig> extDic = new Dictionary<string, ProgramLangConfig>();
 
-            ProgramLangConfig[] languages = _config.Languages;
+            ProgramLangConfig[] languages = Config.Languages;
             foreach (var lang in languages)
             {
                 string[] extensions = lang.SourceCodeFileExtension.Split('|');
@@ -78,7 +79,7 @@ namespace Judger.Managers
         /// <returns>SPJ目录</returns>
         public static string GetSpjDirectoryInTestData(int problemId)
         {
-            return Path.Combine(_config.TestDataDirectory, problemId.ToString(), SPJ_TESTDATA_DIR);
+            return Path.Combine(Config.TestDataDirectory, problemId.ToString(), SPJ_TESTDATA_DIR);
         }
 
         /// <summary>
