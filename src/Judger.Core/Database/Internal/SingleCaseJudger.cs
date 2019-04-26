@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 using System.Diagnostics;
+using Judger.Core.Database.Internal.DbOperator;
 using Judger.Core.Database.Internal.Entity;
 using Judger.Entity;
 

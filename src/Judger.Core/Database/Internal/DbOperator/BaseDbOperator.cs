@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using Judger.Core.Database.Internal.Entity;
 
-namespace Judger.Core.Database.Internal
+namespace Judger.Core.Database.Internal.DbOperator
 {
     /// <summary>
     /// 数据库操作器基类
