@@ -144,7 +144,7 @@ namespace Judger.Fetcher
         /// <returns>替换过后的路径信息</returns>
         private static string ReplacePathInfo(string oldPath, string tempDir, string appDir)
         {
-            return oldPath.Replace("<tempdir>", tempDir).Replace("appdir", appDir);
+            return oldPath.Replace("<tempdir>", tempDir).Replace("<appdir>", appDir);
         }
 
         /// <summary>
