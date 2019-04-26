@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using System.IO;
 using Judger.Core.Database.Internal;
 using Judger.Core.Database.Internal.DbOperator;
@@ -78,18 +79,39 @@ namespace Judger.Core.Database
         private SingleJudgeResult JudgeOneCase(string dataName)
         {
             DbTestData testData = TestDataManager.GetDbTestData(JudgeTask.ProblemId, _dbType, dataName);
-            string inputData = testData.Input;
-            DbData outputData = ParseDbData(testData.Output);
-            DbQueryData queryData = ParseQueryData(testData.Query);
+            BuildStandardData(testData, out string inputData, out DbData operData, out DbQueryData queryData);
 
             BaseDbOperator userOper = CreateJudgeEnv(inputData);
-
+            
             SingleCaseJudger singleCaseJudger = new SingleCaseJudger(JudgeTask, userOper);
-            SingleJudgeResult result = singleCaseJudger.Judge(inputData, outputData, queryData);
-
+            SingleJudgeResult result = singleCaseJudger.Judge(inputData, operData, queryData);
+            
             ClearJudgeEnv(userOper);
 
             return result;
+        }
+
+        private void BuildStandardData(DbTestData testData, out string inputData, out DbData operData, out DbQueryData queryData)
+        {
+            inputData = testData.Input;
+            operData = null;
+            queryData = null;
+            string stdOperCmd = testData.Operation;
+            string stdQueryCmd = testData.Query;
+            
+            BaseDbOperator stdOperator = CreateJudgeEnv(inputData);
+            
+            DbDataReader reader = stdOperator.ExecuteReader(stdOperCmd ?? stdQueryCmd);
+            if (stdOperCmd != null)
+            {
+                operData = stdOperator.ReadDbData();
+            }
+            if (stdQueryCmd != null)
+            {
+                queryData = BaseDbOperator.ReadQueryData(reader);
+            }
+            
+            ClearJudgeEnv(stdOperator);
         }
 
         private BaseDbOperator CreateJudgeEnv(string input)
@@ -114,29 +136,6 @@ namespace Judger.Core.Database
             userOper.Dispose();
             MainOperator.DropDatabase(_dbName);
             MainOperator.DropUser(_dbUser);
-        }
-
-        private DbData ParseDbData(string data)
-        {
-            if (data == null)
-            {
-                return null;
-            }
-
-            DbData dbData = SampleJsonSerializer.DeSerialize<DbData>(data);
-            Array.Sort(dbData.TablesData, (a, b) => String.Compare(a.Name, b.Name, StringComparison.Ordinal));
-
-            return dbData;
-        }
-
-        private DbQueryData ParseQueryData(string data)
-        {
-            if (data == null)
-            {
-                return null;
-            }
-
-            return SampleJsonSerializer.DeSerialize<DbQueryData>(data);
         }
 
         public override void Dispose()

@@ -54,6 +54,11 @@ namespace Judger.Managers
         public const string DIR_QUERY = "query";
 
         /// <summary>
+        /// 测试操作文件夹名
+        /// </summary>
+        public const string DIR_OPERATION = "oper";
+
+        /// <summary>
         /// Special Judge数据文件夹名
         /// </summary>
         public const string DIR_SPJ = "spj";
@@ -291,23 +296,12 @@ namespace Judger.Managers
             {
                 string dirPath = Cmb(Config.TestDataDirectory, problemId, DIR_DB);
 
-                string[] inputFiles = Directory.GetFiles(Cmb(dirPath + DIR_INPUT));
+                string[] inputFiles = Directory.GetFiles(Cmb(dirPath, DIR_INPUT));
                 var query = from x in inputFiles
                     where Path.GetExtension(x).TrimStart('.').ToLower() == dbType.ToString().ToLower()
                     select Path.GetFileNameWithoutExtension(x);
 
-                List<string> dataNames = new List<string>();
-                foreach (var x in query)
-                {
-                    string outputFile = PathHelper.FindFileIgnoreCase(Cmb(dirPath, DIR_OUTPUT), x + "." + dbType);
-                    string queryFile = PathHelper.FindFileIgnoreCase(Cmb(dirPath + DIR_QUERY), x + "." + dbType);
-                    if (outputFile != null || queryFile != null)
-                    {
-                        dataNames.Add(x);
-                    }
-                }
-
-                return dataNames.ToArray();
+                return query.ToArray();
             }
         }
 
@@ -324,20 +318,44 @@ namespace Judger.Managers
             {
                 string dirPath = Cmb(Config.TestDataDirectory, problemId, DIR_DB);
 
-                string inputFile = PathHelper.FindFileIgnoreCase(Cmb(dirPath, DIR_INPUT), dataName + '.' + dbType);
-                string outputFile = PathHelper.FindFileIgnoreCase(Cmb(dirPath, DIR_OUTPUT), dataName + "." + dbType);
-                string queryFile = PathHelper.FindFileIgnoreCase(Cmb(dirPath, DIR_QUERY), dataName + "." + dbType);
+                string inputFile = Cmb(dirPath, DIR_INPUT, dataName + '.' + dbType);
+                string operFile = null;
+                string queryFile = null;
+                
+                var operFileQuery = from x in Directory.GetFiles(Cmb(dirPath, DIR_OPERATION))
+                    where Path.GetFileNameWithoutExtension(x).ToLower() == dbType.ToString().ToLower()
+                    select x;
+                
+                var queryFileQuery = from x in Directory.GetFiles(Cmb(dirPath, DIR_QUERY))
+                    where Path.GetFileNameWithoutExtension(x).ToLower() == dbType.ToString().ToLower()
+                    select x;
 
-                if (inputFile == null || (outputFile == null && queryFile == null))
+                if (operFileQuery.Count() > 0)
+                {
+                    operFile = operFileQuery.First();
+                }
+
+                if (queryFileQuery.Count() > 0)
+                {
+                    queryFile = queryFileQuery.First();
+                }
+                
+
+                if (!File.Exists(inputFile))
                 {
                     throw new JudgeException("Database input file not found: " + inputFile);
+                }
+
+                if (operFile == null && queryFile == null)
+                {
+                    throw new JudgeException("Database output file not found: " + inputFile);
                 }
 
                 return new DbTestData
                 {
                     Name = dataName,
-                    Input = (inputFile != null) ? File.ReadAllText(inputFile) : null,
-                    Output = (outputFile != null) ? File.ReadAllText(outputFile) : null,
+                    Input = File.ReadAllText(inputFile),
+                    Operation = (operFile != null) ? File.ReadAllText(operFile) : null,
                     Query = (queryFile != null) ? File.ReadAllText(queryFile) : null,
                 };
             }

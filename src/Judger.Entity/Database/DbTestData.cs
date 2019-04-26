@@ -11,17 +11,17 @@
         public string Name { get; set; }
 
         /// <summary>
-        /// 测试输入(操作前的数据库)
+        /// 数据库初始化命令
         /// </summary>
         public string Input { get; set; }
 
         /// <summary>
-        /// 测试输出(操作后的数据库)
+        /// 数据库操作标程
         /// </summary>
-        public string Output { get; set; }
+        public string Operation { get; set; }
 
         /// <summary>
-        /// 测试查询
+        /// 数据库查询标程
         /// </summary>
         public string Query { get; set; }
     }
