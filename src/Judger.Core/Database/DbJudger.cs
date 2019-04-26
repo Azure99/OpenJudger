@@ -100,18 +100,28 @@ namespace Judger.Core.Database
             string stdQueryCmd = testData.Query;
             
             BaseDbOperator stdOperator = CreateJudgeEnv(inputData);
-            
-            DbDataReader reader = stdOperator.ExecuteReader(stdOperCmd ?? stdQueryCmd);
-            if (stdOperCmd != null)
+
+            try
             {
-                operData = stdOperator.ReadDbData();
+                DbDataReader reader = stdOperator.ExecuteReader(stdOperCmd ?? stdQueryCmd);
+                if (stdOperCmd != null)
+                {
+                    operData = stdOperator.ReadDbData();
+                }
+
+                if (stdQueryCmd != null)
+                {
+                    queryData = BaseDbOperator.ReadQueryData(reader);
+                }
             }
-            if (stdQueryCmd != null)
+            catch (Exception ex)
             {
-                queryData = BaseDbOperator.ReadQueryData(reader);
+                throw ex;
             }
-            
-            ClearJudgeEnv(stdOperator);
+            finally
+            {
+                ClearJudgeEnv(stdOperator);
+            }
         }
 
         private BaseDbOperator CreateJudgeEnv(string input)
