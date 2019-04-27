@@ -20,6 +20,11 @@ namespace Judger.Entity.Database
         public bool IsDbConfig { get; set; } = true;
 
         /// <summary>
+        /// 对查询字段是否大小写敏感
+        /// </summary>
+        public bool CaseSensitive { get; set; } = false;
+
+        /// <summary>
         /// 数据库驱动路径
         /// </summary>
         public string DriverPath { get; set; } = "";

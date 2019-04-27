@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Judger.Core.Database.Internal.DbOperator;
 using Judger.Core.Database.Internal.Entity;
 using Judger.Entity;
+using Judger.Entity.Database;
 
 namespace Judger.Core.Database.Internal
 {
@@ -22,10 +23,16 @@ namespace Judger.Core.Database.Internal
         /// </summary>
         public JudgeTask JudgeTask { get; private set; }
 
+        /// <summary>
+        /// 对查询字段是否大小写敏感
+        /// </summary>
+        private bool _caseSensitive;
+
         public SingleCaseJudger(JudgeTask task, BaseDbOperator dbOperator)
         {
             JudgeTask = task;
             UserOperator = dbOperator;
+            _caseSensitive = (task.LangConfig as DbLangConfig).CaseSensitive;
         }
 
         /// <summary>
@@ -105,7 +112,7 @@ namespace Judger.Core.Database.Internal
             int tableCount = stdOutput.TablesData.Length;
             for (int i = 0; i < tableCount; i++)
             {
-                if (stdOutput.TablesData[i].Name != usrOutput.TablesData[i].Name)
+                if (!CmpString(stdOutput.TablesData[i].Name, usrOutput.TablesData[i].Name))
                 {
                     return CompareResult.WrongAnswer;
                 }
@@ -132,7 +139,7 @@ namespace Judger.Core.Database.Internal
 
             for (int i = 0; i < filedCount; i++)
             {
-                if (stdQuery.FieldNames[i] != usrQuery.FieldNames[i])
+                if (!CmpString(stdQuery.FieldNames[i], usrQuery.FieldNames[i]))
                 {
                     return CompareResult.WrongAnswer;
                 }
@@ -150,6 +157,24 @@ namespace Judger.Core.Database.Internal
             }
 
             return CompareResult.Accepted;
+        }
+
+        /// <summary>
+        /// 对比文本是否相同(大小写敏感根据_caseSensitive)
+        /// </summary>
+        /// <param name="a">string a</param>
+        /// <param name="b">string b</param>
+        /// <returns>是否相同</returns>
+        private bool CmpString(string a, string b)
+        {
+            if (_caseSensitive)
+            {
+                return a == b;
+            }
+            else
+            {
+                return a.ToLower() == b.ToLower();
+            }
         }
     }
 }
