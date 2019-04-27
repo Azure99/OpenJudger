@@ -80,22 +80,22 @@ namespace Judger.Core.Database
         private SingleJudgeResult JudgeOneCase(string dataName)
         {
             DbTestData testData = TestDataManager.GetDbTestData(JudgeTask.ProblemId, _dbType, dataName);
-            BuildStandardData(testData, out string inputData, out DbData operData, out DbQueryData queryData);
+            BuildStandardData(testData, out string inputData, out DbData outputData, out DbQueryData queryData);
 
             BaseDbOperator userOper = CreateJudgeEnv(inputData);
             
             SingleCaseJudger singleCaseJudger = new SingleCaseJudger(JudgeTask, userOper);
-            SingleJudgeResult result = singleCaseJudger.Judge(inputData, operData, queryData);
+            SingleJudgeResult result = singleCaseJudger.Judge(inputData, outputData, queryData);
             
             ClearJudgeEnv(userOper);
 
             return result;
         }
 
-        private void BuildStandardData(DbTestData testData, out string inputData, out DbData operData, out DbQueryData queryData)
+        private void BuildStandardData(DbTestData testData, out string inputData, out DbData outputData, out DbQueryData queryData)
         {
             inputData = testData.Input;
-            operData = null;
+            outputData = null;
             queryData = null;
             string stdOperCmd = testData.Operation;
             string stdQueryCmd = testData.Query;
@@ -107,7 +107,7 @@ namespace Judger.Core.Database
                 DbDataReader reader = stdOperator.ExecuteReader(stdOperCmd ?? stdQueryCmd);
                 if (stdOperCmd != null)
                 {
-                    operData = stdOperator.ReadDbData();
+                    outputData = stdOperator.ReadDbData();
                 }
 
                 if (stdQueryCmd != null)
