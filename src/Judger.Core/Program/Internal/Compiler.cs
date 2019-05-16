@@ -57,11 +57,6 @@ namespace Judger.Core.Program.Internal
                     monitor.Dispose();
                 }
 
-                if (!string.IsNullOrEmpty(error)) //存在编译错误
-                {
-                    return error;
-                }
-
                 if (exitcode != 0)
                 {
                     if (monitor.LimitExceed)
@@ -69,7 +64,14 @@ namespace Judger.Core.Program.Internal
                         return "Compile timeout.";
                     }
 
-                    return "Compiler runtime error.";
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        return "Compiler runtime error.";
+                    }
+                    else
+                    {
+                        return error;
+                    }
                 }
 
                 return "";
