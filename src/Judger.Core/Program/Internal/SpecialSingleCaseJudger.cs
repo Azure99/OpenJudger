@@ -67,7 +67,7 @@ namespace Judger.Core.Program.Internal
 
                 // 创建监视器
                 int totalTimeLimit = Math.Max(JudgeTask.TimeLimit * TOTAL_TIME_LIMIT_TUPLING, MIN_TOTAL_TIME_LIMIT);
-                monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval)
+                monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval, LangConfig.RunningInVm)
                 {
                     TimeLimit = JudgeTask.TimeLimit,
                     TotalTimeLimit = totalTimeLimit,

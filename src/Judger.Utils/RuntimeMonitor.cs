@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Timers;
 
@@ -56,6 +57,8 @@ namespace Judger.Utils
         // 指示当前平台是否为Linux
         private bool _platformIsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
+        private bool _runningInVm = false;
+
         private Timer _timer = new Timer();
 
         /// <summary>
@@ -63,11 +66,12 @@ namespace Judger.Utils
         /// </summary>
         /// <param name="process">需要监控的Process</param>
         /// <param name="interval">监控周期</param>
-        public RuntimeMonitor(Process process, int interval = 20)
+        public RuntimeMonitor(Process process, int interval = 20, bool runningInVm = false)
         {
             Process = process;
             _timer.Interval = interval;
             _timer.Elapsed += OnMonitor;
+            _runningInVm = runningInVm;
         }
 
         /// <summary>
@@ -174,15 +178,24 @@ namespace Judger.Utils
 
         private int PeakMemoryOnWindows()
         {
-            return (int) (Process.PeakPagedMemorySize64 / 1024);
+            if (_runningInVm)
+            {
+                return (int)(Process.PeakWorkingSet64 / 1024);
+            }
+            else
+            {
+                return (int)(Process.PeakPagedMemorySize64 / 1024);
+            }
         }
 
         private int PeakMemoryOnLinux()
         {
-            string[] lines = System.IO.File.ReadAllLines(string.Format("/proc/{0}/status", Process.Id));
+            string queryKey = _runningInVm ? "VmHWM" : "VmPeak";
+
+            string[] lines = File.ReadAllLines(string.Format("/proc/{0}/status", Process.Id));
             foreach (string line in lines)
             {
-                if (!line.StartsWith("VmPeak"))
+                if (!line.StartsWith(queryKey))
                 {
                     continue;
                 }
