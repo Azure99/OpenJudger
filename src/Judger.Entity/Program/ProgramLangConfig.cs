@@ -26,6 +26,11 @@ namespace Judger.Entity.Program
         public bool NeedCompile { get; set; } = true;
 
         /// <summary>
+        /// 是否运行在VM中 (Java等语言是)
+        /// </summary>
+        public bool RunningInVm { get; set; } = false;
+
+        /// <summary>
         /// 写出的源文件名
         /// </summary>
         public string SourceCodeFileName { get; set; } = "";
