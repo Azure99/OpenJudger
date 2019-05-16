@@ -57,6 +57,7 @@ namespace Judger.Utils
         // 指示当前平台是否为Linux
         private bool _platformIsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
+        // 指示子进程是否运行在虚拟机中(如Java, Python)
         private bool _runningInVm = false;
 
         private Timer _timer = new Timer();
@@ -75,7 +76,7 @@ namespace Judger.Utils
         }
 
         /// <summary>
-        /// 开始监控
+        /// 开始运行时监控
         /// </summary>
         public void Start()
         {
@@ -83,7 +84,7 @@ namespace Judger.Utils
         }
 
         /// <summary>
-        /// 停止监控
+        /// 停止运行时监控
         /// </summary>
         public void Stop()
         {
@@ -123,6 +124,10 @@ namespace Judger.Utils
             { }
         }
 
+        /// <summary>
+        /// 检查时间消耗
+        /// </summary>
+        /// <returns>是否通过检查</returns>
         private bool CheckTimeCost()
         {
             // 使用的CPU时间
@@ -142,6 +147,10 @@ namespace Judger.Utils
             return true;
         }
 
+        /// <summary>
+        /// 检查内存消耗
+        /// </summary>
+        /// <returns>是否通过检查</returns>
         private bool CheckMemoryCost()
         {
             int nowMemoryCost = PeakMemory();
@@ -160,8 +169,13 @@ namespace Judger.Utils
             return true;
         }
 
+        /// <summary>
+        /// 获取进程内存使用的峰值
+        /// </summary>
+        /// <returns>进程内存使用的峰值</returns>
         private int PeakMemory()
         {
+            // 分平台实现
             if (_platformIsWindows)
             {
                 return PeakMemoryOnWindows();
@@ -176,6 +190,10 @@ namespace Judger.Utils
             }
         }
 
+        /// <summary>
+        /// Windows下获取进程内存使用的峰值
+        /// </summary>
+        /// <returns>进程内存使用的峰值</returns>
         private int PeakMemoryOnWindows()
         {
             if (_runningInVm)
@@ -188,6 +206,14 @@ namespace Judger.Utils
             }
         }
 
+        /// <summary>
+        /// Linux下获取进程内存使用的峰值
+        /// </summary>
+        /// <returns>进程内存使用的峰值</returns>
+        /// 
+        /// 方法从/proc/ProcessId/status中解析峰值内存使用
+        /// VmPeak为内存使用峰值, 适合大多数情况
+        /// VmHWM为物理内存使用峰值, 适合运行在虚拟机中的语言
         private int PeakMemoryOnLinux()
         {
             string queryKey = _runningInVm ? "VmHWM" : "VmPeak";
@@ -209,6 +235,12 @@ namespace Judger.Utils
             return 0;
         }
 
+        /// <summary>
+        /// 未知平台下获取进程的内存使用量
+        /// </summary>
+        /// <returns>进程的内存使用量</returns>
+        /// 
+        /// .Net Core确保所有平台下都实现了WorkingSet64属性, 但此值是不可靠的
         private int PeakMemoryOnUnknown()
         {
             return (int) (Process.WorkingSet64 / 1024);
