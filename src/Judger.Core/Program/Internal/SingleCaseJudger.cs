@@ -65,7 +65,9 @@ namespace Judger.Core.Program.Internal
                 monitor.Start();
 
                 runner.OutputLimit = _langConfig.OutputLimit;
-                exitcode = runner.Run(input, out userOutput, out userError, ProcessPriorityClass.RealTime);
+                exitcode = runner.Run(input, out userOutput, out userError,
+                    ProcessPriorityClass.RealTime, ConfigManager.Config.MonitorInterval * 2);
+
                 monitor.Dispose();
             }
 

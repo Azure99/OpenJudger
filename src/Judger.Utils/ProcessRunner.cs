@@ -69,7 +69,8 @@ namespace Judger.Utils
         /// <param name="priorityClass">进程优先级</param>
         /// <returns>进程退出码</returns>
         public int Run(string stdInput, out string stdOutput, out string stdError,
-            ProcessPriorityClass priorityClass = ProcessPriorityClass.Normal)
+            ProcessPriorityClass priorityClass = ProcessPriorityClass.Normal,
+            int inputDelay = 0)
         {
             Process.Start();
             Process.PriorityClass = priorityClass;
@@ -89,6 +90,8 @@ namespace Judger.Utils
                 TryReadStreamToEnd, Process.StandardError,
                 TaskCreationOptions.LongRunning);
             readErrorTask.Start();
+
+            Thread.Sleep(inputDelay);
 
             TryWriteToStream(Process.StandardInput, stdInput);
 

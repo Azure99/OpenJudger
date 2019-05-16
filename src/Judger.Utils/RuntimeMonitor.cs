@@ -53,6 +53,9 @@ namespace Judger.Utils
         // 指示当前平台是否为Windows
         private bool _platformIsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
+        // 指示当前平台是否为Linux
+        private bool _platformIsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+
         private Timer _timer = new Timer();
 
         /// <summary>
@@ -137,15 +140,7 @@ namespace Judger.Utils
 
         private bool CheckMemoryCost()
         {
-            int nowMemoryCost;
-            if (_platformIsWindows) //针对不同平台判断
-            {
-                nowMemoryCost = (int) (Process.PeakPagedMemorySize64 / 1024);
-            }
-            else
-            {
-                nowMemoryCost = (int) (Process.WorkingSet64 / 1024);
-            }
+            int nowMemoryCost = PeakMemory();
 
             if (nowMemoryCost > MemoryCost)
             {
@@ -159,6 +154,51 @@ namespace Judger.Utils
             }
 
             return true;
+        }
+
+        private int PeakMemory()
+        {
+            if (_platformIsWindows)
+            {
+                return PeakMemoryOnWindows();
+            }
+            else if (_platformIsLinux)
+            {
+                return PeakMemoryOnLinux();
+            }
+            else
+            {
+                return PeakMemoryOnUnknown();
+            }
+        }
+
+        private int PeakMemoryOnWindows()
+        {
+            return (int) (Process.PeakPagedMemorySize64 / 1024);
+        }
+
+        private int PeakMemoryOnLinux()
+        {
+            string[] lines = System.IO.File.ReadAllLines(string.Format("/proc/{0}/status", Process.Id));
+            foreach (string line in lines)
+            {
+                if (!line.StartsWith("VmPeak"))
+                {
+                    continue;
+                }
+
+                string[] splits = line.Split(' ');
+                string vmPeakStr = splits[splits.Length - 2];
+
+                return int.Parse(vmPeakStr);
+            }
+
+            return 0;
+        }
+
+        private int PeakMemoryOnUnknown()
+        {
+            return (int) (Process.WorkingSet64 / 1024);
         }
     }
 }
