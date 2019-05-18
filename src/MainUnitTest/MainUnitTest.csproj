@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Authors>Azure99</Authors>
+    <Company>Rainng</Company>
+    <Product>OpenJudger</Product>
+    <Copyright>Copyright © Azue99 Rainng 2019</Copyright>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
