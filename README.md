@@ -5,7 +5,9 @@
 
 ## Introduction
 OpenJudger is a universal program judger designed to simplify Online Judge System development.<br>
+Support [SDNUO](https://github.com/sdnuacmicpc/sdnuoj) and [HUSTOJ](https://github.com/zhblue/hustoj).<br>
 It is now used to judge solutions on the [SDNUOJ](http://www.acmicpc.sdnu.edu.cn/), [itoIDbOJ](http://db.itoi.sd.cn/) and [itoIOJ](http://oj.itoi.sd.cn/).
+
 
 ## Overview
 * Based on .Net Core: cross platform.
@@ -13,7 +15,7 @@ It is now used to judge solutions on the [SDNUOJ](http://www.acmicpc.sdnu.edu.cn
 * Configurable: all settings are in the Config.json file.
 * Multiple languages support: `C`, `C++`, `Java`, `Python`, `Kotlin`, `C#`, `Go`, `NodeJS` and any language that I/O in console.
 * Database judge: Mysql only, Support CRUD
-* Adaptable: OpenJudger can load your `Fetcher` by reflection. Implement `Fetcher` interface to adapt any OnlineJudge System.
+* Adaptable: OpenJudger can load your `Fetcher`. Implement `Fetcher` interface to adapt any OnlineJudge System.
 * High performance: reliable concurrency control, auto distribute processor affinity.
 
 ## Documents
