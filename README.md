@@ -5,7 +5,7 @@
 
 ## Introduction
 OpenJudger is a universal program judger designed to simplify Online Judge System development.<br>
-Support [SDNUO](https://github.com/sdnuacmicpc/sdnuoj) and [HUSTOJ](https://github.com/zhblue/hustoj).<br>
+Support [SDNUOJ](https://github.com/sdnuacmicpc/sdnuoj) and [HUSTOJ](https://github.com/zhblue/hustoj).<br>
 It is now used to judge solutions on the [SDNUOJ](http://www.acmicpc.sdnu.edu.cn/), [itoIDbOJ](http://db.itoi.sd.cn/) and [itoIOJ](http://oj.itoi.sd.cn/).
 
 
