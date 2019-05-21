@@ -15,12 +15,17 @@ namespace Judger.Managers
         /// 信息缓冲区
         /// </summary>
         private static StringBuilder _infoBuffer = new StringBuilder();
-        
+
+        /// <summary>
+        /// 缓冲区锁
+        /// </summary>
+        private static object _bufferLock = new object();
+
         /// <summary>
         /// 写操作锁
         /// </summary>
         private static object _writeLock = new object();
-        
+
         /// <summary>
         /// 自动刷新缓冲区任务
         /// </summary>
@@ -122,7 +127,10 @@ namespace Judger.Managers
 
             if (level == "Info")
             {
-                _infoBuffer.Append(content);
+                lock (_infoBuffer)
+                {
+                    _infoBuffer.Append(content);
+                }
 
                 if (_infoBuffer.Length > INFO_BUFFER_SIZE)
                 {
@@ -137,8 +145,11 @@ namespace Judger.Managers
 
         public static void Flush()
         {
-            Write("Info", _infoBuffer.ToString());
-            _infoBuffer.Clear();
+            lock (_bufferLock)
+            {
+                Write("Info", _infoBuffer.ToString());
+                _infoBuffer.Clear();
+            }
         }
 
         /// <summary>
