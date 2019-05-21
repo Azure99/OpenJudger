@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Judger.Entity;
 using Judger.Fetcher.Generic.Entity;
+using Judger.Models;
 using Judger.Utils;
 
 namespace Judger.Fetcher.Generic

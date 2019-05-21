@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Timers;
-using Judger.Entity;
 using Judger.Fetcher;
 using Judger.Managers;
+using Judger.Models;
 
 namespace Judger.Service
 {

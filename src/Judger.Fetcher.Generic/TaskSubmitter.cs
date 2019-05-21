@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
-using Judger.Entity;
 using Judger.Fetcher.Generic.Entity;
+using Judger.Models;
 
 namespace Judger.Fetcher.Generic
 {

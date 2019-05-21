@@ -1,6 +1,7 @@
 ﻿using Xunit;
 using Judger.Core.Program.Internal;
 using Judger.Core.Program.Internal.Entity;
+using Judger.Models;
 
 namespace MainUnitTest
 {
@@ -12,7 +13,7 @@ namespace MainUnitTest
         [Fact]
         public void TestSingleJudgerCompare()
         {
-            SingleCaseJudger judger = new SingleCaseJudger(new Judger.Entity.JudgeTask());
+            SingleCaseJudger judger = new SingleCaseJudger(new JudgeTask());
 
             string test1 = @"123123";
             string test2 = @"123123";

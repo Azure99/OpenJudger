@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Judger.Entity;
-using Judger.Entity.Database;
-using Judger.Entity.Program;
+using Judger.Models;
+using Judger.Models.Database;
+using Judger.Models.Program;
 using Judger.Utils;
 
 namespace Judger.Managers

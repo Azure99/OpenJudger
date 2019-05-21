@@ -1,5 +1,5 @@
 ﻿using System;
-using Judger.Entity;
+using Judger.Models;
 
 namespace Judger.Fetcher
 {

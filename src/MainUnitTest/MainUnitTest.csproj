@@ -21,12 +21,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Judger.Core\Judger.Core.csproj" />
-    <ProjectReference Include="..\Judger.Entity\Judger.Entity.csproj" />
     <ProjectReference Include="..\Judger.Fetcher.Generic\Judger.Fetcher.Generic.csproj" />
     <ProjectReference Include="..\Judger.Fetcher.HUSTOJ\Judger.Fetcher.HUSTOJ.csproj" />
     <ProjectReference Include="..\Judger.Fetcher.SDNUOJ\Judger.Fetcher.SDNUOJ.csproj" />
     <ProjectReference Include="..\Judger.Fetcher\Judger.Fetcher.csproj" />
     <ProjectReference Include="..\Judger.Managers\Judger.Managers.csproj" />
+    <ProjectReference Include="..\Judger.Models\Judger.Models.csproj" />
     <ProjectReference Include="..\Judger.Service\Judger.Service.csproj" />
     <ProjectReference Include="..\Judger.Utils\Judger.Utils.csproj" />
   </ItemGroup>

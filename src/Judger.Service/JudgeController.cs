@@ -2,9 +2,9 @@
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Judger.Core;
-using Judger.Entity;
 using Judger.Fetcher;
 using Judger.Managers;
+using Judger.Models;
 
 namespace Judger.Service
 {

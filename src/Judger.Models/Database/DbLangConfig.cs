@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Judger.Entity.Database
+namespace Judger.Models.Database
 {
     /// <summary>
     /// 数据库配置

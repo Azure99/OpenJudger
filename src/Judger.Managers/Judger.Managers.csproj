@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Judger.Entity\Judger.Entity.csproj" />
+    <ProjectReference Include="..\Judger.Models\Judger.Models.csproj" />
     <ProjectReference Include="..\Judger.Utils\Judger.Utils.csproj" />
   </ItemGroup>
 

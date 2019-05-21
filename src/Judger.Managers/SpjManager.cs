@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Judger.Entity;
-using Judger.Entity.Exception;
-using Judger.Entity.Program;
+using Judger.Models;
+using Judger.Models.Exception;
+using Judger.Models.Program;
 using Judger.Utils;
 
 namespace Judger.Managers

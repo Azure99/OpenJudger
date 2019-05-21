@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Judger.Entity.Database;
-using Judger.Entity.Program;
+using Judger.Models.Database;
+using Judger.Models.Program;
 
-namespace Judger.Entity
+namespace Judger.Models
 {
     /// <summary>
     /// 配置信息

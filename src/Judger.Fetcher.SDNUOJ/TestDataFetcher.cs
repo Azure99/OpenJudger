@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.IO.Compression;
-using Judger.Entity;
+using Judger.Models;
 using Judger.Utils;
 
 namespace Judger.Fetcher.SDNUOJ

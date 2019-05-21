@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Judger.Entity.Program
+namespace Judger.Models.Program
 {
     /// <summary>
     /// 语言配置信息

@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Fetcher.HUSTOJ", "Ju
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainUnitTest", "MainUnitTest\MainUnitTest.csproj", "{26DB6532-DEB7-4592-AABE-6BA1B381E0CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Entity", "Judger.Entity\Judger.Entity.csproj", "{B8F605FE-303F-4366-BA83-7EC9A244B35B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Models", "Judger.Models\Judger.Models.csproj", "{B8F605FE-303F-4366-BA83-7EC9A244B35B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Core", "Judger.Core\Judger.Core.csproj", "{FF572FF3-3E04-4BC9-BA1B-B0BD07FDBCDF}"
 EndProject

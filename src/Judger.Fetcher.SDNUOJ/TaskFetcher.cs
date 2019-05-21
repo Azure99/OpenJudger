@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
-using Judger.Entity;
 using Judger.Fetcher.SDNUOJ.Entity;
+using Judger.Models;
 
 namespace Judger.Fetcher.SDNUOJ
 {

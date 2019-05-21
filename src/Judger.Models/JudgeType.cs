@@ -1,4 +1,4 @@
-namespace Judger.Entity
+namespace Judger.Models
 {
     /// <summary>
     /// 评测类型

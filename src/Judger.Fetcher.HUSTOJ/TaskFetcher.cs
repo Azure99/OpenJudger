@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using Judger.Entity;
+using Judger.Models;
 using Judger.Utils;
 
 namespace Judger.Fetcher.HUSTOJ

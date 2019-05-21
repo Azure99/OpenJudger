@@ -4,10 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Judger.Core.Program.Internal;
 using Judger.Core.Program.Internal.Entity;
-using Judger.Entity;
-using Judger.Entity.Exception;
-using Judger.Entity.Program;
 using Judger.Managers;
+using Judger.Models;
+using Judger.Models.Exception;
+using Judger.Models.Program;
 
 namespace Judger.Core.Program
 {

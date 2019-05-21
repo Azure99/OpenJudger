@@ -1,7 +1,7 @@
-﻿using Judger.Entity;
-using Judger.Core.Program;
+﻿using Judger.Core.Program;
 using Judger.Core.Database;
-using Judger.Entity.Exception;
+using Judger.Models;
+using Judger.Models.Exception;
 
 namespace Judger.Core
 {

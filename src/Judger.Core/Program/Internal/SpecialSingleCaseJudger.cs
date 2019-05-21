@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Judger.Core.Program.Internal.Entity;
-using Judger.Entity;
-using Judger.Entity.Exception;
-using Judger.Entity.Program;
 using Judger.Managers;
+using Judger.Models;
+using Judger.Models.Exception;
+using Judger.Models.Program;
 using Judger.Utils;
 
 namespace Judger.Core.Program.Internal

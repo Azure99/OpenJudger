@@ -1,4 +1,4 @@
-﻿namespace Judger.Entity.Program
+﻿namespace Judger.Models.Program
 {
     /// <summary>
     /// Special Judge程序文件

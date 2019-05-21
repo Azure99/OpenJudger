@@ -4,10 +4,10 @@ using System.IO;
 using Judger.Core.Database.Internal;
 using Judger.Core.Database.Internal.DbOperator;
 using Judger.Core.Database.Internal.Entity;
-using Judger.Entity;
-using Judger.Entity.Database;
-using Judger.Entity.Exception;
 using Judger.Managers;
+using Judger.Models;
+using Judger.Models.Database;
+using Judger.Models.Exception;
 using Judger.Utils;
 
 namespace Judger.Core.Database

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Judger.Entity;
-using Judger.Entity.Exception;
 using Judger.Managers;
+using Judger.Models;
+using Judger.Models.Exception;
 
 namespace Judger.Fetcher
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
-using Judger.Entity;
 using Judger.Managers;
+using Judger.Models;
 using Judger.Utils;
 
 namespace Judger.Fetcher.Generic

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
-using Judger.Entity;
-using Judger.Entity.Program;
 using Judger.Managers;
+using Judger.Models;
+using Judger.Models.Program;
 using Judger.Utils;
 
 namespace Judger.Fetcher.HUSTOJ

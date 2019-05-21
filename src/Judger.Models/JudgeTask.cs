@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Judger.Entity
+namespace Judger.Models
 {
     /// <summary>
     /// 评测任务

@@ -1,4 +1,4 @@
-﻿namespace Judger.Entity
+﻿namespace Judger.Models
 {
     /// <summary>
     /// 判题结果码

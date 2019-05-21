@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using Judger.Entity;
 using Judger.Managers;
+using Judger.Models;
 
 namespace Judger.Core.Program.Internal
 {

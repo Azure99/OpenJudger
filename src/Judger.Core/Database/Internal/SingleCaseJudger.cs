@@ -3,8 +3,8 @@ using System.Data.Common;
 using System.Diagnostics;
 using Judger.Core.Database.Internal.DbOperator;
 using Judger.Core.Database.Internal.Entity;
-using Judger.Entity;
-using Judger.Entity.Database;
+using Judger.Models;
+using Judger.Models.Database;
 
 namespace Judger.Core.Database.Internal
 {

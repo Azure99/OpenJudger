@@ -1,4 +1,4 @@
-﻿namespace Judger.Entity.Exception
+﻿namespace Judger.Models.Exception
 {
     /// <summary>
     /// Fetcher异常

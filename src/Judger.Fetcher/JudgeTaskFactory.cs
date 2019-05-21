@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using Judger.Entity;
-using Judger.Entity.Program;
 using Judger.Managers;
+using Judger.Models;
+using Judger.Models.Program;
 using Judger.Utils;
 
 namespace Judger.Fetcher

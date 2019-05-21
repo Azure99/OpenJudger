@@ -1,7 +1,7 @@
 ﻿using System.Net;
-using Judger.Entity;
 using Judger.Fetcher.SDNUOJ.Entity;
 using Judger.Managers;
+using Judger.Models;
 using Judger.Utils;
 
 namespace Judger.Fetcher.SDNUOJ

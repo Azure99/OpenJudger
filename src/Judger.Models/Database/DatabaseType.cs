@@ -1,4 +1,4 @@
-﻿namespace Judger.Entity.Database
+﻿namespace Judger.Models.Database
 {
     /// <summary>
     /// 数据库类型
