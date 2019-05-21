@@ -94,7 +94,7 @@ namespace Judger.Entity
         /// <summary>
         /// 附加设置
         /// </summary>
-        public Dictionary<string, string> AdditionalConfig { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> AdditionalConfigs { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// 语言(编译/运行)配置

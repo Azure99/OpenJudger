@@ -26,7 +26,7 @@ namespace Judger.Managers
                 Config.Languages = GetDefaultLangConfigs();
                 Config.Databases = GetDefaultDbConfigs();
                 Config.Password = RandomString.Next(16);
-                Config.AdditionalConfig.Add("SampleKey", "SampleValue");
+                Config.AdditionalConfigs.Add("SampleKey", "SampleValue");
             }
             else
             {
