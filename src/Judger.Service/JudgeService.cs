@@ -116,7 +116,7 @@ namespace Judger.Service
                 catch (Exception ex)
                 {
                     LogManager.Error("Can not fetch judge task!");
-                    LogManager.Exception(ex);
+                    LogManager.Exception(ex, false);
                 }
 
                 _innerWorking = false;

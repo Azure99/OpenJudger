@@ -31,8 +31,18 @@ namespace Judger.Managers
         /// </summary>
         private static Task _autoFlushTask = new Task(AutoFlush, TaskCreationOptions.LongRunning);
 
-        // 仅对Info级日志进行缓冲输出
         private const int INFO_BUFFER_SIZE = 512;
+
+        private const string LOG_LEVEL_INFO = "Info";
+        private const string LOG_LEVEL_DEBUG = "Debug";
+        private const string LOG_LEVEL_WARNING = "Warning";
+        private const string LOG_LEVEL_ERROR = "Error";
+
+        private const string LOG_DATE_FORMAT = "HH:mm:ss dd/MM/yyyy";
+        private const string LOG_FILE_DATE_FORMAT = "yyyyMMdd";
+
+        private const string LOG_FILE_INFO_POSTFIX = "Info.txt";
+        private const string LOG_FILE_DEBUG_POSTFIX = "Debug.txt";
 
         static LogManager()
         {
@@ -49,7 +59,8 @@ namespace Judger.Managers
         /// </summary>
         public static void Debug(string message)
         {
-            Log("Debug", message);
+            System.Diagnostics.Debug.WriteLine(message);
+            Log(LOG_LEVEL_DEBUG, message);
         }
 
         /// <summary>
@@ -57,7 +68,7 @@ namespace Judger.Managers
         /// </summary>
         public static void Info(string message)
         {
-            Log("Info", message);
+            Log(LOG_LEVEL_INFO, message);
         }
 
         /// <summary>
@@ -65,7 +76,7 @@ namespace Judger.Managers
         /// </summary>
         public static void Warning(string message)
         {
-            Log("Warning", message);
+            Log(LOG_LEVEL_WARNING, message);
         }
 
         /// <summary>
@@ -73,14 +84,18 @@ namespace Judger.Managers
         /// </summary>
         public static void Error(string message)
         {
-            Log("Error", message);
+            Console.Error.WriteLine(message);
+            Log(LOG_LEVEL_ERROR, message);
         }
 
         /// <summary>
         /// 输出Exception(Error)级
         /// </summary>
-        public static void Exception(Exception ex)
+        public static void Exception(Exception ex, bool showDetails = true)
         {
+            string originalType = ex.GetType().FullName;
+            string originalMessage = ex.Message;
+            
             StringBuilder sb = new StringBuilder();
             while (ex != null)
             {
@@ -101,21 +116,24 @@ namespace Judger.Managers
                 ex = ex.InnerException;
             }
 
-            Log("Error", sb.ToString());
+            string content = sb.ToString();
+
+            if (showDetails)
+            {
+                Console.Error.WriteLine(content);
+            }
+            else
+            {
+                Console.Error.WriteLine("[" + originalType + "]");
+                Console.Error.WriteLine("Message:" + originalMessage);
+            }
+
+            Log(LOG_LEVEL_ERROR, content);
         }
 
         private static void Log(string level, string content)
         {
-            if (level == "Error")
-            {
-                Console.Error.WriteLine(content);
-            }
-            else if (level == "Debug")
-            {
-                System.Diagnostics.Debug.WriteLine(content);
-            }
-
-            string time = DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy");
+            string time = DateTime.Now.ToString(LOG_DATE_FORMAT);
 
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("[{0}] {1}", level, time);
@@ -125,7 +143,7 @@ namespace Judger.Managers
 
             content = sb.ToString();
 
-            if (level == "Info")
+            if (level == LOG_LEVEL_INFO)
             {
                 lock (_infoBuffer)
                 {
@@ -147,7 +165,7 @@ namespace Judger.Managers
         {
             lock (_bufferLock)
             {
-                Write("Info", _infoBuffer.ToString());
+                Write(LOG_LEVEL_INFO, _infoBuffer.ToString());
                 _infoBuffer.Clear();
             }
         }
@@ -180,15 +198,15 @@ namespace Judger.Managers
 
         private static string GetLogFileName(string level)
         {
-            string date = DateTime.Now.ToString("yyyyMMdd");
+            string date = DateTime.Now.ToString(LOG_FILE_DATE_FORMAT);
 
-            if (level == "Info")
+            if (level == LOG_LEVEL_INFO)
             {
-                return date + "-" + "Info.txt";
+                return date + "-" + LOG_FILE_INFO_POSTFIX;
             }
-            else if (level == "Debug")
+            else if (level == LOG_LEVEL_DEBUG)
             {
-                return date + "-" + "Debug.txt";
+                return date + "-" + LOG_FILE_DEBUG_POSTFIX;
             }
 
             return date + ".txt";
