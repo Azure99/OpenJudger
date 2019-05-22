@@ -1,8 +1,8 @@
 ﻿using System;
-using Newtonsoft.Json.Linq;
 using Judger.Managers;
 using Judger.Models;
 using Judger.Utils;
+using Newtonsoft.Json.Linq;
 
 namespace Judger.Fetcher.Generic
 {
@@ -11,10 +11,9 @@ namespace Judger.Fetcher.Generic
     /// </summary>
     public static class Token
     {
-        private static readonly Configuration Config = ConfigManager.Config;
-
         private const string JOBJECT_JUDGER_NAME = "judgerName";
         private const string JOBJECT_TOKEN = "token";
+        private static Configuration Config { get; } = ConfigManager.Config;
 
         /// <summary>
         /// 生成校验Token

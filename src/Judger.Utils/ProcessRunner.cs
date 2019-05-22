@@ -13,6 +13,30 @@ namespace Judger.Utils
     public class ProcessRunner : IDisposable
     {
         /// <summary>
+        /// 程序运行器
+        /// </summary>
+        /// <param name="fileName">程序文件名</param>
+        /// <param name="workDirectory">工作目录</param>
+        /// <param name="args">运行参数</param>
+        public ProcessRunner(string fileName, string workDirectory = "", string args = "")
+        {
+            Process = new Process();
+
+            Process.StartInfo.FileName = fileName;
+            if (!string.IsNullOrEmpty(workDirectory))
+                Process.StartInfo.WorkingDirectory = workDirectory;
+
+            if (!string.IsNullOrEmpty(args))
+                Process.StartInfo.Arguments = args;
+
+            Process.StartInfo.RedirectStandardInput = true;
+            Process.StartInfo.RedirectStandardOutput = true;
+            Process.StartInfo.RedirectStandardError = true;
+            Process.StartInfo.UseShellExecute = false;
+            Process.StartInfo.CreateNoWindow = true;
+        }
+
+        /// <summary>
         /// 当前运行的Process实例
         /// </summary>
         public Process Process { get; }
@@ -30,34 +54,11 @@ namespace Judger.Utils
         /// <summary>
         /// 读写流的编码
         /// </summary>
-        public Encoding Encoding { get; set; } = null;
+        public Encoding Encoding { get; set; }
 
-        /// <summary>
-        /// 程序运行器
-        /// </summary>
-        /// <param name="fileName">程序文件名</param>
-        /// <param name="workDirectory">工作目录</param>
-        /// <param name="args">运行参数</param>
-        public ProcessRunner(string fileName, string workDirectory = "", string args = "")
+        public void Dispose()
         {
-            Process = new Process();
-
-            Process.StartInfo.FileName = fileName;
-            if (!string.IsNullOrEmpty(workDirectory))
-            {
-                Process.StartInfo.WorkingDirectory = workDirectory;
-            }
-
-            if (!string.IsNullOrEmpty(args))
-            {
-                Process.StartInfo.Arguments = args;
-            }
-
-            Process.StartInfo.RedirectStandardInput = true;
-            Process.StartInfo.RedirectStandardOutput = true;
-            Process.StartInfo.RedirectStandardError = true;
-            Process.StartInfo.UseShellExecute = false;
-            Process.StartInfo.CreateNoWindow = true;
+            Process.Dispose();
         }
 
         /// <summary>
@@ -67,6 +68,7 @@ namespace Judger.Utils
         /// <param name="stdOutput">重定向的标准输出</param>
         /// <param name="stdError">重定向的标准错误</param>
         /// <param name="priorityClass">进程优先级</param>
+        /// <param name="inputDelay">输入延迟</param>
         /// <returns>进程退出码</returns>
         public int Run(string stdInput, out string stdOutput, out string stdError,
             ProcessPriorityClass priorityClass = ProcessPriorityClass.Normal,
@@ -77,9 +79,7 @@ namespace Judger.Utils
 
             // 设置进程的处理器亲和性
             if (ProcessorAffinity.ToInt64() != 0)
-            {
                 Process.ProcessorAffinity = ProcessorAffinity;
-            }
 
             Task<string> readOutputTask = new Task<string>(
                 TryReadStreamToEnd, Process.StandardOutput,
@@ -103,11 +103,6 @@ namespace Judger.Utils
             stdError = readErrorTask.Result;
 
             return Process.ExitCode;
-        }
-
-        public void Dispose()
-        {
-            Process.Dispose();
         }
 
         /// <summary>
@@ -136,9 +131,7 @@ namespace Judger.Utils
         {
             StreamReader reader = readerObject as StreamReader;
             if (Encoding != null)
-            {
                 reader = new StreamReader(reader.BaseStream, Encoding);
-            }
 
             while (true)
             {

@@ -3,6 +3,6 @@
     public enum CompareResult
     {
         Accepted = 1,
-        WrongAnswer = 2,
+        WrongAnswer = 2
     }
 }

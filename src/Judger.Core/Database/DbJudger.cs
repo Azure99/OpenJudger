@@ -8,17 +8,15 @@ using Judger.Managers;
 using Judger.Models;
 using Judger.Models.Database;
 using Judger.Models.Exception;
-using Judger.Utils;
 
 namespace Judger.Core.Database
 {
     public class DbJudger : BaseJudger
     {
-        private BaseDbOperator MainOperator { get; set; }
         private string _dbName;
-        private string _dbUser;
         private string _dbPassword;
         private DatabaseType _dbType;
+        private string _dbUser;
 
         public DbJudger(JudgeTask task) : base(task)
         {
@@ -28,6 +26,8 @@ namespace Judger.Core.Database
             _dbPassword = Path.GetFileName(task.TempJudgeDirectory).ToLower() + "pwd";
             _dbType = DbManager.GetDatabaseType(JudgeTask.Language);
         }
+
+        private BaseDbOperator MainOperator { get; set; }
 
         public override JudgeResult Judge()
         {
@@ -66,9 +66,7 @@ namespace Judger.Core.Database
                     result.JudgeDetail = singleResult.JudgeDetail;
 
                     if (!JudgeTask.JudgeAllCases)
-                    {
                         break;
-                    }
                 }
             }
 
@@ -83,37 +81,34 @@ namespace Judger.Core.Database
             BuildStandardData(testData, out string inputData, out DbData outputData, out DbQueryData queryData);
 
             BaseDbOperator userOper = CreateJudgeEnv(inputData);
-            
+
             SingleCaseJudger singleCaseJudger = new SingleCaseJudger(JudgeTask, userOper);
             SingleJudgeResult result = singleCaseJudger.Judge(inputData, outputData, queryData);
-            
+
             ClearJudgeEnv(userOper);
 
             return result;
         }
 
-        private void BuildStandardData(DbTestData testData, out string inputData, out DbData outputData, out DbQueryData queryData)
+        private void BuildStandardData(DbTestData testData, out string inputData, out DbData outputData,
+            out DbQueryData queryData)
         {
             inputData = testData.Input;
             outputData = null;
             queryData = null;
             string stdOperCmd = testData.Operation;
             string stdQueryCmd = testData.Query;
-            
+
             BaseDbOperator stdOperator = CreateJudgeEnv(inputData);
 
             try
             {
                 DbDataReader reader = stdOperator.ExecuteReader(stdOperCmd ?? stdQueryCmd);
                 if (stdOperCmd != null)
-                {
                     outputData = stdOperator.ReadDbData();
-                }
 
                 if (stdQueryCmd != null)
-                {
                     queryData = BaseDbOperator.ReadQueryData(reader);
-                }
             }
             catch (Exception ex)
             {

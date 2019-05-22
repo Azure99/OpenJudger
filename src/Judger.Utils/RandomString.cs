@@ -17,9 +17,7 @@ namespace Judger.Utils
             List<char> charsList = new List<char>();
 
             for (int i = 0; i <= 9; i++)
-            {
                 charsList.Add((char) ('0' + i));
-            }
 
             for (int i = 0; i < 26; i++)
             {

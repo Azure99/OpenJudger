@@ -7,15 +7,9 @@ namespace Judger.Fetcher.HUSTOJ
 {
     public class Authenticator
     {
-        public static Authenticator Singleton { get; set; }
-
-        public CookieContainer CookieContainer { get; private set; }
+        private int _delayCheckCount;
         private HttpWebClient _httpClient = ConfiguredClient.Create();
-
-        private Configuration _config = ConfigManager.Config;
         private string loginUrl = "http://localhost/login.php";
-
-        private int _delayCheckCount = 0;
 
         static Authenticator()
         {
@@ -27,18 +21,24 @@ namespace Judger.Fetcher.HUSTOJ
             CookieContainer = new CookieContainer();
             _httpClient.CookieContainer = CookieContainer;
 
-            if (_config.AdditionalConfigs.ContainsKey("LoginUrl"))
+            if (Config.AdditionalConfigs.ContainsKey("LoginUrl"))
             {
-                loginUrl = _config.AdditionalConfigs["LoginUrl"];
+                loginUrl = Config.AdditionalConfigs["LoginUrl"];
             }
             else
             {
-                _config.AdditionalConfigs["LoginUrl"] = loginUrl;
+                Config.AdditionalConfigs["LoginUrl"] = loginUrl;
                 ConfigManager.SaveConfig();
             }
 
             Login();
         }
+
+        public static Authenticator Singleton { get; set; }
+
+        public CookieContainer CookieContainer { get; private set; }
+
+        private Configuration Config { get; } = ConfigManager.Config;
 
         /// <summary>
         /// 登录HUSTOJ
@@ -46,11 +46,9 @@ namespace Judger.Fetcher.HUSTOJ
         public bool Login()
         {
             if (CheckLogin())
-            {
                 return true;
-            }
 
-            string requestBody = string.Format("user_id={0}&password={1}", _config.JudgerName, _config.Password);
+            string requestBody = string.Format("user_id={0}&password={1}", Config.JudgerName, Config.Password);
             try
             {
                 _httpClient.UploadString(loginUrl, requestBody, 3);
@@ -69,7 +67,7 @@ namespace Judger.Fetcher.HUSTOJ
             string requestBody = "checklogin=1";
             try
             {
-                string response = _httpClient.UploadString(_config.TaskFetchUrl, requestBody);
+                string response = _httpClient.UploadString(Config.TaskFetchUrl, requestBody);
                 return response == "1";
             }
             catch
@@ -107,7 +105,7 @@ namespace Judger.Fetcher.HUSTOJ
 
             try
             {
-                _httpClient.UploadString(_config.TaskFetchUrl, requestBody, 3);
+                _httpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
             }
             catch
             { }

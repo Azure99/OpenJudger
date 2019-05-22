@@ -17,9 +17,7 @@ namespace Judger.Utils
         {
             // 绝对路径不处理
             if (path.IndexOf(':') != -1 || path.StartsWith('/') || path.StartsWith('\\'))
-            {
                 return path;
-            }
 
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
         }
@@ -37,9 +35,7 @@ namespace Judger.Utils
             foreach (string file in files)
             {
                 if (Path.GetFileName(file).ToLower() == filename.ToLower())
-                {
                     return file;
-                }
             }
 
             return null;

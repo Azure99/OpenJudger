@@ -23,6 +23,19 @@ namespace Judger.Core.Program.Internal
         /// </summary>
         private const int MIN_TOTAL_TIME_LIMIT = 20000;
 
+        private const string SPJ_INPUT_NAME = "input.txt";
+        private const string SPJ_OUTPUT_NAME = "output.txt";
+        private const string SPJ_USEROUTPUT_NAME = "user.txt";
+
+        private ProgramLangConfig _langConfig;
+
+        public SpecialSingleCaseJudger(JudgeTask judgeTask, JudgeTask spjTask)
+        {
+            JudgeTask = judgeTask;
+            _langConfig = judgeTask.LangConfig as ProgramLangConfig;
+            SpjTask = spjTask;
+        }
+
         public JudgeTask JudgeTask { get; }
 
         public ProgramLangConfig LangConfig
@@ -37,19 +50,6 @@ namespace Judger.Core.Program.Internal
             get { return SpjTask.LangConfig as ProgramLangConfig; }
         }
 
-        private const string SPJ_INPUT_NAME = "input.txt";
-        private const string SPJ_OUTPUT_NAME = "output.txt";
-        private const string SPJ_USEROUTPUT_NAME = "user.txt";
-
-        private ProgramLangConfig _langConfig;
-
-        public SpecialSingleCaseJudger(JudgeTask judgeTask, JudgeTask spjTask)
-        {
-            JudgeTask = judgeTask;
-            _langConfig = judgeTask.LangConfig as ProgramLangConfig;
-            SpjTask = spjTask;
-        }
-
         public SingleJudgeResult Judge(string input, string output)
         {
             string userOutput = "";
@@ -61,13 +61,12 @@ namespace Judger.Core.Program.Internal
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
                 if (LangConfig.UseUTF8)
-                {
                     runner.Encoding = Encoding.UTF8;
-                }
 
                 // 创建监视器
                 int totalTimeLimit = Math.Max(JudgeTask.TimeLimit * TOTAL_TIME_LIMIT_TUPLING, MIN_TOTAL_TIME_LIMIT);
-                monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval, LangConfig.RunningInVm)
+                monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval,
+                    LangConfig.RunningInVm)
                 {
                     TimeLimit = JudgeTask.TimeLimit,
                     TotalTimeLimit = totalTimeLimit,
@@ -113,17 +112,11 @@ namespace Judger.Core.Program.Internal
 
             CompareResult cmpResult = CompareAnswerBySpj(input, output, userOutput); //对比答案输出
             if (cmpResult == CompareResult.Accepted)
-            {
                 result.ResultCode = JudgeResultCode.Accepted;
-            }
             else if (cmpResult == CompareResult.PresentationError)
-            {
                 result.ResultCode = JudgeResultCode.PresentationError;
-            }
             else
-            {
                 result.ResultCode = JudgeResultCode.WrongAnswer;
-            }
 
             return result;
         }
@@ -166,13 +159,9 @@ namespace Judger.Core.Program.Internal
             if (monitor.LimitExceed)
             {
                 if (monitor.MemoryCost == monitor.MemoryLimit)
-                {
                     throw new JudgeException("Special judge program memory limit exceed");
-                }
-                else
-                {
-                    throw new JudgeException("Special judge program time limit exceed");
-                }
+
+                throw new JudgeException("Special judge program time limit exceed");
             }
 
             switch (exitcode)

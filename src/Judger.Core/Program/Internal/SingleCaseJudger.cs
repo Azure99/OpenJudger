@@ -24,19 +24,19 @@ namespace Judger.Core.Program.Internal
         /// </summary>
         private const int MIN_TOTAL_TIME_LIMIT = 20000;
 
-        public JudgeTask JudgeTask { get; set; }
-
-        public ProgramLangConfig LangConfig
-        {
-            get { return JudgeTask.LangConfig as ProgramLangConfig; }
-        }
-
         private ProgramLangConfig _langConfig;
 
         public SingleCaseJudger(JudgeTask task)
         {
             JudgeTask = task;
             _langConfig = task.LangConfig as ProgramLangConfig;
+        }
+
+        public JudgeTask JudgeTask { get; set; }
+
+        public ProgramLangConfig LangConfig
+        {
+            get { return JudgeTask.LangConfig as ProgramLangConfig; }
         }
 
         public SingleJudgeResult Judge(string input, string output)
@@ -50,13 +50,12 @@ namespace Judger.Core.Program.Internal
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
                 if (LangConfig.UseUTF8)
-                {
                     runner.Encoding = Encoding.UTF8;
-                }
 
                 // 创建监视器
                 int totalTimeLimit = Math.Max(JudgeTask.TimeLimit * TOTAL_TIME_LIMIT_TUPLING, MIN_TOTAL_TIME_LIMIT);
-                monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval, LangConfig.RunningInVm)
+                monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval,
+                    LangConfig.RunningInVm)
                 {
                     TimeLimit = JudgeTask.TimeLimit,
                     TotalTimeLimit = totalTimeLimit,
@@ -88,8 +87,8 @@ namespace Judger.Core.Program.Internal
 
             if (monitor.LimitExceed)
             {
-                result.ResultCode = (JudgeTask.TimeLimit == monitor.TimeCost) 
-                    ? JudgeResultCode.TimeLimitExceed 
+                result.ResultCode = (JudgeTask.TimeLimit == monitor.TimeCost)
+                    ? JudgeResultCode.TimeLimitExceed
                     : JudgeResultCode.MemoryLimitExceed;
                 return result;
             }
@@ -102,17 +101,11 @@ namespace Judger.Core.Program.Internal
 
             CompareResult cmpResult = CompareAnswer(output, userOutput); //对比答案输出
             if (cmpResult == CompareResult.Accepted)
-            {
                 result.ResultCode = JudgeResultCode.Accepted;
-            }
             else if (cmpResult == CompareResult.PresentationError)
-            {
                 result.ResultCode = JudgeResultCode.PresentationError;
-            }
             else
-            {
                 result.ResultCode = JudgeResultCode.WrongAnswer;
-            }
 
             return result;
         }
@@ -126,9 +119,7 @@ namespace Judger.Core.Program.Internal
         public CompareResult CompareAnswer(string correctAnswer, string userAnswer)
         {
             if (correctAnswer == userAnswer)
-            {
                 return CompareResult.Accepted;
-            }
 
             // 正确答案
             string[] crtArr = correctAnswer.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
@@ -139,14 +130,10 @@ namespace Judger.Core.Program.Internal
 
             //替代TrimEnd('\n'), 以减少内存开销
             while (crtLength > 0 && string.IsNullOrEmpty(crtArr[crtLength - 1]))
-            {
                 crtLength--;
-            }
 
             while (usrLength > 0 && string.IsNullOrEmpty(usrArr[usrLength - 1]))
-            {
                 usrLength--;
-            }
 
             if (crtLength == usrLength)
             {
@@ -161,9 +148,7 @@ namespace Judger.Core.Program.Internal
                 }
 
                 if (correct) //Accepted
-                {
                     return CompareResult.Accepted;
-                }
             }
 
             bool wrongAnser = false;
@@ -186,36 +171,26 @@ namespace Judger.Core.Program.Internal
                 }
 
                 if (jump)
-                {
                     continue;
-                }
 
                 if (usrArr[usrPos].Trim() != crtArr[crtPos].Trim())
                 {
                     wrongAnser = true;
                     break;
                 }
-                else
-                {
-                    crtPos++;
-                    usrPos++;
-                }
-            }
 
-            while (crtPos < crtLength && crtArr[crtPos] == "") //跳过空白行
-            {
                 crtPos++;
-            }
-
-            while (usrPos < usrLength && usrArr[usrPos] == "")
-            {
                 usrPos++;
             }
 
+            while (crtPos < crtLength && crtArr[crtPos] == "") //跳过空白行
+                crtPos++;
+
+            while (usrPos < usrLength && usrArr[usrPos] == "")
+                usrPos++;
+
             if (crtPos != crtLength || usrPos != usrLength)
-            {
                 wrongAnser = true;
-            }
 
             return wrongAnser ? CompareResult.WrongAnswer : CompareResult.PresentationError;
         }

@@ -48,6 +48,6 @@
         /// <summary>
         /// 格式错误(输出了多余的空格或换行符)
         /// </summary>
-        PresentationError = 7,
+        PresentationError = 7
     }
 }

@@ -11,6 +11,19 @@ namespace Judger.Managers
     /// </summary>
     public static class LogManager
     {
+        private const int INFO_BUFFER_SIZE = 512;
+
+        private const string LOG_LEVEL_INFO = "Info";
+        private const string LOG_LEVEL_DEBUG = "Debug";
+        private const string LOG_LEVEL_WARNING = "Warning";
+        private const string LOG_LEVEL_ERROR = "Error";
+
+        private const string LOG_DATE_FORMAT = "HH:mm:ss dd/MM/yyyy";
+        private const string LOG_FILE_DATE_FORMAT = "yyyyMMdd";
+
+        private const string LOG_FILE_INFO_POSTFIX = "Info.txt";
+        private const string LOG_FILE_DEBUG_POSTFIX = "Debug.txt";
+
         /// <summary>
         /// 信息缓冲区
         /// </summary>
@@ -31,25 +44,10 @@ namespace Judger.Managers
         /// </summary>
         private static Task _autoFlushTask = new Task(AutoFlush, TaskCreationOptions.LongRunning);
 
-        private const int INFO_BUFFER_SIZE = 512;
-
-        private const string LOG_LEVEL_INFO = "Info";
-        private const string LOG_LEVEL_DEBUG = "Debug";
-        private const string LOG_LEVEL_WARNING = "Warning";
-        private const string LOG_LEVEL_ERROR = "Error";
-
-        private const string LOG_DATE_FORMAT = "HH:mm:ss dd/MM/yyyy";
-        private const string LOG_FILE_DATE_FORMAT = "yyyyMMdd";
-
-        private const string LOG_FILE_INFO_POSTFIX = "Info.txt";
-        private const string LOG_FILE_DEBUG_POSTFIX = "Debug.txt";
-
         static LogManager()
         {
             if (!Directory.Exists(ConfigManager.Config.LogDirectory))
-            {
                 Directory.CreateDirectory(ConfigManager.Config.LogDirectory);
-            }
 
             _autoFlushTask.Start();
         }
@@ -95,7 +93,7 @@ namespace Judger.Managers
         {
             string originalType = ex.GetType().FullName;
             string originalMessage = ex.Message;
-            
+
             StringBuilder sb = new StringBuilder();
             while (ex != null)
             {
@@ -109,9 +107,7 @@ namespace Judger.Managers
                 }
 
                 if (ex.InnerException != null)
-                {
                     sb.Append("-->Caused by:");
-                }
 
                 ex = ex.InnerException;
             }
@@ -151,9 +147,7 @@ namespace Judger.Managers
                 }
 
                 if (_infoBuffer.Length > INFO_BUFFER_SIZE)
-                {
                     Flush();
-                }
 
                 return;
             }
@@ -201,13 +195,10 @@ namespace Judger.Managers
             string date = DateTime.Now.ToString(LOG_FILE_DATE_FORMAT);
 
             if (level == LOG_LEVEL_INFO)
-            {
                 return date + "-" + LOG_FILE_INFO_POSTFIX;
-            }
-            else if (level == LOG_LEVEL_DEBUG)
-            {
+
+            if (level == LOG_LEVEL_DEBUG)
                 return date + "-" + LOG_FILE_DEBUG_POSTFIX;
-            }
 
             return date + ".txt";
         }

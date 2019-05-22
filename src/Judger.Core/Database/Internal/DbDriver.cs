@@ -10,6 +10,19 @@ namespace Judger.Core.Database.Internal
     public class DbDriver
     {
         /// <summary>
+        /// 数据库驱动
+        /// </summary>
+        /// <param name="dbConnection">DbConnection类</param>
+        /// <param name="dbCommand">DbCommand类</param>
+        /// <param name="assembly">数据库驱动程序集</param>
+        public DbDriver(Type dbConnection, Type dbCommand, Assembly assembly = null)
+        {
+            DbConnectionType = dbConnection;
+            DbCommandType = dbCommand;
+            DriverAssembly = assembly ?? DbConnectionType.Assembly;
+        }
+
+        /// <summary>
         /// DbConnection类
         /// </summary>
         public Type DbConnectionType { get; private set; }
@@ -25,19 +38,6 @@ namespace Judger.Core.Database.Internal
         public Assembly DriverAssembly { get; private set; }
 
         /// <summary>
-        /// 数据库驱动
-        /// </summary>
-        /// <param name="dbConnection">DbConnection类</param>
-        /// <param name="dbCommand">DbCommand类</param>
-        /// <param name="assembly">数据库驱动程序集</param>
-        public DbDriver(Type dbConnection, Type dbCommand, Assembly assembly = null)
-        {
-            DbConnectionType = dbConnection;
-            DbCommandType = dbCommand;
-            DriverAssembly = assembly ?? DbConnectionType.Assembly;
-        }
-
-        /// <summary>
         /// 创建数据库连接
         /// </summary>
         /// <param name="connectionString">连接字符串</param>
@@ -45,12 +45,10 @@ namespace Judger.Core.Database.Internal
         /// <returns></returns>
         public DbConnection CreateConnection(string connectionString, bool openConnection = true)
         {
-            object[] args = new object[] {connectionString};
+            object[] args = {connectionString};
             DbConnection conn = CreateInstance(DbConnectionType.FullName, args) as DbConnection;
             if (conn != null && openConnection)
-            {
                 conn.Open();
-            }
 
             return conn;
         }
@@ -63,7 +61,7 @@ namespace Judger.Core.Database.Internal
         /// <returns></returns>
         public DbCommand CreateCommand(string cmdText, DbConnection connection)
         {
-            object[] args = new object[] {cmdText, connection};
+            object[] args = {cmdText, connection};
             DbCommand command = CreateInstance(DbCommandType.FullName, args) as DbCommand;
 
             return command;

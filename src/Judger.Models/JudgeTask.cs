@@ -46,7 +46,7 @@ namespace Judger.Models
         /// <summary>
         /// 是否评测所有测试点(错误答案依旧评测)
         /// </summary>
-        public bool JudgeAllCases { get; set; } = false;
+        public bool JudgeAllCases { get; set; }
 
         /// <summary>
         /// 评测类型

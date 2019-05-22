@@ -11,13 +11,7 @@ namespace Judger.Fetcher.SDNUOJ
     /// </summary>
     public class Authenticator
     {
-        public static Authenticator Singleton { get; private set; } = new Authenticator();
-
-        //保存Cookie
-        public CookieContainer CookieContainer { get; private set; }
-
         private HttpWebClient _httpClient = ConfiguredClient.Create();
-        private Configuration _config = ConfigManager.Config;
         private string loginUrl = "http://localhost/judge/login";
 
         private Authenticator()
@@ -25,25 +19,31 @@ namespace Judger.Fetcher.SDNUOJ
             CookieContainer = new CookieContainer();
             _httpClient.CookieContainer = CookieContainer;
 
-            if (_config.AdditionalConfigs.ContainsKey("LoginUrl"))
+            if (Config.AdditionalConfigs.ContainsKey("LoginUrl"))
             {
-                loginUrl = _config.AdditionalConfigs["LoginUrl"];
+                loginUrl = Config.AdditionalConfigs["LoginUrl"];
             }
             else
             {
-                _config.AdditionalConfigs.Add("LoginUrl", loginUrl);
+                Config.AdditionalConfigs.Add("LoginUrl", loginUrl);
                 ConfigManager.SaveConfig();
             }
 
             Login();
         }
 
+        public static Authenticator Singleton { get; } = new Authenticator();
+
+        // 保存Cookie
+        public CookieContainer CookieContainer { get; }
+        private Configuration Config { get; } = ConfigManager.Config;
+
         /// <summary>
         /// 登录SDNUOJ
         /// </summary>
         public bool Login()
         {
-            string requestBody = string.Format("username={0}&password={1}", _config.JudgerName, _config.Password);
+            string requestBody = string.Format("username={0}&password={1}", Config.JudgerName, Config.Password);
 
             try
             {

@@ -11,54 +11,14 @@ namespace Judger.Utils
     /// </summary>
     public class RuntimeMonitor : IDisposable
     {
-        /// <summary>
-        /// (CPU)时间消耗
-        /// </summary>
-        public int TimeCost { get; private set; } = 0;
-
-        /// <summary>
-        /// 总时间消耗
-        /// </summary>
-        public int TotalTimeCost { get; private set; } = 0;
-
-        /// <summary>
-        /// 内存消耗
-        /// </summary>
-        public int MemoryCost { get; private set; } = 0;
-
-        /// <summary>
-        /// (CPU)时间限制
-        /// </summary>
-        public int TimeLimit { get; set; } = 0;
-
-        /// <summary>
-        /// 最大时间限制
-        /// </summary>
-        public int TotalTimeLimit { get; set; } = 0;
-
-        /// <summary>
-        /// 内存限制
-        /// </summary>
-        public int MemoryLimit { get; set; } = 0;
-
-        /// <summary>
-        /// 是否因超出限制而Kill掉进程
-        /// </summary>
-        public bool LimitExceed { get; private set; } = false;
-
-        /// <summary>
-        /// 当前监控的Process
-        /// </summary>
-        public Process Process { get; }
+        // 指示当前平台是否为Linux
+        private bool _platformIsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
         // 指示当前平台是否为Windows
         private bool _platformIsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
-        // 指示当前平台是否为Linux
-        private bool _platformIsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-
         // 指示子进程是否运行在虚拟机中(如Java, Python)
-        private bool _runningInVm = false;
+        private bool _runningInVm;
 
         private Timer _timer = new Timer();
 
@@ -67,12 +27,59 @@ namespace Judger.Utils
         /// </summary>
         /// <param name="process">需要监控的Process</param>
         /// <param name="interval">监控周期</param>
+        /// <param name="runningInVm">是否运行在虚拟机中</param>
         public RuntimeMonitor(Process process, int interval = 20, bool runningInVm = false)
         {
             Process = process;
             _timer.Interval = interval;
             _timer.Elapsed += OnMonitor;
             _runningInVm = runningInVm;
+        }
+
+        /// <summary>
+        /// (CPU)时间消耗
+        /// </summary>
+        public int TimeCost { get; private set; }
+
+        /// <summary>
+        /// 总时间消耗
+        /// </summary>
+        public int TotalTimeCost { get; private set; }
+
+        /// <summary>
+        /// 内存消耗
+        /// </summary>
+        public int MemoryCost { get; private set; }
+
+        /// <summary>
+        /// (CPU)时间限制
+        /// </summary>
+        public int TimeLimit { get; set; }
+
+        /// <summary>
+        /// 最大时间限制
+        /// </summary>
+        public int TotalTimeLimit { get; set; }
+
+        /// <summary>
+        /// 内存限制
+        /// </summary>
+        public int MemoryLimit { get; set; }
+
+        /// <summary>
+        /// 是否因超出限制而Kill掉进程
+        /// </summary>
+        public bool LimitExceed { get; private set; }
+
+        /// <summary>
+        /// 当前监控的Process
+        /// </summary>
+        public Process Process { get; }
+
+        public void Dispose()
+        {
+            Stop();
+            _timer.Dispose();
         }
 
         /// <summary>
@@ -99,12 +106,6 @@ namespace Judger.Utils
             _timer.Stop();
         }
 
-        public void Dispose()
-        {
-            Stop();
-            _timer.Dispose();
-        }
-
         private void OnMonitor(object sender, ElapsedEventArgs e)
         {
             try //防止无效操作异常
@@ -116,9 +117,7 @@ namespace Judger.Utils
                 }
 
                 if (!CheckTimeCost() || !CheckMemoryCost())
-                {
                     Process.Kill();
-                }
             }
             catch
             { }
@@ -177,17 +176,12 @@ namespace Judger.Utils
         {
             // 分平台实现
             if (_platformIsWindows)
-            {
                 return PeakMemoryOnWindows();
-            }
-            else if (_platformIsLinux)
-            {
+
+            if (_platformIsLinux)
                 return PeakMemoryOnLinux();
-            }
-            else
-            {
-                return PeakMemoryOnUnknown();
-            }
+
+            return PeakMemoryOnUnknown();
         }
 
         /// <summary>
@@ -197,13 +191,9 @@ namespace Judger.Utils
         private int PeakMemoryOnWindows()
         {
             if (_runningInVm)
-            {
-                return (int)(Process.PeakWorkingSet64 / 1024);
-            }
-            else
-            {
-                return (int)(Process.PeakPagedMemorySize64 / 1024);
-            }
+                return (int) (Process.PeakWorkingSet64 / 1024);
+
+            return (int) (Process.PeakPagedMemorySize64 / 1024);
         }
 
         /// <summary>
@@ -222,9 +212,7 @@ namespace Judger.Utils
             foreach (string line in lines)
             {
                 if (!line.StartsWith(queryKey))
-                {
                     continue;
-                }
 
                 string[] splits = line.Split(' ');
                 string vmPeakStr = splits[splits.Length - 2];

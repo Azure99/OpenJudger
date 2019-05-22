@@ -1,7 +1,7 @@
-﻿using Xunit;
-using Judger.Core.Program.Internal;
+﻿using Judger.Core.Program.Internal;
 using Judger.Core.Program.Internal.Entity;
 using Judger.Models;
+using Xunit;
 
 namespace MainUnitTest
 {

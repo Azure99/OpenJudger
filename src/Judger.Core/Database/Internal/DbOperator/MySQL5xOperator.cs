@@ -56,9 +56,7 @@ namespace Judger.Core.Database.Internal.DbOperator
         {
             DbCommand command = DbDriver.CreateCommand(cmd, _connection);
             if (timeout > 0)
-            {
                 command.CommandTimeout = timeout;
-            }
 
             return command.ExecuteNonQuery();
         }
@@ -67,9 +65,7 @@ namespace Judger.Core.Database.Internal.DbOperator
         {
             DbCommand command = DbDriver.CreateCommand(cmd, _connection);
             if (timeout > 0)
-            {
                 command.CommandTimeout = timeout;
-            }
 
             return command.ExecuteReader();
         }
@@ -79,11 +75,9 @@ namespace Judger.Core.Database.Internal.DbOperator
             string[] tablesName = GetAllTablesName();
             DbQueryData[] datas = new DbQueryData[tablesName.Length];
             for (int i = 0; i < tablesName.Length; i++)
-            {
                 datas[i] = GetTableData(tablesName[i]);
-            }
 
-            Array.Sort(datas, (a, b) => String.Compare(a.Name, b.Name, StringComparison.Ordinal));
+            Array.Sort(datas, (a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
 
             return new DbData
             {
@@ -101,9 +95,7 @@ namespace Judger.Core.Database.Internal.DbOperator
 
             List<string> tables = new List<string>();
             while (reader.Read())
-            {
                 tables.Add(reader.GetString(0));
-            }
 
             return tables.ToArray();
         }

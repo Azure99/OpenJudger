@@ -14,16 +14,6 @@ namespace Judger.Core.Database.Internal
     public class SingleCaseJudger
     {
         /// <summary>
-        /// 用户的数据库操作器
-        /// </summary>
-        public BaseDbOperator UserOperator { get; private set; }
-
-        /// <summary>
-        /// 评测任务
-        /// </summary>
-        public JudgeTask JudgeTask { get; private set; }
-
-        /// <summary>
         /// 对查询字段是否大小写敏感
         /// </summary>
         private bool _caseSensitive;
@@ -34,6 +24,16 @@ namespace Judger.Core.Database.Internal
             UserOperator = dbOperator;
             _caseSensitive = (task.LangConfig as DbLangConfig).CaseSensitive;
         }
+
+        /// <summary>
+        /// 用户的数据库操作器
+        /// </summary>
+        public BaseDbOperator UserOperator { get; private set; }
+
+        /// <summary>
+        /// 评测任务
+        /// </summary>
+        public JudgeTask JudgeTask { get; private set; }
 
         /// <summary>
         /// 评测一组用例
@@ -70,8 +70,8 @@ namespace Judger.Core.Database.Internal
             DbData usrOutput = UserOperator.ReadDbData();
 
             CompareResult result = CompareAnswer(stdOutput, stdQuery, usrOutput, usrQuery);
-            JudgeResultCode resultCode = (result == CompareResult.Accepted) 
-                ? JudgeResultCode.Accepted 
+            JudgeResultCode resultCode = (result == CompareResult.Accepted)
+                ? JudgeResultCode.Accepted
                 : JudgeResultCode.WrongAnswer;
 
             return new SingleJudgeResult
@@ -81,23 +81,14 @@ namespace Judger.Core.Database.Internal
             };
         }
 
-        private CompareResult CompareAnswer(DbData stdOutput, DbQueryData stdQuery, DbData usrOutput, DbQueryData usrQuery)
+        private CompareResult CompareAnswer(DbData stdOutput, DbQueryData stdQuery, DbData usrOutput,
+            DbQueryData usrQuery)
         {
-            if (stdOutput != null)
-            {
-                if (CompareOutput(stdOutput, usrOutput) == CompareResult.WrongAnswer)
-                {
-                    return CompareResult.WrongAnswer;
-                }
-            }
+            if (stdOutput != null && CompareOutput(stdOutput, usrOutput) == CompareResult.WrongAnswer)
+                return CompareResult.WrongAnswer;
 
-            if (stdQuery != null)
-            {
-                if (CompareQuery(stdQuery, usrQuery) == CompareResult.WrongAnswer)
-                {
-                    return CompareResult.WrongAnswer;
-                }
-            }
+            if (stdQuery != null && CompareQuery(stdQuery, usrQuery) == CompareResult.WrongAnswer)
+                return CompareResult.WrongAnswer;
 
             return CompareResult.Accepted;
         }
@@ -105,22 +96,16 @@ namespace Judger.Core.Database.Internal
         private CompareResult CompareOutput(DbData stdOutput, DbData usrOutput)
         {
             if (stdOutput.TablesData.Length != usrOutput.TablesData.Length)
-            {
                 return CompareResult.WrongAnswer;
-            }
 
             int tableCount = stdOutput.TablesData.Length;
             for (int i = 0; i < tableCount; i++)
             {
                 if (!CmpString(stdOutput.TablesData[i].Name, usrOutput.TablesData[i].Name))
-                {
                     return CompareResult.WrongAnswer;
-                }
 
                 if (CompareQuery(stdOutput.TablesData[i], usrOutput.TablesData[i]) == CompareResult.WrongAnswer)
-                {
                     return CompareResult.WrongAnswer;
-                }
             }
 
             return CompareResult.Accepted;
@@ -128,11 +113,8 @@ namespace Judger.Core.Database.Internal
 
         private CompareResult CompareQuery(DbQueryData stdQuery, DbQueryData usrQuery)
         {
-            if (stdQuery.FieldCount != usrQuery.FieldCount ||
-                stdQuery.Records.Count != usrQuery.Records.Count)
-            {
+            if (stdQuery.FieldCount != usrQuery.FieldCount || stdQuery.Records.Count != usrQuery.Records.Count)
                 return CompareResult.WrongAnswer;
-            }
 
             int filedCount = stdQuery.FieldCount;
             int recordCount = stdQuery.Records.Count;
@@ -140,9 +122,7 @@ namespace Judger.Core.Database.Internal
             for (int i = 0; i < filedCount; i++)
             {
                 if (!CmpString(stdQuery.FieldNames[i], usrQuery.FieldNames[i]))
-                {
                     return CompareResult.WrongAnswer;
-                }
             }
 
             for (int i = 0; i < recordCount; i++)
@@ -150,9 +130,7 @@ namespace Judger.Core.Database.Internal
                 for (int i2 = 0; i2 < filedCount; i2++)
                 {
                     if (stdQuery.Records[i][i2] != usrQuery.Records[i][i2])
-                    {
                         return CompareResult.WrongAnswer;
-                    }
                 }
             }
 
@@ -168,13 +146,9 @@ namespace Judger.Core.Database.Internal
         private bool CmpString(string a, string b)
         {
             if (_caseSensitive)
-            {
                 return a == b;
-            }
-            else
-            {
-                return a.ToLower() == b.ToLower();
-            }
+
+            return a.ToLower() == b.ToLower();
         }
     }
 }

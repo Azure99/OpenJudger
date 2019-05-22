@@ -14,17 +14,20 @@ namespace Judger.Managers
     public static class SpjManager
     {
         //program.cpp.exe
-        public const string SPJ_PROGRAM_FILENAME = "program";
+        private const string SPJ_PROGRAM_FILENAME = "program";
+        private const string SPJ_SOURCE_FILENAME = "source";
+        private const string SPJ_TESTDATA_DIR = "spj";
+        private const string SPJ_DIRECTORY = "spj";
+
+        private static Configuration Config { get; } = ConfigManager.Config;
 
         /// <summary>
         /// SPJ程序源文件名(无扩展名)
         /// </summary>
-        public const string SPJ_SOURCE_FILENAME = "source";
-
-        public const string SPJ_TESTDATA_DIR = "spj";
-        public const string SPJ_DIRECTORY = "spj";
-
-        private static Configuration Config { get; } = ConfigManager.Config;
+        public static string SpjSourceFilename
+        {
+            get { return SPJ_SOURCE_FILENAME; }
+        }
 
         /// <summary>
         /// 获取语言名-源文件扩展名字典
@@ -65,9 +68,7 @@ namespace Judger.Managers
         public static string GetSpjDirectoryInJudger(JudgeTask task)
         {
             if (task.TempJudgeDirectory.EndsWith(SPJ_DIRECTORY))
-            {
                 return task.TempJudgeDirectory;
-            }
 
             return Path.Combine(task.TempJudgeDirectory, SPJ_DIRECTORY);
         }
@@ -102,7 +103,7 @@ namespace Judger.Managers
         /// <returns>SPJ源文件路径</returns>
         public static string FindSpjSourceFileInTestData(int problemId, int index = 0)
         {
-            Dictionary<string, ProgramLangConfig> extDic = SpjManager.GetLangSourceExtensionDictionary();
+            Dictionary<string, ProgramLangConfig> extDic = GetLangSourceExtensionDictionary();
             string spjDirectory = GetSpjDirectoryInTestData(problemId);
 
             string[] files = Directory.GetFiles(spjDirectory);
@@ -112,15 +113,11 @@ namespace Judger.Managers
                 string fileName = Path.GetFileNameWithoutExtension(file).ToLower();
                 string fileExt = Path.GetExtension(file).TrimStart('.').ToLower();
                 if (fileName == SPJ_SOURCE_FILENAME && extDic.ContainsKey(fileExt))
-                {
                     spjSourceFiles.Add(PathHelper.GetBaseAbsolutePath(file));
-                }
             }
 
             if (index < 0 || index >= spjSourceFiles.Count)
-            {
                 return null;
-            }
 
             return spjSourceFiles[index];
         }
@@ -136,17 +133,13 @@ namespace Judger.Managers
             string[] files = Directory.GetFiles(compileDirectory);
 
             if (files.Length > 2)
-            {
                 LogManager.Warning("Can not confirm the unique special judge program!");
-            }
 
             string spjProgramPath = null;
             foreach (string file in files)
             {
                 if (Path.GetFileName(file) == (task.LangConfig as ProgramLangConfig).SourceCodeFileName)
-                {
                     continue;
-                }
 
                 spjProgramPath = file;
             }
@@ -162,7 +155,7 @@ namespace Judger.Managers
         /// <returns>SPJ程序</returns>
         public static string FindSpjProgramInTestData(int problemId, int index = 0)
         {
-            Dictionary<string, ProgramLangConfig> extDic = SpjManager.GetLangSourceExtensionDictionary();
+            Dictionary<string, ProgramLangConfig> extDic = GetLangSourceExtensionDictionary();
             string spjDirectory = GetSpjDirectoryInTestData(problemId);
 
             List<string> spjSourceFiles = new List<string>();
@@ -174,15 +167,11 @@ namespace Judger.Managers
                 fileName = Path.GetFileNameWithoutExtension(fileName);
 
                 if (fileName == SPJ_PROGRAM_FILENAME && extDic.ContainsKey(fileExt))
-                {
                     spjSourceFiles.Add(PathHelper.GetBaseAbsolutePath(file));
-                }
             }
 
             if (index < 0 || index >= spjSourceFiles.Count)
-            {
                 return null;
-            }
 
             return spjSourceFiles[index];
         }
@@ -227,9 +216,7 @@ namespace Judger.Managers
 
             string spjSourceFilePath = FindSpjSourceFileInTestData(newTask.ProblemId);
             if (spjSourceFilePath == null) //没有SPJ程序源代码, 无法评测
-            {
                 throw new JudgeException("No special judge program exception!");
-            }
 
             newTask.SourceCode = File.ReadAllText(spjSourceFilePath);
 
@@ -256,9 +243,7 @@ namespace Judger.Managers
             newTask.TempJudgeDirectory = spjDir;
 
             if (!Directory.Exists(spjDir))
-            {
                 Directory.CreateDirectory(spjDir);
-            }
 
             return newTask;
         }
@@ -270,15 +255,13 @@ namespace Judger.Managers
         /// <returns>语言配置</returns>
         public static ProgramLangConfig GetLangConfigByProgramPath(string path)
         {
-            Dictionary<string, ProgramLangConfig> extDic = SpjManager.GetLangSourceExtensionDictionary();
+            Dictionary<string, ProgramLangConfig> extDic = GetLangSourceExtensionDictionary();
 
             string fileName = Path.GetFileNameWithoutExtension(path).ToLower();
             string fileExt = Path.GetExtension(fileName).TrimStart('.');
 
             if (extDic.ContainsKey(fileExt))
-            {
                 return extDic[fileExt];
-            }
 
             return null;
         }
@@ -290,14 +273,12 @@ namespace Judger.Managers
         /// <returns>语言配置</returns>
         public static ProgramLangConfig GetLangConfigBySourceFilePath(string path)
         {
-            Dictionary<string, ProgramLangConfig> extDic = SpjManager.GetLangSourceExtensionDictionary();
+            Dictionary<string, ProgramLangConfig> extDic = GetLangSourceExtensionDictionary();
 
             string fileExt = Path.GetExtension(path).TrimStart('.').ToLower();
 
             if (extDic.ContainsKey(fileExt))
-            {
                 return extDic[fileExt];
-            }
 
             return null;
         }

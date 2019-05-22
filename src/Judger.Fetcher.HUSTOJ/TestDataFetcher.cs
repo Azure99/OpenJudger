@@ -51,9 +51,7 @@ namespace Judger.Fetcher.HUSTOJ
             foreach (string s in split)
             {
                 if (!string.IsNullOrEmpty(s))
-                {
                     dataList.Add(s);
-                }
             }
 
             return dataList.ToArray();
@@ -87,17 +85,12 @@ namespace Judger.Fetcher.HUSTOJ
                     {
                         ZipArchiveEntry entry = null;
                         if (file.Item1.EndsWith(".in"))
-                        {
                             entry = zip.CreateEntry("input/" + file.Item1);
-                        }
                         else if (file.Item1.EndsWith(".out"))
-                        {
                             entry = zip.CreateEntry("output/" + file.Item1);
-                        }
                         else if (CheckSpecialJudgeFile(file.Item1))
-                        {
-                            entry = zip.CreateEntry("spj/" + SpjManager.SPJ_SOURCE_FILENAME + Path.GetExtension(file.Item1));
-                        }
+                            entry = zip.CreateEntry("spj/" + SpjManager.SpjSourceFilename +
+                                                    Path.GetExtension(file.Item1));
 
                         if (entry != null)
                         {
@@ -154,9 +147,7 @@ namespace Judger.Fetcher.HUSTOJ
                 foreach (string ext in extensions)
                 {
                     if (!extensionSet.Contains(ext))
-                    {
                         extensionSet.Add(ext);
-                    }
                 }
             }
 
@@ -166,9 +157,7 @@ namespace Judger.Fetcher.HUSTOJ
             if (name == "spj")
             {
                 if (extensionSet.Contains(extension))
-                {
                     return true;
-                }
             }
 
             return false;

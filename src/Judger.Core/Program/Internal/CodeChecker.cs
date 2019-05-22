@@ -11,31 +11,27 @@ namespace Judger.Core.Program.Internal
     /// </summary>
     public class CodeChecker
     {
-        /// <summary>
-        /// 实例
-        /// </summary>
-        public static CodeChecker Singleton { get; private set; } = new CodeChecker();
-
-        private Configuration Config { get; } = ConfigManager.Config;
+        private const string LANG_START = "[Language=";
 
         private Dictionary<string, List<string>> _langRulesDic = new Dictionary<string, List<string>>();
-
-        private const string LANG_START = "[Language=";
 
         private CodeChecker()
         {
             if (Config.InterceptUnsafeCode)
-            {
                 InitRulesDictionary();
-            }
         }
+
+        /// <summary>
+        /// 实例
+        /// </summary>
+        public static CodeChecker Singleton { get; } = new CodeChecker();
+
+        private Configuration Config { get; } = ConfigManager.Config;
 
         private void InitRulesDictionary()
         {
             if (!File.Exists(Config.InterceptionRules))
-            {
                 File.WriteAllText(Config.InterceptionRules, "");
-            }
 
             string rulesData = File.ReadAllText(Config.InterceptionRules);
             string[] rules = Regex.Split(rulesData, "\r\n|\r|\n");
@@ -43,12 +39,12 @@ namespace Judger.Core.Program.Internal
             string nowLang = "";
             foreach (string rule in rules)
             {
-                if (string.IsNullOrEmpty(rule) || rule.StartsWith("##")) //空行或注释
-                {
+                // 空行或注释
+                if (string.IsNullOrEmpty(rule) || rule.StartsWith("##"))
                     continue;
-                }
 
-                if (rule.StartsWith(LANG_START)) //语言开始标识
+                // 语言开始标识
+                if (rule.StartsWith(LANG_START))
                 {
                     try
                     {
@@ -56,23 +52,19 @@ namespace Judger.Core.Program.Internal
                     }
                     catch
                     {
-                        //若语言信息不规范, 直接忽略当前语言所有规则
+                        // 若语言信息不规范, 直接忽略当前语言所有规则
                         nowLang = "";
                         LogManager.Error("Can not parse interception rules!");
                     }
 
                     if (!_langRulesDic.ContainsKey(nowLang))
-                    {
                         _langRulesDic[nowLang] = new List<string>();
-                    }
 
                     continue;
                 }
 
                 if (string.IsNullOrEmpty(nowLang))
-                {
                     continue;
-                }
 
                 _langRulesDic[nowLang].Add(rule);
             }
@@ -91,14 +83,10 @@ namespace Judger.Core.Program.Internal
             unsafeCode = "";
             lineIndex = -1;
             if (!Config.InterceptUnsafeCode)
-            {
                 return true;
-            }
 
             if (!_langRulesDic.ContainsKey(language))
-            {
                 return true;
-            }
 
             string[] lines = Regex.Split(sourceCode, "\r\n|\r|\n");
             List<string> rules = _langRulesDic[language];

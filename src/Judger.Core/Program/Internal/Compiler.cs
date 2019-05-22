@@ -11,15 +11,15 @@ namespace Judger.Core.Program.Internal
     /// </summary>
     public class Compiler
     {
-        public JudgeTask JudgeTask { get; set; }
-
-        public ProgramLangConfig LangConfig { get; private set; }
-
         public Compiler(JudgeTask task)
         {
             JudgeTask = task;
             LangConfig = JudgeTask.LangConfig as ProgramLangConfig;
         }
+
+        public JudgeTask JudgeTask { get; set; }
+
+        public ProgramLangConfig LangConfig { get; private set; }
 
         /// <summary>
         /// 编译评测任务的代码
@@ -31,9 +31,7 @@ namespace Judger.Core.Program.Internal
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
                 if (LangConfig.UseUTF8)
-                {
                     runner.Encoding = Encoding.UTF8;
-                }
 
                 RuntimeMonitor monitor = new RuntimeMonitor(runner.Process, 50);
                 monitor.TimeLimit = LangConfig.MaxCompileTime;
@@ -60,18 +58,12 @@ namespace Judger.Core.Program.Internal
                 if (exitcode != 0)
                 {
                     if (monitor.LimitExceed)
-                    {
                         return "Compile timeout.";
-                    }
 
                     if (string.IsNullOrEmpty(error))
-                    {
                         return "Compiler runtime error.";
-                    }
-                    else
-                    {
-                        return error;
-                    }
+
+                    return error;
                 }
 
                 return "";

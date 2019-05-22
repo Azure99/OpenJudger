@@ -13,11 +13,10 @@ namespace Judger.Service
     /// </summary>
     public class JudgeController
     {
-        private Configuration Config { get; } = ConfigManager.Config;
-
         // 评测任务等待队列
         private ConcurrentQueue<JudgeTask> _judgeQueue = new ConcurrentQueue<JudgeTask>();
         private object _queueLock = new object();
+        private Configuration Config { get; } = ConfigManager.Config;
 
         /// <summary>
         /// 正在运行的评测任务数量
@@ -62,9 +61,7 @@ namespace Judger.Service
 
             //开始评测任务
             if (_judgeQueue.TryDequeue(out JudgeTask task))
-            {
                 new Task(RunJudgeTask, task).Start();
-            }
         }
 
         /// <summary>

@@ -18,14 +18,14 @@ namespace Judger.Core.Program
         /// </summary>
         private JudgeTask SPJTask;
 
-        private ProgramLangConfig LangConfig { get; set; }
-
         public SpecialJudger(JudgeTask task) : base(task)
         {
             JudgeTask.ProcessorAffinity = ProcessorAffinityManager.GetUseage();
             LangConfig = JudgeTask.LangConfig as ProgramLangConfig;
             SPJTask = SpjManager.CreateSpjJudgeTask(task);
         }
+
+        private ProgramLangConfig LangConfig { get; set; }
 
         public override JudgeResult Judge()
         {
@@ -44,8 +44,8 @@ namespace Judger.Core.Program
 
             //正则恶意代码检查
             if (!CodeChecker.Singleton.CheckCode(
-                    JudgeTask.SourceCode, JudgeTask.Language, 
-                    out string unsafeCode, out int line))
+                JudgeTask.SourceCode, JudgeTask.Language,
+                out string unsafeCode, out int line))
             {
                 result.ResultCode = JudgeResultCode.CompileError;
                 result.JudgeDetail = "Include unsafe code, please remove them!";
@@ -103,7 +103,8 @@ namespace Judger.Core.Program
                     SingleJudgeResult singleRes = judger.Judge(input, output); //测试此测试点
 
                     //计算有时间补偿的总时间
-                    result.TimeCost = Math.Max(result.TimeCost, (int) (singleRes.TimeCost * LangConfig.TimeCompensation));
+                    result.TimeCost = Math.Max(result.TimeCost,
+                        (int) (singleRes.TimeCost * LangConfig.TimeCompensation));
                     result.MemoryCost = Math.Max(result.MemoryCost, singleRes.MemoryCost);
 
                     if (singleRes.ResultCode == JudgeResultCode.Accepted)
@@ -116,9 +117,7 @@ namespace Judger.Core.Program
                         result.JudgeDetail = singleRes.JudgeDetail;
 
                         if (!JudgeTask.JudgeAllCases)
-                        {
                             break;
-                        }
                     }
                 }
                 catch (Exception e)
@@ -153,9 +152,7 @@ namespace Judger.Core.Program
                 if (TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemId) == null)
                 {
                     if (!CompileSpecialJudgeProgram())
-                    {
                         throw new CompileException("Can not build special judge program!");
-                    }
                 }
 
                 SpecialJudgeProgram spjProgram = TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemId);
@@ -174,18 +171,14 @@ namespace Judger.Core.Program
             Compiler compiler = new Compiler(SPJTask);
             string compileResult = compiler.Compile();
             if (compileResult != "")
-            {
                 throw new CompileException("Can not compile special judge program!" + Environment.NewLine +
                                            compileResult);
-            }
 
             string spjProgramPath =
                 Path.Combine(SPJTask.TempJudgeDirectory, LangConfig.ProgramFileName);
 
             if (!File.Exists(spjProgramPath))
-            {
                 throw new CompileException("Special judge program not found!");
-            }
 
             SpecialJudgeProgram spjProgram = new SpecialJudgeProgram
             {
@@ -226,9 +219,7 @@ namespace Judger.Core.Program
                     catch
                     {
                         if (tryCount++ > 20)
-                        {
                             throw new JudgeException("Cannot delete temp directory");
-                        }
 
                         Thread.Sleep(500);
                     }

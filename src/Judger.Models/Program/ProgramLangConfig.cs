@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Newtonsoft.Json;
 
 namespace Judger.Models.Program
@@ -28,7 +29,7 @@ namespace Judger.Models.Program
         /// <summary>
         /// 是否运行在VM中 (Java等语言是)
         /// </summary>
-        public bool RunningInVm { get; set; } = false;
+        public bool RunningInVm { get; set; }
 
         /// <summary>
         /// 写出的源文件名
@@ -59,7 +60,7 @@ namespace Judger.Models.Program
         /// 判题时使用的目录
         /// </summary>
         public string JudgeDirectory { get; set; }
-            = "JudgeTemp" + System.IO.Path.DirectorySeparatorChar + "Judge";
+            = "JudgeTemp" + Path.DirectorySeparatorChar + "Judge";
 
         /// <summary>
         /// 编译器路径

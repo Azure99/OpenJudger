@@ -19,6 +19,7 @@ namespace Judger.Utils
                 if (method.Name == "WriteFile")
                 {
                     method.Invoke(zipArchive, new object[0]);
+                    break;
                 }
             }
         }

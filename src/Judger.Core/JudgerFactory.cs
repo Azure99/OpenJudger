@@ -1,5 +1,5 @@
-﻿using Judger.Core.Program;
-using Judger.Core.Database;
+﻿using Judger.Core.Database;
+using Judger.Core.Program;
 using Judger.Models;
 using Judger.Models.Exception;
 

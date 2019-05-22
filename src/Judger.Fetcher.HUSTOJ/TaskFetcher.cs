@@ -53,9 +53,7 @@ namespace Judger.Fetcher.HUSTOJ
             foreach (string s in split)
             {
                 if (int.TryParse(s, out int sid))
-                {
                     sidList.Add(sid);
-                }
             }
 
             return sidList.ToArray();
@@ -71,9 +69,7 @@ namespace Judger.Fetcher.HUSTOJ
 
             bodyBuilder.Append("oj_lang_set=");
             foreach (var lang in Config.Languages)
-            {
                 bodyBuilder.Append(lang.Name + ",");
-            }
 
             bodyBuilder.Remove(bodyBuilder.Length - 1, 1);
             bodyBuilder.Append("&");

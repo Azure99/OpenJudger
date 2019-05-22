@@ -16,9 +16,7 @@ namespace Judger.Utils
         public static string EncryptToHexString(string str)
         {
             if (str == null)
-            {
                 str = "";
-            }
 
             byte[] res;
             using (MD5 md5 = MD5.Create())
@@ -28,9 +26,7 @@ namespace Judger.Utils
 
             StringBuilder sb = new StringBuilder();
             foreach (byte b in res)
-            {
                 sb.Append(b.ToString("x2"));
-            }
 
             return sb.ToString();
         }

@@ -11,16 +11,6 @@ namespace Judger.Core.Database.Internal.DbOperator
     public abstract class BaseDbOperator : IDisposable
     {
         /// <summary>
-        /// 数据库连接字符串
-        /// </summary>
-        public string ConnectionString { get; private set; }
-
-        /// <summary>
-        /// 数据库驱动
-        /// </summary>
-        public DbDriver DbDriver { get; private set; }
-
-        /// <summary>
         /// 数据库操作器基类
         /// </summary>
         /// <param name="connectionString">数据库连接字符串</param>
@@ -30,6 +20,18 @@ namespace Judger.Core.Database.Internal.DbOperator
             ConnectionString = connectionString;
             DbDriver = driver;
         }
+
+        /// <summary>
+        /// 数据库连接字符串
+        /// </summary>
+        public string ConnectionString { get; private set; }
+
+        /// <summary>
+        /// 数据库驱动
+        /// </summary>
+        public DbDriver DbDriver { get; private set; }
+
+        public abstract void Dispose();
 
         /// <summary>
         /// 创建数据库
@@ -100,9 +102,7 @@ namespace Judger.Core.Database.Internal.DbOperator
             int fieldCount = reader.FieldCount;
             string[] fieldNames = new string[fieldCount];
             for (int i = 0; i < fieldCount; i++)
-            {
                 fieldNames[i] = reader.GetName(i);
-            }
 
             List<string[]> records = new List<string[]>();
             while (reader.Read())
@@ -111,17 +111,11 @@ namespace Judger.Core.Database.Internal.DbOperator
                 for (int i = 0; i < fieldCount; i++)
                 {
                     if (reader.IsDBNull(i))
-                    {
                         record[i] = null;
-                    }
                     else if (reader.GetFieldType(i) == typeof(DateTime))
-                    {
                         record[i] = null;
-                    }
                     else
-                    {
                         record[i] = reader.GetString(i);
-                    }
                 }
 
                 records.Add(record);
@@ -134,7 +128,5 @@ namespace Judger.Core.Database.Internal.DbOperator
                 Records = records
             };
         }
-
-        public abstract void Dispose();
     }
 }

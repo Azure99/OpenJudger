@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Judger.Managers;
 using Judger.Models;
 using Judger.Models.Program;
@@ -27,20 +26,16 @@ namespace Judger.Fetcher
         /// <param name="specialJudge">是否为SpecialJudge</param>
         /// <param name="dbJudge">是否为数据库评测</param>
         /// <returns>JudgeTask实例</returns>
-        public static JudgeTask Create(int submitId, int problemId, string dataVersion, 
+        public static JudgeTask Create(int submitId, int problemId, string dataVersion,
             string language, string sourceCode, string author = "",
             int timeLimit = 1000, int memoryLimit = 262144, bool judgeAllCases = false,
             bool specialJudge = false, bool dbJudge = false)
         {
             JudgeType judgeType = JudgeType.ProgramJudge;
             if (dbJudge)
-            {
                 judgeType = JudgeType.DbJudge;
-            }
             else if (specialJudge)
-            {
                 judgeType = JudgeType.SpecialJudge;
-            }
 
             return Create(
                 submitId, problemId, dataVersion,
@@ -110,16 +105,16 @@ namespace Judger.Fetcher
             string appDirectory = PathHelper.GetBaseAbsolutePath("");
 
             if (!Directory.Exists(tempDirectory))
-            {
                 Directory.CreateDirectory(tempDirectory);
-            }
 
             // 替换<tempdir>字段
             langConfig.CompilerPath = ReplacePathInfo(langConfig.CompilerPath, tempDirectory, appDirectory);
-            langConfig.CompilerWorkDirectory = ReplacePathInfo(langConfig.CompilerWorkDirectory, tempDirectory, appDirectory);
+            langConfig.CompilerWorkDirectory =
+                ReplacePathInfo(langConfig.CompilerWorkDirectory, tempDirectory, appDirectory);
             langConfig.CompilerArgs = ReplacePathInfo(langConfig.CompilerArgs, tempDirectory, appDirectory);
             langConfig.RunnerPath = ReplacePathInfo(langConfig.RunnerPath, tempDirectory, appDirectory);
-            langConfig.RunnerWorkDirectory = ReplacePathInfo(langConfig.RunnerWorkDirectory, tempDirectory, appDirectory);
+            langConfig.RunnerWorkDirectory =
+                ReplacePathInfo(langConfig.RunnerWorkDirectory, tempDirectory, appDirectory);
             langConfig.RunnerArgs = ReplacePathInfo(langConfig.RunnerArgs, tempDirectory, appDirectory);
         }
 

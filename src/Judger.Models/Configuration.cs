@@ -100,12 +100,12 @@ namespace Judger.Models
         /// 语言(编译/运行)配置
         /// </summary>
         public ProgramLangConfig[] Languages { get; set; } =
-            new ProgramLangConfig[] {new ProgramLangConfig()};
+            {new ProgramLangConfig()};
 
         /// <summary>
         /// 数据库配置
         /// </summary>
         public DbLangConfig[] Databases { get; set; } =
-            new DbLangConfig[] {new DbLangConfig()};
+            {new DbLangConfig()};
     }
 }

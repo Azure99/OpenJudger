@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Judger.Models;
 using Judger.Models.Database;
 using Judger.Models.Program;
@@ -11,11 +12,6 @@ namespace Judger.Managers
     /// </summary>
     public static class ConfigManager
     {
-        /// <summary>
-        /// 配置信息实例
-        /// </summary>
-        public static Configuration Config { get; }
-
         static ConfigManager()
         {
             FileHelper.TryReadAllText("Config.json", out string configJson);
@@ -38,19 +34,20 @@ namespace Judger.Managers
         }
 
         /// <summary>
+        /// 配置信息实例
+        /// </summary>
+        public static Configuration Config { get; }
+
+        /// <summary>
         /// 设置语言配置中的IsDbConfig字段
         /// </summary>
         private static void SetIsDbConfigField()
         {
             foreach (ILangConfig item in Config.Languages)
-            {
                 item.IsDbConfig = false;
-            }
 
             foreach (ILangConfig item in Config.Databases)
-            {
                 item.IsDbConfig = true;
-            }
         }
 
         /// <summary>
@@ -72,18 +69,14 @@ namespace Judger.Managers
             foreach (var item in programConfigs)
             {
                 if (item.Name == languageName)
-                {
                     return item.Clone() as ProgramLangConfig;
-                }
             }
 
             DbLangConfig[] dbConfigs = Config.Databases;
             foreach (var item in dbConfigs)
             {
                 if (item.Name == languageName)
-                {
                     return item.Clone() as DbLangConfig;
-                }
             }
 
             return null;
@@ -95,7 +88,7 @@ namespace Judger.Managers
         /// <returns>编程语言配置</returns>
         private static ProgramLangConfig[] GetDefaultLangConfigs()
         {
-            char sparChar = System.IO.Path.DirectorySeparatorChar;
+            char sparChar = Path.DirectorySeparatorChar;
 
             List<ProgramLangConfig> langConfigs = new List<ProgramLangConfig>();
 
@@ -213,7 +206,7 @@ namespace Judger.Managers
                 Database = "judger",
                 User = "root",
                 Password = "123456",
-                ConnStringTemplate = "Server=<Server>;Database=<Database>;User=<User>;Password=<Password>;CharSet=utf8;",
+                ConnStringTemplate = "Server=<Server>;Database=<Database>;User=<User>;Password=<Password>;CharSet=utf8;"
             };
 
             langConfigs.Add(mysql);

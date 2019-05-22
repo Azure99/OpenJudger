@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using Xunit;
 using Judger.Utils;
+using Xunit;
 
 namespace MainUnitTest
 {

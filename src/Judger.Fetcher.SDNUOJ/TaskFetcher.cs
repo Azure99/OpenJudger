@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
-using Newtonsoft.Json.Linq;
+using System.Web;
 using Judger.Fetcher.SDNUOJ.Entity;
 using Judger.Models;
+using Newtonsoft.Json.Linq;
 
 namespace Judger.Fetcher.SDNUOJ
 {
@@ -36,18 +36,14 @@ namespace Judger.Fetcher.SDNUOJ
 
             StringBuilder langBuilder = new StringBuilder();
             foreach (var lang in Config.Languages)
-            {
                 langBuilder.Append(lang.Name + "[],");
-            }
 
             foreach (var lang in Config.Databases)
-            {
                 langBuilder.Append(lang.Name + "[],");
-            }
 
             langBuilder.Remove(langBuilder.Length - 1, 1);
 
-            bodyBuilder.Append(System.Web.HttpUtility.UrlEncode(langBuilder.ToString()));
+            bodyBuilder.Append(HttpUtility.UrlEncode(langBuilder.ToString()));
 
             return bodyBuilder.ToString();
         }
@@ -62,25 +58,21 @@ namespace Judger.Fetcher.SDNUOJ
             JArray jArray = JArray.Parse(jsonStr);
 
             if (jArray.Count == 0)
-            {
                 return new JudgeTask[0];
-            }
 
             JObject jObject = jArray[0] as JObject;
             if (!CheckTaskJObject(jObject))
-            {
                 return new JudgeTask[0];
-            }
 
             SDNUOJTaskEntity taskEntity = jObject.ToObject<SDNUOJTaskEntity>();
 
             JudgeTask task = JudgeTaskFactory.Create(
-                Int32.Parse(taskEntity.SubmitId), Int32.Parse(taskEntity.ProblemId), taskEntity.DataVersion,
+                int.Parse(taskEntity.SubmitId), int.Parse(taskEntity.ProblemId), taskEntity.DataVersion,
                 taskEntity.Language.Substring(0, taskEntity.Language.Length - 2), taskEntity.SourceCode,
-                taskEntity.Author, Int32.Parse(taskEntity.TimeLimit), Int32.Parse(taskEntity.MemoryLimit),
+                taskEntity.Author, int.Parse(taskEntity.TimeLimit), int.Parse(taskEntity.MemoryLimit),
                 false, false, bool.Parse(taskEntity.DbJudge));
 
-            return new JudgeTask[] {task};
+            return new[] {task};
         }
 
         /// <summary>
@@ -90,18 +82,14 @@ namespace Judger.Fetcher.SDNUOJ
         {
             HashSet<string> keySet = new HashSet<string>();
             foreach (JProperty key in obj.Properties())
-            {
                 keySet.Add(key.Name.ToLower());
-            }
 
             if (!keySet.Contains("sid") ||
                 !keySet.Contains("pid") ||
                 !keySet.Contains("dataversion") ||
                 !keySet.Contains("language") ||
                 !keySet.Contains("sourcecode"))
-            {
                 return false;
-            }
 
             return true;
         }

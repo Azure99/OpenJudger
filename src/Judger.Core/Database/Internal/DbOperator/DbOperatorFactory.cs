@@ -18,10 +18,8 @@ namespace Judger.Core.Database.Internal.DbOperator
                 DbLangConfig config = DbManager.GetDbConfiguration(dbName);
                 return Create(config);
             }
-            else
-            {
-                throw new NotImplementedException("Db operator not implemented: " + dbName);
-            }
+
+            throw new NotImplementedException("Db operator not implemented: " + dbName);
         }
 
         /// <summary>
@@ -35,13 +33,9 @@ namespace Judger.Core.Database.Internal.DbOperator
             DbDriver driver = DbDriverLoader.Load(dbConfig.DriverPath);
 
             if (dbConfig.Name == DatabaseType.mysql.ToString())
-            {
                 return new MySQL5xOperator(connString, driver);
-            }
-            else
-            {
-                throw new NotImplementedException("Db operator not implemented: " + dbConfig.Name);
-            }
+
+            throw new NotImplementedException("Db operator not implemented: " + dbConfig.Name);
         }
     }
 }

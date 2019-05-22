@@ -10,6 +10,19 @@ namespace Judger.Fetcher
     public abstract class BaseTestDataFetcher : ITestDataFetcher
     {
         /// <summary>
+        /// 最大测试数据下载时间
+        /// </summary>
+        private const int MAX_DOWNLOAD_TIME = 600000;
+
+        /// <summary>
+        /// TestDataFetcher基类
+        /// </summary>
+        protected BaseTestDataFetcher()
+        {
+            HttpClient.ReadWriteTimeout = MAX_DOWNLOAD_TIME;
+        }
+
+        /// <summary>
         /// 配置信息
         /// </summary>
         protected Configuration Config { get; } = ConfigManager.Config;
@@ -18,19 +31,6 @@ namespace Judger.Fetcher
         /// Http客户端
         /// </summary>
         protected HttpWebClient HttpClient { get; } = ConfiguredClient.Create();
-
-        /// <summary>
-        /// 最大测试数据下载时间
-        /// </summary>
-        private const int MAX_DOWNLOAD_TIME = 600000;
-        
-        /// <summary>
-        /// TestDataFetcher基类
-        /// </summary>
-        protected BaseTestDataFetcher()
-        {
-            HttpClient.ReadWriteTimeout = MAX_DOWNLOAD_TIME;
-        }
 
         /// <summary>
         /// 取回数据

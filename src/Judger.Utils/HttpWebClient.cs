@@ -212,14 +212,12 @@ namespace Judger.Utils
             request.ReadWriteTimeout = ReadWriteTimeout;
             request.CookieContainer = CookieContainer;
 
-            //请求无ContentType
+            // 请求无ContentType
             if (string.IsNullOrEmpty(request.ContentType))
             {
-                //设置了DefaultContentType
+                // 设置了默认ContentType
                 if (!string.IsNullOrEmpty(DefaultContentType))
-                {
                     request.ContentType = DefaultContentType;
-                }
             }
 
             return request;

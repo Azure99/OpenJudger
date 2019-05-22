@@ -20,6 +20,6 @@
         /// Oracle
         /// </summary>
         //暂未适配
-        oracle = 3,
+        oracle = 3
     }
 }

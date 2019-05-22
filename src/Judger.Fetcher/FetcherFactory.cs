@@ -16,7 +16,6 @@ namespace Judger.Fetcher
         /// Fetcher程序集
         /// </summary>
         private static Assembly _fetcherAssembly;
-        private static Configuration Config { get; } = ConfigManager.Config;
 
         static FetcherFactory()
         {
@@ -25,6 +24,8 @@ namespace Judger.Fetcher
             string dllPath = Path.GetFullPath(Config.FetcherDllPath);
             _fetcherAssembly = Assembly.LoadFile(dllPath);
         }
+
+        private static Configuration Config { get; } = ConfigManager.Config;
 
         /// <summary>
         /// 动态创建TaskFetcher
@@ -35,9 +36,7 @@ namespace Judger.Fetcher
             {
                 if (type.BaseType == typeof(BaseTaskFetcher) ||
                     type.GetInterface(typeof(ITaskFetcher).FullName) != null)
-                {
                     return _fetcherAssembly.CreateInstance(type.FullName) as ITaskFetcher;
-                }
             }
 
             throw new FetcherException("ITaskFetcher not implement!");
@@ -52,9 +51,7 @@ namespace Judger.Fetcher
             {
                 if (type.BaseType == typeof(BaseTaskSubmitter) ||
                     type.GetInterface(typeof(ITaskSubmitter).FullName) != null)
-                {
                     return _fetcherAssembly.CreateInstance(type.FullName) as ITaskSubmitter;
-                }
             }
 
             throw new FetcherException("ITaskSubmitter not implement!");
@@ -69,9 +66,7 @@ namespace Judger.Fetcher
             {
                 if (type.BaseType == typeof(BaseTestDataFetcher) ||
                     type.GetInterface(typeof(ITestDataFetcher).FullName) != null)
-                {
                     return _fetcherAssembly.CreateInstance(type.FullName) as ITestDataFetcher;
-                }
             }
 
             throw new FetcherException("ITestDataFetcher not implement!");

@@ -1,6 +1,6 @@
 using System;
-using Judger.Service;
 using Judger.Managers;
+using Judger.Service;
 
 namespace Judger
 {

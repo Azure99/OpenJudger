@@ -12,13 +12,23 @@ namespace Judger.Service
     /// </summary>
     public class JudgeService : IDisposable
     {
-        private Configuration Config { get; } = ConfigManager.Config;
+        // 指示当前OnWork代码段是否正在执行
+        private bool _innerWorking;
+        private object _innerWorkLock = new object();
         private ITaskFetcher _taskFetcher;
         private Timer _workTimer;
 
-        // 指示当前OnWork代码段是否正在执行
-        private bool _innerWorking = false;
-        private object _innerWorkLock = new object();
+        /// <summary>
+        /// 评测服务
+        /// </summary>
+        public JudgeService()
+        {
+            _taskFetcher = FetcherFactory.CreateTaskFetcher();
+            _workTimer = new Timer(Config.TaskFetchInterval);
+            _workTimer.Elapsed += OnWork;
+        }
+
+        private Configuration Config { get; } = ConfigManager.Config;
 
         /// <summary>
         /// 服务是否在运行
@@ -33,14 +43,10 @@ namespace Judger.Service
         /// </summary>
         public JudgeController Controller { get; } = new JudgeController();
 
-        /// <summary>
-        /// 评测服务
-        /// </summary>
-        public JudgeService()
+        public void Dispose()
         {
-            _taskFetcher = FetcherFactory.CreateTaskFetcher();
-            _workTimer = new Timer(Config.TaskFetchInterval);
-            _workTimer.Elapsed += OnWork;
+            _taskFetcher.Dispose();
+            _workTimer.Dispose();
         }
 
         /// <summary>
@@ -64,13 +70,7 @@ namespace Judger.Service
             _workTimer.Stop();
         }
 
-        public void Dispose()
-        {
-            _taskFetcher.Dispose();
-            _workTimer.Dispose();
-        }
-
-        private bool ClearTempDirectory() //清空临时目录
+        private void ClearTempDirectory() //清空临时目录
         {
             LogManager.Info("Clear temp directory");
 
@@ -79,19 +79,14 @@ namespace Judger.Service
                 try
                 {
                     if (Directory.Exists(lang.JudgeDirectory))
-                    {
                         Directory.Delete(lang.JudgeDirectory, true);
-                    }
                 }
                 catch (Exception ex)
                 {
                     LogManager.Error("Can not clear temp directory!");
                     LogManager.Exception(ex);
-                    return false;
                 }
             }
-
-            return true;
         }
 
         /// <summary>
@@ -101,9 +96,7 @@ namespace Judger.Service
         {
             // 防止事件重入
             if (_innerWorking)
-            {
                 return;
-            }
 
             lock (_innerWorkLock)
             {
@@ -129,21 +122,15 @@ namespace Judger.Service
         private void FetchJudgeTask()
         {
             if (Controller.InQueueCount >= Config.MaxQueueSize)
-            {
                 return;
-            }
 
             JudgeTask[] tasks = _taskFetcher.Fetch();
             foreach (var task in tasks)
-            {
                 Controller.AddTask(task);
-            }
 
             // 若当前成功取到任务, 不等待继续尝试取回任务
             if (tasks.Length > 0)
-            {
                 FetchJudgeTask();
-            }
         }
     }
 }

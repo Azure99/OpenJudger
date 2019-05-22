@@ -1,6 +1,6 @@
 ﻿using System.Threading;
-using Xunit;
 using Judger.Utils;
+using Xunit;
 
 namespace MainUnitTest
 {

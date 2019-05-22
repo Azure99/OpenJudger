@@ -27,24 +27,16 @@ namespace Judger.Core.Database.Internal
             foreach (var type in types)
             {
                 if (!type.IsClass)
-                {
                     continue;
-                }
 
                 if (type.BaseType == typeof(DbConnection))
-                {
                     connectionType = type;
-                }
                 else if (type.BaseType == typeof(DbCommand))
-                {
                     commandType = type;
-                }
             }
 
             if (connectionType == null || commandType == null)
-            {
                 throw new Exception("Driver is not available!");
-            }
 
             return new DbDriver(connectionType, commandType);
         }

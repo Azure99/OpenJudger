@@ -47,9 +47,7 @@ namespace Judger.Fetcher.Generic
             InnerJudgeTask[] innerJudgeTasks = SampleJsonSerializer.DeSerialize<InnerJudgeTask[]>(jsonString);
 
             if (innerJudgeTasks == null || innerJudgeTasks.Length == 0)
-            {
                 return new JudgeTask[0];
-            }
 
             List<JudgeTask> judgeTasks = new List<JudgeTask>();
             foreach (var item in innerJudgeTasks)
