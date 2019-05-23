@@ -1,6 +1,7 @@
 ﻿using Judger.Core.Program.Internal;
 using Judger.Core.Program.Internal.Entity;
 using Judger.Models;
+using Judger.Models.Judge;
 using Judger.Models.Program;
 using Xunit;
 

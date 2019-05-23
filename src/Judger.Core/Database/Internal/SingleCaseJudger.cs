@@ -5,6 +5,7 @@ using Judger.Core.Database.Internal.DbOperator;
 using Judger.Core.Database.Internal.Entity;
 using Judger.Models;
 using Judger.Models.Database;
+using Judger.Models.Judge;
 
 namespace Judger.Core.Database.Internal
 {

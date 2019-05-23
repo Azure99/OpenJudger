@@ -66,7 +66,7 @@ namespace Judger.Fetcher.SDNUOJ
 
             SDNUOJTaskEntity taskEntity = jObject.ToObject<SDNUOJTaskEntity>();
 
-            JudgeContext task = JudgeTaskFactory.Create(
+            JudgeContext task = JudgeContextFactory.Create(
                 int.Parse(taskEntity.SubmitId), int.Parse(taskEntity.ProblemId), taskEntity.DataVersion,
                 taskEntity.Language.Substring(0, taskEntity.Language.Length - 2), taskEntity.SourceCode,
                 taskEntity.Author, int.Parse(taskEntity.TimeLimit), int.Parse(taskEntity.MemoryLimit),

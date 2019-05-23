@@ -7,6 +7,7 @@ using Judger.Core.Program.Internal.Entity;
 using Judger.Managers;
 using Judger.Models;
 using Judger.Models.Exception;
+using Judger.Models.Judge;
 using Judger.Models.Program;
 
 namespace Judger.Core.Program
@@ -69,7 +70,6 @@ namespace Judger.Core.Program
                 return;
             }
 
-            result.MemoryCost = ConfigManager.Config.MinimumMemoryCost;
             int acceptedCasesCount = 0; //通过的测试点数
             for (int i = 0; i < dataFiles.Length; i++)
             {

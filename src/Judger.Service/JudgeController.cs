@@ -5,6 +5,7 @@ using Judger.Core;
 using Judger.Fetcher;
 using Judger.Managers;
 using Judger.Models;
+using Judger.Models.Judge;
 
 namespace Judger.Service
 {

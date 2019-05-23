@@ -4,6 +4,7 @@ using System.Text;
 using Judger.Core.Program.Internal.Entity;
 using Judger.Managers;
 using Judger.Models;
+using Judger.Models.Judge;
 using Judger.Models.Program;
 using Judger.Utils;
 

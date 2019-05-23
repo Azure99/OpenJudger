@@ -1,4 +1,5 @@
 ﻿using Judger.Models;
+using Judger.Models.Judge;
 
 namespace Judger.Fetcher.HUSTOJ
 {

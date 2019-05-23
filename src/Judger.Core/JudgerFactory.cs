@@ -2,6 +2,7 @@
 using Judger.Core.Program;
 using Judger.Models;
 using Judger.Models.Exception;
+using Judger.Models.Judge;
 
 namespace Judger.Core
 {

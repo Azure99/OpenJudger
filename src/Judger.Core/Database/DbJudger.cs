@@ -8,6 +8,7 @@ using Judger.Managers;
 using Judger.Models;
 using Judger.Models.Database;
 using Judger.Models.Exception;
+using Judger.Models.Judge;
 
 namespace Judger.Core.Database
 {

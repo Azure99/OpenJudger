@@ -89,7 +89,7 @@ namespace Judger.Fetcher.HUSTOJ
             GetProblemInfo(problemId, out int timeLimit, out int memoryLimit, out bool spj);
             string dateMd5 = GetTestDataMd5(problemId);
 
-            JudgeContext task = JudgeTaskFactory.Create(
+            JudgeContext task = JudgeContextFactory.Create(
                 submitId, problemId, dateMd5, lang, sourceCode,
                 author, timeLimit, memoryLimit, false, spj);
 

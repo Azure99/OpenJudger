@@ -1,4 +1,4 @@
-﻿namespace Judger.Models
+﻿namespace Judger.Models.Judge
 {
     /// <summary>
     /// 判题结果码

@@ -52,7 +52,7 @@ namespace Judger.Fetcher.Generic
             List<JudgeContext> judgeTasks = new List<JudgeContext>();
             foreach (var item in innerJudgeTasks)
             {
-                JudgeContext task = JudgeTaskFactory.Create(
+                JudgeContext task = JudgeContextFactory.Create(
                     item.SubmitId, item.ProblemId, item.DataVersion,
                     item.Language, item.SourceCode, item.Author,
                     item.TimeLimit, item.MemoryLimit,

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Judger.Models.Judge;
 
 namespace Judger.Models
 {

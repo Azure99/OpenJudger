@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Judger.Managers;
 using Judger.Models;
+using Judger.Models.Judge;
 using Judger.Models.Program;
 using Judger.Utils;
 
@@ -9,7 +10,7 @@ namespace Judger.Fetcher
     /// <summary>
     /// 评测任务工厂
     /// </summary>
-    public static class JudgeTaskFactory
+    public static class JudgeContextFactory
     {
         private static Configuration Config { get; } = ConfigManager.Config;
 
