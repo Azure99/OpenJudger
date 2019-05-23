@@ -1,9 +1,11 @@
-﻿namespace Judger.Models
+﻿using System;
+
+namespace Judger.Models
 {
     /// <summary>
     /// 判题结果
     /// </summary>
-    public class JudgeResult
+    public class JudgeResult : ICloneable
     {
         /// <summary>
         /// 提交ID
@@ -44,5 +46,10 @@
         /// 内存消耗
         /// </summary>
         public int MemoryCost { get; set; }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

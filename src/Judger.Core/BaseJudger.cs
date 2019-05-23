@@ -8,12 +8,16 @@ namespace Judger.Core
     /// </summary>
     public abstract class BaseJudger : IDisposable
     {
-        public BaseJudger(JudgeTask task)
+        public BaseJudger(JudgeContext context)
         {
-            JudgeTask = task;
+            Context = context;
+            JudgeTask = context.Task;
+            JudgeResult = context.Result;
         }
 
+        protected JudgeContext Context { get; }
         protected JudgeTask JudgeTask { get; }
+        protected JudgeResult JudgeResult { get; }
 
         public virtual void Dispose()
         { }
@@ -22,6 +26,6 @@ namespace Judger.Core
         /// 评测此任务
         /// </summary>
         /// <returns>评测结果s</returns>
-        public abstract JudgeResult Judge();
+        public abstract void Judge();
     }
 }

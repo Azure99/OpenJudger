@@ -22,8 +22,8 @@ namespace Judger.Fetcher
         /// <summary>
         /// 从服务器取回JudgeTask
         /// </summary>
-        /// <returns>JudgeTask数组</returns>
-        public abstract JudgeTask[] Fetch();
+        /// <returns>JudgeContext数组</returns>
+        public abstract JudgeContext[] Fetch();
 
         public virtual void Dispose()
         {

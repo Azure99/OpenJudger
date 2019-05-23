@@ -11,10 +11,10 @@ namespace Judger.Core.Program.Internal
     /// </summary>
     public class Compiler
     {
-        public Compiler(JudgeTask task)
+        public Compiler(JudgeContext context)
         {
-            JudgeTask = task;
-            LangConfig = JudgeTask.LangConfig as ProgramLangConfig;
+            JudgeTask = context.Task;
+            LangConfig = context.LangConfig as ProgramLangConfig;
         }
 
         public JudgeTask JudgeTask { get; set; }

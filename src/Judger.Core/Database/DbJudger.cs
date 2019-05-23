@@ -18,37 +18,27 @@ namespace Judger.Core.Database
         private DatabaseType _dbType;
         private string _dbUser;
 
-        public DbJudger(JudgeTask task) : base(task)
+        public DbJudger(JudgeContext context) : base(context)
         {
-            MainOperator = DbOperatorFactory.CreateMainOperatorByName(JudgeTask.Language);
-            _dbName = Path.GetFileName(task.TempJudgeDirectory).ToLower() + "db";
-            _dbUser = Path.GetFileName(task.TempJudgeDirectory).ToLower() + "user";
-            _dbPassword = Path.GetFileName(task.TempJudgeDirectory).ToLower() + "pwd";
-            _dbType = DbManager.GetDatabaseType(JudgeTask.Language);
+            MainOperator = DbOperatorFactory.CreateMainOperatorByName(context.Task.Language);
+            _dbName = Path.GetFileName(context.TempDirectory).ToLower() + "db";
+            _dbUser = Path.GetFileName(context.TempDirectory).ToLower() + "user";
+            _dbPassword = Path.GetFileName(context.TempDirectory).ToLower() + "pwd";
+            _dbType = DbManager.GetDatabaseType(context.Task.Language);
         }
 
         private BaseDbOperator MainOperator { get; set; }
 
-        public override JudgeResult Judge()
+        public override void Judge()
         {
-            JudgeResult result = new JudgeResult
-            {
-                SubmitId = JudgeTask.SubmitId,
-                ProblemId = JudgeTask.ProblemId,
-                Author = JudgeTask.Author,
-                JudgeDetail = "",
-                MemoryCost = ConfigManager.Config.MinimumMemoryCost,
-                TimeCost = 0,
-                PassRate = 0,
-                ResultCode = JudgeResultCode.Accepted
-            };
+            JudgeResult result = JudgeResult;
 
             string[] dataNames = TestDataManager.GetDbTestDataNames(JudgeTask.ProblemId, _dbType);
             if (dataNames.Length == 0)
             {
                 result.ResultCode = JudgeResultCode.JudgeFailed;
                 result.JudgeDetail = "No test data.";
-                return result;
+                return;
             }
 
             int acceptedCasesCount = 0;
@@ -71,8 +61,6 @@ namespace Judger.Core.Database
             }
 
             result.PassRate = (double) acceptedCasesCount / dataNames.Length;
-
-            return result;
         }
 
         private SingleJudgeResult JudgeOneCase(string dataName)
@@ -82,7 +70,7 @@ namespace Judger.Core.Database
 
             BaseDbOperator userOper = CreateJudgeEnv(inputData);
 
-            SingleCaseJudger singleCaseJudger = new SingleCaseJudger(JudgeTask, userOper);
+            SingleCaseJudger singleCaseJudger = new SingleCaseJudger(Context, userOper);
             SingleJudgeResult result = singleCaseJudger.Judge(inputData, outputData, queryData);
 
             ClearJudgeEnv(userOper);

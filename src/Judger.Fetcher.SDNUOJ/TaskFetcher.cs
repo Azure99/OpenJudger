@@ -17,11 +17,11 @@ namespace Judger.Fetcher.SDNUOJ
             HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
-        public override JudgeTask[] Fetch()
+        public override JudgeContext[] Fetch()
         {
             string resultString = HttpClient.UploadString(Config.TaskFetchUrl, CreateRequestBody(), 3);
 
-            JudgeTask[] tasks = ParseTask(resultString);
+            JudgeContext[] tasks = ParseTask(resultString);
             return tasks;
         }
 
@@ -53,20 +53,20 @@ namespace Judger.Fetcher.SDNUOJ
         /// </summary>
         /// <param name="jsonStr"></param>
         /// <returns></returns>
-        private JudgeTask[] ParseTask(string jsonStr)
+        private JudgeContext[] ParseTask(string jsonStr)
         {
             JArray jArray = JArray.Parse(jsonStr);
 
             if (jArray.Count == 0)
-                return new JudgeTask[0];
+                return new JudgeContext[0];
 
             JObject jObject = jArray[0] as JObject;
             if (!CheckTaskJObject(jObject))
-                return new JudgeTask[0];
+                return new JudgeContext[0];
 
             SDNUOJTaskEntity taskEntity = jObject.ToObject<SDNUOJTaskEntity>();
 
-            JudgeTask task = JudgeTaskFactory.Create(
+            JudgeContext task = JudgeTaskFactory.Create(
                 int.Parse(taskEntity.SubmitId), int.Parse(taskEntity.ProblemId), taskEntity.DataVersion,
                 taskEntity.Language.Substring(0, taskEntity.Language.Length - 2), taskEntity.SourceCode,
                 taskEntity.Author, int.Parse(taskEntity.TimeLimit), int.Parse(taskEntity.MemoryLimit),

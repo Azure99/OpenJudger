@@ -18,11 +18,12 @@ namespace Judger.Core.Database.Internal
         /// </summary>
         private bool _caseSensitive;
 
-        public SingleCaseJudger(JudgeTask task, BaseDbOperator dbOperator)
+        public SingleCaseJudger(JudgeContext context, BaseDbOperator dbOperator)
         {
-            JudgeTask = task;
+            JudgeContext = context;
+            JudgeTask = context.Task;
             UserOperator = dbOperator;
-            _caseSensitive = (task.LangConfig as DbLangConfig).CaseSensitive;
+            _caseSensitive = (context.LangConfig as DbLangConfig).CaseSensitive;
         }
 
         /// <summary>
@@ -30,6 +31,11 @@ namespace Judger.Core.Database.Internal
         /// </summary>
         public BaseDbOperator UserOperator { get; private set; }
 
+        /// <summary>
+        /// 评测上下文
+        /// </summary>
+        public JudgeContext JudgeContext { get; private set; }
+        
         /// <summary>
         /// 评测任务
         /// </summary>

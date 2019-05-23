@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+
+namespace Judger.Models
+{
+    public class JudgeContext : ICloneable
+    {
+        public JudgeContext(JudgeTask task, string tempDirectory, ILangConfig langConfig)
+        {
+            Task = task;
+            TempDirectory = tempDirectory;
+            LangConfig = langConfig;
+            Result = new JudgeResult
+            {
+                SubmitId = task.SubmitId,
+                ProblemId = task.ProblemId,
+                Author = task.Author,
+                JudgeDetail = "",
+                MemoryCost = 0,
+                TimeCost = 0,
+                PassRate = 0,
+                ResultCode = JudgeResultCode.Accepted
+            };
+        }
+
+        /// <summary>
+        /// 评测任务
+        /// </summary>
+        public JudgeTask Task { get; set; }
+
+        /// <summary>
+        /// 判题所用临时目录
+        /// </summary>
+        public string TempDirectory { get; set; }
+
+        /// <summary>
+        /// 编程语言配置信息
+        /// </summary>
+        public ILangConfig LangConfig { get; set; }
+
+        /// <summary>
+        /// 评测结果
+        /// </summary>
+        public JudgeResult Result { get; set; }
+
+        /// <summary>
+        /// 附加信息
+        /// </summary>
+        public Dictionary<string, object> AdditionalInfo { get; set; } = new Dictionary<string, object>();
+
+        public object Clone()
+        {
+            JudgeContext context = MemberwiseClone() as JudgeContext;
+            context.Task = Task.Clone() as JudgeTask;
+            context.LangConfig = LangConfig.Clone() as ILangConfig;
+            context.Result = Result.Clone() as JudgeResult;
+            
+            return context;
+        }
+    }
+}

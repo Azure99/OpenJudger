@@ -24,20 +24,15 @@ namespace Judger.Core.Program.Internal
         /// </summary>
         private const int MIN_TOTAL_TIME_LIMIT = 20000;
 
-        private ProgramLangConfig _langConfig;
-
-        public SingleCaseJudger(JudgeTask task)
+        public SingleCaseJudger(JudgeContext context)
         {
-            JudgeTask = task;
-            _langConfig = task.LangConfig as ProgramLangConfig;
+            JudgeTask = context.Task;
+            LangConfig = context.LangConfig as ProgramLangConfig;
         }
 
         public JudgeTask JudgeTask { get; set; }
 
-        public ProgramLangConfig LangConfig
-        {
-            get { return JudgeTask.LangConfig as ProgramLangConfig; }
-        }
+        public ProgramLangConfig LangConfig { get; set; }
 
         public SingleJudgeResult Judge(string input, string output)
         {
@@ -63,7 +58,7 @@ namespace Judger.Core.Program.Internal
                 };
                 monitor.Start();
 
-                runner.OutputLimit = _langConfig.OutputLimit;
+                runner.OutputLimit = LangConfig.OutputLimit;
                 exitcode = runner.Run(input, out userOutput, out userError,
                     ProcessPriorityClass.RealTime, ConfigManager.Config.MonitorInterval * 2);
 
@@ -78,8 +73,8 @@ namespace Judger.Core.Program.Internal
                 ResultCode = JudgeResultCode.Accepted
             };
 
-            if ((userOutput.Length >= _langConfig.OutputLimit ||
-                 userError.Length >= _langConfig.OutputLimit))
+            if ((userOutput.Length >= LangConfig.OutputLimit ||
+                 userError.Length >= LangConfig.OutputLimit))
             {
                 result.ResultCode = JudgeResultCode.OutputLimitExceed;
                 return result;
@@ -198,9 +193,9 @@ namespace Judger.Core.Program.Internal
         private ProcessRunner CreateProcessRunner()
         {
             return new ProcessRunner(
-                _langConfig.RunnerPath,
-                _langConfig.RunnerWorkDirectory,
-                _langConfig.RunnerArgs);
+                LangConfig.RunnerPath,
+                LangConfig.RunnerWorkDirectory,
+                LangConfig.RunnerArgs);
         }
     }
 }

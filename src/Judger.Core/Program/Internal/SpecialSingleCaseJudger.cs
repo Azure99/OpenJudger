@@ -27,28 +27,26 @@ namespace Judger.Core.Program.Internal
         private const string SPJ_OUTPUT_NAME = "output.txt";
         private const string SPJ_USEROUTPUT_NAME = "user.txt";
 
-        private ProgramLangConfig _langConfig;
-
-        public SpecialSingleCaseJudger(JudgeTask judgeTask, JudgeTask spjTask)
+        public SpecialSingleCaseJudger(JudgeContext judgeContext, JudgeContext spjContext)
         {
-            JudgeTask = judgeTask;
-            _langConfig = judgeTask.LangConfig as ProgramLangConfig;
-            SpjTask = spjTask;
+            JudgeContext = judgeContext;
+            SpjJudgeContext = spjContext;
+            JudgeTask = judgeContext.Task;
+            SpjTask = spjContext.Task;
+            LangConfig = judgeContext.LangConfig as ProgramLangConfig;
+            SpjLangConfig = spjContext.LangConfig as ProgramLangConfig;
         }
 
+        public JudgeContext JudgeContext { get; }
+        
         public JudgeTask JudgeTask { get; }
-
-        public ProgramLangConfig LangConfig
-        {
-            get { return JudgeTask.LangConfig as ProgramLangConfig; }
-        }
-
+        
+        public ProgramLangConfig LangConfig { get; }
+        
+        public JudgeContext SpjJudgeContext { get; }
         public JudgeTask SpjTask { get; }
-
-        public ProgramLangConfig SpjLangConfig
-        {
-            get { return SpjTask.LangConfig as ProgramLangConfig; }
-        }
+        
+        public ProgramLangConfig SpjLangConfig { get; }
 
         public SingleJudgeResult Judge(string input, string output)
         {
@@ -74,7 +72,7 @@ namespace Judger.Core.Program.Internal
                 };
                 monitor.Start();
 
-                runner.OutputLimit = _langConfig.OutputLimit;
+                runner.OutputLimit = LangConfig.OutputLimit;
                 exitcode = runner.Run(input, out userOutput, out userError,
                     ProcessPriorityClass.RealTime, ConfigManager.Config.MonitorInterval * 2);
 
@@ -89,8 +87,8 @@ namespace Judger.Core.Program.Internal
                 ResultCode = JudgeResultCode.Accepted
             };
 
-            if ((userOutput.Length >= _langConfig.OutputLimit ||
-                 userError.Length >= _langConfig.OutputLimit))
+            if ((userOutput.Length >= LangConfig.OutputLimit ||
+                 userError.Length >= LangConfig.OutputLimit))
             {
                 result.ResultCode = JudgeResultCode.OutputLimitExceed;
                 return result;
@@ -123,9 +121,9 @@ namespace Judger.Core.Program.Internal
 
         private CompareResult CompareAnswerBySpj(string input, string output, string userOutput)
         {
-            string inputPath = Path.Combine(SpjTask.TempJudgeDirectory, SPJ_INPUT_NAME);
-            string outputPath = Path.Combine(SpjTask.TempJudgeDirectory, SPJ_OUTPUT_NAME);
-            string userOutputPath = Path.Combine(SpjTask.TempJudgeDirectory, SPJ_USEROUTPUT_NAME);
+            string inputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_INPUT_NAME);
+            string outputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_OUTPUT_NAME);
+            string userOutputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_USEROUTPUT_NAME);
             File.WriteAllText(inputPath, input);
             File.WriteAllText(outputPath, output);
             File.WriteAllText(userOutputPath, userOutput);
@@ -175,16 +173,16 @@ namespace Judger.Core.Program.Internal
         private ProcessRunner CreateProcessRunner()
         {
             return new ProcessRunner(
-                _langConfig.RunnerPath,
-                _langConfig.RunnerWorkDirectory,
-                _langConfig.RunnerArgs);
+                LangConfig.RunnerPath,
+                LangConfig.RunnerWorkDirectory,
+                LangConfig.RunnerArgs);
         }
 
         private ProcessRunner CreateSpecialJudgeProcessRunner()
         {
-            string inputPath = Path.Combine(SpjTask.TempJudgeDirectory, SPJ_INPUT_NAME);
-            string outputPath = Path.Combine(SpjTask.TempJudgeDirectory, SPJ_OUTPUT_NAME);
-            string userOutputPath = Path.Combine(SpjTask.TempJudgeDirectory, SPJ_USEROUTPUT_NAME);
+            string inputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_INPUT_NAME);
+            string outputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_OUTPUT_NAME);
+            string userOutputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_USEROUTPUT_NAME);
 
             string dataArgs = string.Format(" \"{0}\" \"{1}\" \"{2}\"", inputPath, outputPath, userOutputPath);
 

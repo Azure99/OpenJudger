@@ -22,7 +22,7 @@ namespace Judger.Fetcher.Generic
         /// 尝试取回评测任务
         /// </summary>
         /// <returns>评测任务</returns>
-        public override JudgeTask[] Fetch()
+        public override JudgeContext[] Fetch()
         {
             string response = HttpClient.UploadString(Config.TaskFetchUrl, CreateRequestBody());
 
@@ -41,18 +41,18 @@ namespace Judger.Fetcher.Generic
         /// <summary>
         /// 从Response中解析Task
         /// </summary>
-        /// <returns>JudgeTasks</returns>
-        private JudgeTask[] ParseTask(string jsonString)
+        /// <returns>JudgeContext</returns>
+        private JudgeContext[] ParseTask(string jsonString)
         {
             InnerJudgeTask[] innerJudgeTasks = SampleJsonSerializer.DeSerialize<InnerJudgeTask[]>(jsonString);
 
             if (innerJudgeTasks == null || innerJudgeTasks.Length == 0)
-                return new JudgeTask[0];
+                return new JudgeContext[0];
 
-            List<JudgeTask> judgeTasks = new List<JudgeTask>();
+            List<JudgeContext> judgeTasks = new List<JudgeContext>();
             foreach (var item in innerJudgeTasks)
             {
-                JudgeTask task = JudgeTaskFactory.Create(
+                JudgeContext task = JudgeTaskFactory.Create(
                     item.SubmitId, item.ProblemId, item.DataVersion,
                     item.Language, item.SourceCode, item.Author,
                     item.TimeLimit, item.MemoryLimit,

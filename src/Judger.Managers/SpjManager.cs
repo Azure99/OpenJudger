@@ -65,12 +65,12 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="task">评测任务</param>
         /// <returns>SPJ目录</returns>
-        public static string GetSpjDirectoryInJudger(JudgeTask task)
+        public static string GetSpjDirectoryInJudger(JudgeContext context)
         {
-            if (task.TempJudgeDirectory.EndsWith(SPJ_DIRECTORY))
-                return task.TempJudgeDirectory;
+            if (context.TempDirectory.EndsWith(SPJ_DIRECTORY))
+                return context.TempDirectory;
 
-            return Path.Combine(task.TempJudgeDirectory, SPJ_DIRECTORY);
+            return Path.Combine(context.TempDirectory, SPJ_DIRECTORY);
         }
 
         /// <summary>
@@ -88,11 +88,11 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="task">评测任务</param>
         /// <returns>SPJ源文件名</returns>
-        public static string GetSpjSourceFileInJudger(JudgeTask task)
+        public static string GetSpjSourceFileInJudger(JudgeContext context)
         {
             return Path.Combine(
-                GetSpjDirectoryInJudger(task),
-                (task.LangConfig as ProgramLangConfig).SourceCodeFileName);
+                GetSpjDirectoryInJudger(context),
+                (context.LangConfig as ProgramLangConfig).SourceCodeFileName);
         }
 
         /// <summary>
@@ -127,9 +127,9 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="task">评测任务</param>
         /// <returns>SPJ程序路径</returns>
-        public static string FindSpjProgramInJudger(JudgeTask task)
+        public static string FindSpjProgramInJudger(JudgeContext context)
         {
-            string compileDirectory = GetSpjDirectoryInJudger(task);
+            string compileDirectory = GetSpjDirectoryInJudger(context);
             string[] files = Directory.GetFiles(compileDirectory);
 
             if (files.Length > 2)
@@ -138,7 +138,7 @@ namespace Judger.Managers
             string spjProgramPath = null;
             foreach (string file in files)
             {
-                if (Path.GetFileName(file) == (task.LangConfig as ProgramLangConfig).SourceCodeFileName)
+                if (Path.GetFileName(file) == (context.LangConfig as ProgramLangConfig).SourceCodeFileName)
                     continue;
 
                 spjProgramPath = file;
@@ -181,10 +181,10 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="task">评测任务</param>
         /// <returns>SPJ程序路径</returns>
-        public static string GetSpjProgramPathInJudger(JudgeTask task)
+        public static string GetSpjProgramPathInJudger(JudgeContext context)
         {
-            string spjDirectory = GetSpjDirectoryInJudger(task);
-            string path = Path.Combine(spjDirectory, (task.LangConfig as ProgramLangConfig).ProgramFileName);
+            string spjDirectory = GetSpjDirectoryInJudger(context);
+            string path = Path.Combine(spjDirectory, (context.LangConfig as ProgramLangConfig).ProgramFileName);
 
             return PathHelper.GetBaseAbsolutePath(path);
         }
@@ -206,46 +206,41 @@ namespace Judger.Managers
         }
 
         /// <summary>
-        /// 创建SPJ的JudgeTask, 用于编译运行SPJ程序
+        /// 创建SPJ的JudgeContext, 用于编译运行SPJ程序
         /// </summary>
-        /// <param name="originTask">源评测任务</param>
+        /// <param name="originContext">源评测任务</param>
         /// <returns>SPJ的JudgeTask</returns>
-        public static JudgeTask CreateSpjJudgeTask(JudgeTask originTask)
+        public static JudgeContext CreateSpjJudgeContext(JudgeContext originContext)
         {
-            JudgeTask newTask = originTask.Clone() as JudgeTask;
+            JudgeContext newContext = originContext.Clone() as JudgeContext;
 
-            string spjSourceFilePath = FindSpjSourceFileInTestData(newTask.ProblemId);
+            string spjSourceFilePath = FindSpjSourceFileInTestData(newContext.Task.ProblemId);
             if (spjSourceFilePath == null) //没有SPJ程序源代码, 无法评测
                 throw new JudgeException("No special judge program exception!");
 
-            newTask.SourceCode = File.ReadAllText(spjSourceFilePath);
+            newContext.Task.SourceCode = File.ReadAllText(spjSourceFilePath);
 
-            newTask.LangConfig = GetLangConfigBySourceFilePath(spjSourceFilePath);
-            ProgramLangConfig langConfig = newTask.LangConfig as ProgramLangConfig;
-            newTask.Language = newTask.LangConfig.Name;
+            newContext.LangConfig = GetLangConfigBySourceFilePath(spjSourceFilePath);
+            ProgramLangConfig langConfig = newContext.LangConfig as ProgramLangConfig;
+            newContext.Task.Language = newContext.LangConfig.Name;
 
-            string spjDir = GetSpjDirectoryInJudger(originTask) + "\\";
+            string spjDir = GetSpjDirectoryInJudger(originContext) + "\\";
+            string appDir = PathHelper.GetBaseAbsolutePath("");
 
-            // 替换<tempdir>字段
-            langConfig.CompilerPath = langConfig.CompilerPath.Replace("<tempdir>", spjDir);
-            langConfig.CompilerWorkDirectory = langConfig.CompilerWorkDirectory.Replace("<tempdir>", spjDir);
-            langConfig.CompilerArgs = langConfig.CompilerArgs.Replace("<tempdir>", spjDir);
-            langConfig.RunnerPath = langConfig.RunnerPath.Replace("<tempdir>", spjDir);
-            langConfig.RunnerWorkDirectory = langConfig.RunnerWorkDirectory.Replace("<tempdir>", spjDir);
-            langConfig.RunnerArgs = langConfig.RunnerArgs.Replace("<tempdir>", spjDir);
+            // 替换<tempdir>和<appdir>字段
+            langConfig.CompilerPath = langConfig.CompilerPath.Replace("<tempdir>", spjDir).Replace("<appdir>", appDir);
+            langConfig.CompilerWorkDirectory = langConfig.CompilerWorkDirectory.Replace("<tempdir>", spjDir).Replace("<appdir>", appDir);
+            langConfig.CompilerArgs = langConfig.CompilerArgs.Replace("<tempdir>", spjDir).Replace("<appdir>", appDir);
+            langConfig.RunnerPath = langConfig.RunnerPath.Replace("<tempdir>", spjDir).Replace("<appdir>", appDir);
+            langConfig.RunnerWorkDirectory = langConfig.RunnerWorkDirectory.Replace("<tempdir>", spjDir).Replace("<appdir>", appDir);
+            langConfig.RunnerArgs = langConfig.RunnerArgs.Replace("<tempdir>", spjDir).Replace("<appdir>", appDir);
 
-            // 使用绝对路径
-            langConfig.CompilerPath = PathHelper.GetBaseAbsolutePath(langConfig.CompilerPath);
-            langConfig.CompilerWorkDirectory = PathHelper.GetBaseAbsolutePath(langConfig.CompilerWorkDirectory);
-            langConfig.RunnerWorkDirectory = PathHelper.GetBaseAbsolutePath(langConfig.RunnerWorkDirectory);
-            langConfig.RunnerPath = PathHelper.GetBaseAbsolutePath(langConfig.RunnerPath);
-
-            newTask.TempJudgeDirectory = spjDir;
+            newContext.TempDirectory = spjDir;
 
             if (!Directory.Exists(spjDir))
                 Directory.CreateDirectory(spjDir);
 
-            return newTask;
+            return newContext;
         }
 
         /// <summary>

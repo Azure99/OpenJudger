@@ -22,9 +22,9 @@ namespace Judger.Fetcher
         /// <summary>
         /// 提交评测结果
         /// </summary>
-        /// <param name="result">JudgeResult</param>
+        /// <param name="context">JudgeContext</param>
         /// <returns>是否成功</returns>
-        public abstract bool Submit(JudgeResult result);
+        public abstract bool Submit(JudgeContext context);
 
         public virtual void Dispose()
         {

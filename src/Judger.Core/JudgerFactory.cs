@@ -13,15 +13,15 @@ namespace Judger.Core
         /// <summary>
         /// 创建Judger实例
         /// </summary>
-        /// <param name="task">评测任务</param>
+        /// <param name="context">JudgeContext</param>
         /// <returns>Judger实例</returns>
-        public static BaseJudger Create(JudgeTask task)
+        public static BaseJudger Create(JudgeContext context)
         {
-            switch (task.JudgeType)
+            switch (context.Task.JudgeType)
             {
-                case JudgeType.ProgramJudge: return new ProgramJudger(task);
-                case JudgeType.SpecialJudge: return new SpecialJudger(task);
-                case JudgeType.DbJudge: return new DbJudger(task);
+                case JudgeType.ProgramJudge: return new ProgramJudger(context);
+                case JudgeType.SpecialJudge: return new SpecialJudger(context);
+                case JudgeType.DbJudge: return new DbJudger(context);
                 default: throw new JudgeException("Unknown JudgeType!");
             }
         }

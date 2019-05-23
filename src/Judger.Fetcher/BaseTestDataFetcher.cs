@@ -35,9 +35,9 @@ namespace Judger.Fetcher
         /// <summary>
         /// 取回数据
         /// </summary>
-        /// <param name="task">JudgeTask</param>
+        /// <param name="context">JudgeContext</param>
         /// <returns>byte[]形式的ZIP文件</returns>
-        public abstract byte[] Fetch(JudgeTask task);
+        public abstract byte[] Fetch(JudgeContext context);
 
         public virtual void Dispose()
         {

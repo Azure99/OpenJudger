@@ -7,10 +7,10 @@ namespace Judger.Fetcher.SDNUOJ
     /// </summary>
     public class TaskSubmitter : BaseTaskSubmitter
     {
-        public override bool Submit(JudgeResult result)
+        public override bool Submit(JudgeContext context)
         {
             HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
-            HttpClient.UploadString(Config.ResultSubmitUrl, CreateResultBody(result), 3);
+            HttpClient.UploadString(Config.ResultSubmitUrl, CreateResultBody(context.Result), 3);
             return true;
         }
 

@@ -17,9 +17,9 @@ namespace Judger.Fetcher.HUSTOJ
             HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
-        public override byte[] Fetch(JudgeTask task)
+        public override byte[] Fetch(JudgeContext context)
         {
-            return Fetch(task.ProblemId);
+            return Fetch(context.Task.ProblemId);
         }
 
         public byte[] Fetch(int problemId)

@@ -63,21 +63,9 @@ namespace Judger.Models
         /// </summary>
         public IntPtr ProcessorAffinity { get; set; } = new IntPtr(1);
 
-        /// <summary>
-        /// 编程语言配置信息
-        /// </summary>
-        public ILangConfig LangConfig { get; set; }
-
-        /// <summary>
-        /// 判题所用临时目录
-        /// </summary>                                                                                                                                                                                                                                                                                  '                                     
-        public string TempJudgeDirectory { get; set; }
-
         public object Clone()
         {
-            JudgeTask task = MemberwiseClone() as JudgeTask;
-            task.LangConfig = LangConfig.Clone() as ILangConfig;
-            return task;
+            return MemberwiseClone();
         }
     }
 }

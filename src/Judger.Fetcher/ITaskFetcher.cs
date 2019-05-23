@@ -9,9 +9,9 @@ namespace Judger.Fetcher
     public interface ITaskFetcher : IDisposable
     {
         /// <summary>
-        /// 从服务器取回JudgeTask
+        /// 从服务器取回评测任务
         /// </summary>
-        /// <returns>JudgeTask数组</returns>
-        JudgeTask[] Fetch();
+        /// <returns>JudgeContext数组</returns>
+        JudgeContext[] Fetch();
     }
 }

@@ -124,7 +124,7 @@ namespace Judger.Service
             if (Controller.InQueueCount >= Config.MaxQueueSize)
                 return;
 
-            JudgeTask[] tasks = _taskFetcher.Fetch();
+            JudgeContext[] tasks = _taskFetcher.Fetch();
             foreach (var task in tasks)
                 Controller.AddTask(task);
 

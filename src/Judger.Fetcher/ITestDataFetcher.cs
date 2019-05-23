@@ -11,8 +11,8 @@ namespace Judger.Fetcher
         /// <summary>
         /// 取回数据
         /// </summary>
-        /// <param name="task">JudgeTask</param>
+        /// <param name="context">JudgeContext</param>
         /// <returns>byte[]形式的ZIP文件</returns>
-        byte[] Fetch(JudgeTask task);
+        byte[] Fetch(JudgeContext context);
     }
 }

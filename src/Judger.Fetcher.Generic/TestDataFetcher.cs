@@ -21,11 +21,11 @@ namespace Judger.Fetcher.Generic
         /// <summary>
         /// 取回测试数据
         /// </summary>
-        /// <param name="task">评测任务</param>
+        /// <param name="context">评测任务</param>
         /// <returns>测试数据</returns>
-        public override byte[] Fetch(JudgeTask task)
+        public override byte[] Fetch(JudgeContext context)
         {
-            return HttpClient.UploadData(Config.TestDataFetchUrl, CreateRequestBody(task.ProblemId), 3);
+            return HttpClient.UploadData(Config.TestDataFetchUrl, CreateRequestBody(context.Task.ProblemId), 3);
         }
 
         /// <summary>

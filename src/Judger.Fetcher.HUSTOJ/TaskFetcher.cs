@@ -13,9 +13,9 @@ namespace Judger.Fetcher.HUSTOJ
             HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
         }
 
-        public override JudgeTask[] Fetch()
+        public override JudgeContext[] Fetch()
         {
-            List<JudgeTask> taskList = new List<JudgeTask>();
+            List<JudgeContext> taskList = new List<JudgeContext>();
             int[] pendingSids = GetPending();
             foreach (int sid in pendingSids)
             {
@@ -82,14 +82,14 @@ namespace Judger.Fetcher.HUSTOJ
         /// 根据SubmitID获取JudgeTask
         /// </summary>
         /// <param name="submitId">提交ID</param>
-        private JudgeTask GetJudgeTask(int submitId)
+        private JudgeContext GetJudgeTask(int submitId)
         {
             GetSolutionInfo(submitId, out int problemId, out string author, out string lang);
             string sourceCode = GetSolution(submitId);
             GetProblemInfo(problemId, out int timeLimit, out int memoryLimit, out bool spj);
             string dateMd5 = GetTestDataMd5(problemId);
 
-            JudgeTask task = JudgeTaskFactory.Create(
+            JudgeContext task = JudgeTaskFactory.Create(
                 submitId, problemId, dateMd5, lang, sourceCode,
                 author, timeLimit, memoryLimit, false, spj);
 

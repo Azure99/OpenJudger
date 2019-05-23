@@ -20,11 +20,11 @@ namespace Judger.Fetcher.Generic
         /// <summary>
         /// 提交评测任务
         /// </summary>
-        /// <param name="result">评测任务</param>
+        /// <param name="context">评测任务</param>
         /// <returns>提交是否成功</returns>
-        public override bool Submit(JudgeResult result)
+        public override bool Submit(JudgeContext context)
         {
-            HttpClient.UploadString(Config.ResultSubmitUrl, CreateRequestBody(result), 3);
+            HttpClient.UploadString(Config.ResultSubmitUrl, CreateRequestBody(context.Result), 3);
             return true;
         }
 
