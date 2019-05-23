@@ -70,6 +70,7 @@ namespace Judger.Core.Program
                     //去除路径信息
                     result.JudgeDetail = compileRes.Replace(Context.TempDirectory, "");
                     result.ResultCode = JudgeResultCode.CompileError;
+                    result.MemoryCost = 0;
                     return;
                 }
             }
