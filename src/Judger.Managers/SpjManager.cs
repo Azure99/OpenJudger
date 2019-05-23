@@ -63,7 +63,7 @@ namespace Judger.Managers
         /// <summary>
         /// 获取评测目录下的SPJ目录
         /// </summary>
-        /// <param name="task">评测任务</param>
+        /// <param name="context">评测上下文</param>
         /// <returns>SPJ目录</returns>
         public static string GetSpjDirectoryInJudger(JudgeContext context)
         {
@@ -86,7 +86,7 @@ namespace Judger.Managers
         /// <summary>
         /// 获取评测目录下的SPJ程序的源文件路径
         /// </summary>
-        /// <param name="task">评测任务</param>
+        /// <param name="context">评测上下文</param>
         /// <returns>SPJ源文件名</returns>
         public static string GetSpjSourceFileInJudger(JudgeContext context)
         {
@@ -125,7 +125,7 @@ namespace Judger.Managers
         /// <summary>
         /// 寻找评测目录下的SPJ程序
         /// </summary>
-        /// <param name="task">评测任务</param>
+        /// <param name="context">评测上下文</param>
         /// <returns>SPJ程序路径</returns>
         public static string FindSpjProgramInJudger(JudgeContext context)
         {
@@ -179,7 +179,7 @@ namespace Judger.Managers
         /// <summary>
         /// 获取评测目录下的SPJ程序路径
         /// </summary>
-        /// <param name="task">评测任务</param>
+        /// <param name="context">评测上下文</param>
         /// <returns>SPJ程序路径</returns>
         public static string GetSpjProgramPathInJudger(JudgeContext context)
         {

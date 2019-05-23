@@ -42,7 +42,7 @@ namespace Judger.Managers
         /// <summary>
         /// 申请处理器使用权
         /// </summary>
-        public static IntPtr GetUseage()
+        public static IntPtr GetUsage()
         {
             lock (_lock)
             {
@@ -62,9 +62,9 @@ namespace Judger.Managers
         }
 
         /// <summary>
-        /// 释放useage对应处理器
+        /// 释放usage对应处理器
         /// </summary>
-        public static void ReleaseUseage(IntPtr affinity)
+        public static void ReleaseUsage(IntPtr affinity)
         {
             int affinityInt = affinity.ToInt32();
             if (affinityInt < _defaultAffinity)

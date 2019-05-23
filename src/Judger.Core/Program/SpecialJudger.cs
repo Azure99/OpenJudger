@@ -16,15 +16,15 @@ namespace Judger.Core.Program
     {
         public SpecialJudger(JudgeContext context) : base(context)
         {
-            JudgeTask.ProcessorAffinity = ProcessorAffinityManager.GetUseage();
+            JudgeTask.ProcessorAffinity = ProcessorAffinityManager.GetUsage();
             LangConfig = context.LangConfig as ProgramLangConfig;
             SpjContext = SpjManager.CreateSpjJudgeContext(context);
             SpjTask = SpjContext.Task;
             SpjLangConfig = SpjContext.LangConfig as ProgramLangConfig;
         }
-        
+
         private JudgeContext SpjContext { get; set; }
-        
+
         /// <summary>
         /// 注意:未编写:SPJTasks中的语言应对应SPJ程序，而不是JudgeTask
         /// </summary>
@@ -188,7 +188,7 @@ namespace Judger.Core.Program
 
         public override void Dispose()
         {
-            ProcessorAffinityManager.ReleaseUseage(JudgeTask.ProcessorAffinity);
+            ProcessorAffinityManager.ReleaseUsage(JudgeTask.ProcessorAffinity);
             DeleteTempDirectory();
         }
 

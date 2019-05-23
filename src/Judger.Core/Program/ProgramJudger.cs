@@ -16,7 +16,7 @@ namespace Judger.Core.Program
     {
         public ProgramJudger(JudgeContext context) : base(context)
         {
-            JudgeTask.ProcessorAffinity = ProcessorAffinityManager.GetUseage();
+            JudgeTask.ProcessorAffinity = ProcessorAffinityManager.GetUsage();
             LangConfig = context.LangConfig as ProgramLangConfig;
         }
 
@@ -119,7 +119,7 @@ namespace Judger.Core.Program
         public override void Dispose()
         {
             // 释放占用的独立处理器核心
-            ProcessorAffinityManager.ReleaseUseage(JudgeTask.ProcessorAffinity);
+            ProcessorAffinityManager.ReleaseUsage(JudgeTask.ProcessorAffinity);
             DeleteTempDirectory();
         }
 

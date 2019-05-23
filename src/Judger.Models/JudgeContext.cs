@@ -45,7 +45,7 @@ namespace Judger.Models
             context.Task = Task.Clone() as JudgeTask;
             context.LangConfig = LangConfig.Clone() as ILangConfig;
             context.Result = Result.Clone() as JudgeResult;
-            
+
             return context;
         }
     }

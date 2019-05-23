@@ -147,7 +147,7 @@ namespace Judger.Core.Program.Internal
                     return CompareResult.Accepted;
             }
 
-            bool wrongAnser = false;
+            bool wrongAnswer = false;
             //判断PE不再重新生成去空数组，减少时空开销
             int crtPos = 0;
             int usrPos = 0;
@@ -171,7 +171,7 @@ namespace Judger.Core.Program.Internal
 
                 if (usrArr[usrPos].Trim() != crtArr[crtPos].Trim())
                 {
-                    wrongAnser = true;
+                    wrongAnswer = true;
                     break;
                 }
 
@@ -186,9 +186,9 @@ namespace Judger.Core.Program.Internal
                 usrPos++;
 
             if (crtPos != crtLength || usrPos != usrLength)
-                wrongAnser = true;
+                wrongAnswer = true;
 
-            return wrongAnser ? CompareResult.WrongAnswer : CompareResult.PresentationError;
+            return wrongAnswer ? CompareResult.WrongAnswer : CompareResult.PresentationError;
         }
 
         private ProcessRunner CreateProcessRunner()

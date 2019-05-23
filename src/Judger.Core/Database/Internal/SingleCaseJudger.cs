@@ -36,7 +36,7 @@ namespace Judger.Core.Database.Internal
         /// 评测上下文
         /// </summary>
         public JudgeContext JudgeContext { get; private set; }
-        
+
         /// <summary>
         /// 评测任务
         /// </summary>

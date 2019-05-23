@@ -97,7 +97,7 @@ namespace Judger.Service
         private void Judge(JudgeContext context)
         {
             JudgeTask task = context.Task;
-            
+
             ITaskSubmitter submitter = FetcherFactory.CreateTaskSubmitter();
 
             try
@@ -127,7 +127,7 @@ namespace Judger.Service
         private void UpdateTestData(JudgeContext context)
         {
             JudgeTask task = context.Task;
-            
+
             // 检查测试数据是否为最新
             if (!TestDataManager.CheckData(task.ProblemId, task.DataVersion))
             {
@@ -143,7 +143,7 @@ namespace Judger.Service
         /// <summary>
         /// 创建评测失败的JudgeResult
         /// </summary>
-        /// <param name="task">JudgeTask</param>
+        /// <param name="context">JudgeContext</param>
         /// <param name="message">错误信息</param>
         /// <returns>结果为失败的JudgeResult</returns>
         private JudgeResult CreateFailedJudgeResult(JudgeContext context, string message = "")

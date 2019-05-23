@@ -39,14 +39,14 @@ namespace Judger.Core.Program.Internal
         }
 
         public JudgeContext JudgeContext { get; }
-        
+
         public JudgeTask JudgeTask { get; }
-        
+
         public ProgramLangConfig LangConfig { get; }
-        
+
         public JudgeContext SpjJudgeContext { get; }
         public JudgeTask SpjTask { get; }
-        
+
         public ProgramLangConfig SpjLangConfig { get; }
 
         public SingleJudgeResult Judge(string input, string output)

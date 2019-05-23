@@ -368,11 +368,11 @@ namespace Judger.Managers
         /// <returns>合并后的路径</returns>
         private static string Cmb(params object[] paths)
         {
-            string[] pathStrs = new string[paths.Length];
-            for (int i = 0; i < pathStrs.Length; i++)
-                pathStrs[i] = paths[i].ToString();
+            string[] pathStrings = new string[paths.Length];
+            for (int i = 0; i < pathStrings.Length; i++)
+                pathStrings[i] = paths[i].ToString();
 
-            return Path.Combine(pathStrs);
+            return Path.Combine(pathStrings);
         }
     }
 }
