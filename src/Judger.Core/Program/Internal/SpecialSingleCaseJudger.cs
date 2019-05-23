@@ -38,16 +38,12 @@ namespace Judger.Core.Program.Internal
             SpjLangConfig = spjContext.LangConfig as ProgramLangConfig;
         }
 
-        public JudgeContext JudgeContext { get; }
-
-        public JudgeTask JudgeTask { get; }
-
-        public ProgramLangConfig LangConfig { get; }
-
-        public JudgeContext SpjJudgeContext { get; }
-        public JudgeTask SpjTask { get; }
-
-        public ProgramLangConfig SpjLangConfig { get; }
+        private JudgeContext JudgeContext { get; }
+        private JudgeTask JudgeTask { get; }
+        private ProgramLangConfig LangConfig { get; }
+        private JudgeContext SpjJudgeContext { get; }
+        private JudgeTask SpjTask { get; }
+        private ProgramLangConfig SpjLangConfig { get; }
 
         public SingleJudgeResult Judge(string input, string output)
         {

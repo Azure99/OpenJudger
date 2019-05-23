@@ -30,17 +30,17 @@ namespace Judger.Core.Database.Internal
         /// <summary>
         /// 用户的数据库操作器
         /// </summary>
-        public BaseDbOperator UserOperator { get; private set; }
+        private BaseDbOperator UserOperator { get; set; }
 
         /// <summary>
         /// 评测上下文
         /// </summary>
-        public JudgeContext JudgeContext { get; private set; }
+        private JudgeContext JudgeContext { get; set; }
 
         /// <summary>
         /// 评测任务
         /// </summary>
-        public JudgeTask JudgeTask { get; private set; }
+        private JudgeTask JudgeTask { get; set; }
 
         /// <summary>
         /// 评测一组用例

@@ -18,9 +18,8 @@ namespace Judger.Core.Program.Internal
             LangConfig = context.LangConfig as ProgramLangConfig;
         }
 
-        public JudgeTask JudgeTask { get; set; }
-
-        public ProgramLangConfig LangConfig { get; private set; }
+        private JudgeTask JudgeTask { get; set; }
+        private ProgramLangConfig LangConfig { get; set; }
 
         /// <summary>
         /// 编译评测任务的代码

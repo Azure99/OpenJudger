@@ -25,17 +25,17 @@ namespace Judger.Core.Database.Internal
         /// <summary>
         /// DbConnection类
         /// </summary>
-        public Type DbConnectionType { get; private set; }
+        private Type DbConnectionType { get; set; }
 
         /// <summary>
         /// DbCommand类
         /// </summary>
-        public Type DbCommandType { get; private set; }
+        private Type DbCommandType { get; set; }
 
         /// <summary>
         /// DbDriver程序集
         /// </summary>
-        public Assembly DriverAssembly { get; private set; }
+        private Assembly DriverAssembly { get; set; }
 
         /// <summary>
         /// 创建数据库连接

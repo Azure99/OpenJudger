@@ -31,9 +31,8 @@ namespace Judger.Core.Program.Internal
             LangConfig = context.LangConfig as ProgramLangConfig;
         }
 
-        public JudgeTask JudgeTask { get; set; }
-
-        public ProgramLangConfig LangConfig { get; set; }
+        private JudgeTask JudgeTask { get; set; }
+        private ProgramLangConfig LangConfig { get; set; }
 
         public SingleJudgeResult Judge(string input, string output)
         {
