@@ -5,22 +5,12 @@ namespace Judger.Models
 {
     public class JudgeContext : ICloneable
     {
-        public JudgeContext(JudgeTask task, string tempDirectory, ILangConfig langConfig)
+        public JudgeContext(JudgeTask task, JudgeResult result, string tempDirectory, ILangConfig langConfig)
         {
             Task = task;
             TempDirectory = tempDirectory;
             LangConfig = langConfig;
-            Result = new JudgeResult
-            {
-                SubmitId = task.SubmitId,
-                ProblemId = task.ProblemId,
-                Author = task.Author,
-                JudgeDetail = "",
-                MemoryCost = 0,
-                TimeCost = 0,
-                PassRate = 0,
-                ResultCode = JudgeResultCode.Accepted
-            };
+            Result = result;
         }
 
         /// <summary>

@@ -11,6 +11,8 @@ namespace Judger.Fetcher
     /// </summary>
     public static class JudgeTaskFactory
     {
+        private static Configuration Config { get; } = ConfigManager.Config;
+
         /// <summary>
         /// 创建JudgeTask实例
         /// </summary>
@@ -90,7 +92,19 @@ namespace Judger.Fetcher
                 JudgeType = judgeType
             };
 
-            return new JudgeContext(task, tempDirectory, langConfig);
+            JudgeResult result = new JudgeResult
+            {
+                SubmitId = task.SubmitId,
+                ProblemId = task.ProblemId,
+                Author = task.Author,
+                JudgeDetail = "",
+                MemoryCost = Config.MinimumMemoryCost,
+                TimeCost = 0,
+                PassRate = 0,
+                ResultCode = JudgeResultCode.Accepted
+            };
+
+            return new JudgeContext(task, result, tempDirectory, langConfig);
         }
 
         /// <summary>

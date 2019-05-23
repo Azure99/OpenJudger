@@ -15,7 +15,7 @@ namespace MainUnitTest
         public void TestSingleJudgerCompare()
         {
             SingleCaseJudger judger =
-                new SingleCaseJudger(new JudgeContext(new JudgeTask(), "", new ProgramLangConfig()));
+                new SingleCaseJudger(new JudgeContext(new JudgeTask(), new JudgeResult(), "", new ProgramLangConfig()));
 
             string test1 = @"123123";
             string test2 = @"123123";
