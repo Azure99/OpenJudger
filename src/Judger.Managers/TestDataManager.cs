@@ -304,10 +304,10 @@ namespace Judger.Managers
                     where Path.GetFileNameWithoutExtension(x).ToLower() == dbType.ToString().ToLower()
                     select x;
 
-                if (operFileQuery.Count() > 0)
+                if (operFileQuery.Any())
                     operFile = operFileQuery.First();
 
-                if (queryFileQuery.Count() > 0)
+                if (queryFileQuery.Any())
                     queryFile = queryFileQuery.First();
 
 
