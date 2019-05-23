@@ -9,7 +9,7 @@ namespace Judger.Core
     /// </summary>
     public abstract class BaseJudger : IDisposable
     {
-        public BaseJudger(JudgeContext context)
+        protected BaseJudger(JudgeContext context)
         {
             Context = context;
             JudgeTask = context.Task;

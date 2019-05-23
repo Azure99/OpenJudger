@@ -15,7 +15,7 @@ namespace Judger.Core.Database.Internal.DbOperator
         /// </summary>
         /// <param name="connectionString">数据库连接字符串</param>
         /// <param name="driver">数据库驱动</param>
-        public BaseDbOperator(string connectionString, DbDriver driver)
+        protected BaseDbOperator(string connectionString, DbDriver driver)
         {
             ConnectionString = connectionString;
             DbDriver = driver;
