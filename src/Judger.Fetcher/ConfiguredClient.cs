@@ -11,11 +11,13 @@ namespace Judger.Fetcher
         /// <returns></returns>
         public static HttpWebClient Create()
         {
-            HttpWebClient client = new HttpWebClient();
-            client.Proxy = null;
-            client.Timeout = ConfigManager.Config.FetchTimeout;
-            client.ReadWriteTimeout = ConfigManager.Config.FetchTimeout;
-            client.DefaultContentType = "application/x-www-form-urlencoded";
+            HttpWebClient client = new HttpWebClient
+            {
+                Proxy = null,
+                Timeout = ConfigManager.Config.FetchTimeout,
+                ReadWriteTimeout = ConfigManager.Config.FetchTimeout,
+                DefaultContentType = "application/x-www-form-urlencoded"
+            };
 
             return client;
         }

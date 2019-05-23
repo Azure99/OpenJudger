@@ -18,10 +18,12 @@ namespace Judger.Managers
 
             if (string.IsNullOrEmpty(configJson)) //创建新配置文件
             {
-                Config = new Configuration();
-                Config.Languages = GetDefaultLangConfigs();
-                Config.Databases = GetDefaultDbConfigs();
-                Config.Password = RandomString.Next(16);
+                Config = new Configuration
+                {
+                    Languages = GetDefaultLangConfigs(),
+                    Databases = GetDefaultDbConfigs(),
+                    Password = RandomString.Next(16)
+                };
                 Config.AdditionalConfigs.Add("SampleKey", "SampleValue");
             }
             else
