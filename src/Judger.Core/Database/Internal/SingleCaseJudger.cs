@@ -52,11 +52,16 @@ namespace Judger.Core.Database.Internal
         {
             Stopwatch sw = new Stopwatch();
             DbDataReader reader = null;
+            DbQueryData usrQuery = null;
+            DbData usrOutput = null;
 
             try
             {
                 sw.Start();
                 reader = UserOperator.ExecuteReader(JudgeTask.SourceCode, JudgeTask.TimeLimit);
+
+                usrQuery = BaseDbOperator.ReadQueryData(reader);
+                usrOutput = UserOperator.ReadDbData();
             }
             catch (Exception ex)
             {
@@ -71,9 +76,6 @@ namespace Judger.Core.Database.Internal
             {
                 sw.Stop();
             }
-
-            DbQueryData usrQuery = BaseDbOperator.ReadQueryData(reader);
-            DbData usrOutput = UserOperator.ReadDbData();
 
             CompareResult result = CompareAnswer(stdOutput, stdQuery, usrOutput, usrQuery);
             JudgeResultCode resultCode = (result == CompareResult.Accepted)
