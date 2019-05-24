@@ -83,10 +83,14 @@ namespace Judger.Core.Program
 
                     SingleJudgeResult singleRes = judger.Judge(input, output); //测试此测试点
 
-                    //计算有时间补偿的总时间
-                    result.TimeCost = Math.Max(result.TimeCost,
-                        (int) (singleRes.TimeCost * LangConfig.TimeCompensation));
-                    result.MemoryCost = Math.Max(result.MemoryCost, singleRes.MemoryCost);
+                    // 评测所有测试点时, 只记录第一组出错的信息
+                    if (result.ResultCode == JudgeResultCode.Accepted)
+                    {
+                        // 计算有时间补偿的总时间
+                        result.TimeCost = Math.Max(result.TimeCost,
+                            (int) (singleRes.TimeCost * LangConfig.TimeCompensation));
+                        result.MemoryCost = Math.Max(result.MemoryCost, singleRes.MemoryCost);
+                    }
 
                     if (singleRes.ResultCode == JudgeResultCode.Accepted)
                     {
