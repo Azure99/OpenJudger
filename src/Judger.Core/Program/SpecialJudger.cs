@@ -110,8 +110,12 @@ namespace Judger.Core.Program
                     }
                     else
                     {
-                        result.ResultCode = singleRes.ResultCode;
-                        result.JudgeDetail = singleRes.JudgeDetail;
+                        // 出错时记录第一组出错的信息
+                        if (result.ResultCode == JudgeResultCode.Accepted)
+                        {
+                            result.ResultCode = singleRes.ResultCode;
+                            result.JudgeDetail = singleRes.JudgeDetail;
+                        }
 
                         if (!JudgeTask.JudgeAllCases)
                             break;
