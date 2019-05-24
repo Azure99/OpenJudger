@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Judger.Managers;
 using Judger.Models;
+using Judger.Models.Exception;
 using Judger.Models.Judge;
 using Judger.Models.Program;
 using Judger.Utils;
@@ -67,6 +68,9 @@ namespace Judger.Fetcher
             JudgeType judgeType = JudgeType.ProgramJudge)
         {
             ILangConfig langConfig = ConfigManager.GetLanguageConfig(language);
+
+            if (langConfig == null)
+                throw new JudgeException("Unsupported language: " + language);
 
             // 分配评测临时目录
             string tempDirectory = RandomString.Next(16);
