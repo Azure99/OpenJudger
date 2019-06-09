@@ -21,14 +21,14 @@ namespace Judger.Fetcher.Generic
         /// <returns>校验Token</returns>
         public static string Create()
         {
-            //Token = MD5 ( MD5( JudgerName + SecretKey ) + UtcDate )
+            // Token = MD5 ( MD5( JudgerName + Password ) + UtcDate )
 
             string name = Config.JudgerName;
             string secret = Config.Password;
             string date = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
-            string nameSecretHash = Md5Encrypt.EncryptToHexString(name + secret);
-            string token = Md5Encrypt.EncryptToHexString(nameSecretHash + date);
+            string nameAndPasswordHash = Md5Encrypt.EncryptToHexString(name + secret);
+            string token = Md5Encrypt.EncryptToHexString(nameAndPasswordHash + date);
 
             return token;
         }
@@ -39,22 +39,22 @@ namespace Judger.Fetcher.Generic
         /// <returns>带有校验字段的JObject</returns>
         public static JObject CreateJObject()
         {
-            JObject jObject = new JObject();
-            AddTokenToJObject(jObject);
+            JObject obj = new JObject();
+            AddTokenToJObject(obj);
 
-            return jObject;
+            return obj;
         }
 
         /// <summary>
         /// 向JObject中添加校验字段
         /// </summary>
-        /// <param name="jObject">待添加校验字段的JObject</param>
-        public static void AddTokenToJObject(JObject jObject)
+        /// <param name="obj">待添加校验字段的JObject</param>
+        public static void AddTokenToJObject(JObject obj)
         {
             string token = Create();
 
-            jObject.Add(JOBJECT_JUDGER_NAME, Config.JudgerName);
-            jObject.Add(JOBJECT_TOKEN, token);
+            obj.Add(JOBJECT_JUDGER_NAME, Config.JudgerName);
+            obj.Add(JOBJECT_TOKEN, token);
         }
     }
 }

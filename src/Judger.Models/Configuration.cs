@@ -19,12 +19,12 @@ namespace Judger.Models
         /// <summary>
         /// 评测机名称
         /// </summary>
-        public string JudgerName { get; set; } = "DefaultJudger";
+        public string JudgerName { get; set; } = "OpenJudger";
 
         /// <summary>
         /// 通信校验密码
         /// </summary>
-        public string Password { get; set; } = "RainngAzure99AjUnawWEsK";
+        public string Password { get; set; } = "RainngAzure99";
 
         /// <summary>
         /// 取回任务周期

@@ -1,6 +1,9 @@
-﻿using Judger.Fetcher.Generic.Entity;
+﻿using System;
+using Judger.Fetcher.Generic.Entity;
 using Judger.Models;
+using Judger.Models.Exception;
 using Judger.Models.Judge;
+using Judger.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace Judger.Fetcher.Generic
@@ -25,7 +28,12 @@ namespace Judger.Fetcher.Generic
         /// <returns>提交是否成功</returns>
         public override bool Submit(JudgeContext context)
         {
-            HttpClient.UploadString(Config.ResultSubmitUrl, CreateRequestBody(context.Result), 3);
+            string responseStr = HttpClient.UploadString(Config.ResultSubmitUrl, CreateRequestBody(context.Result), 3);
+            ServerResponse response = SampleJsonSerializer.DeSerialize<ServerResponse>(responseStr);
+            
+            if(response.Code == ResponseCode.Fail || response.Code == ResponseCode.WrongToken)
+                throw new FetcherException(context.Result.SubmitId + " submit failed: " + response.Message);
+            
             return true;
         }
 
@@ -38,8 +46,6 @@ namespace Judger.Fetcher.Generic
             InnerJudgeResult judgeResult = new InnerJudgeResult
             {
                 SubmitId = result.SubmitId,
-                ProblemId = result.ProblemId,
-                Author = result.Author,
                 JudgeDetail = result.JudgeDetail,
                 MemoryCost = result.MemoryCost,
                 PassRate = result.PassRate,
@@ -47,7 +53,11 @@ namespace Judger.Fetcher.Generic
                 TimeCost = result.TimeCost
             };
 
-            JObject requestBody = JObject.FromObject(judgeResult);
+            JObject requestBody = JObject.FromObject(new
+            {
+                result = judgeResult
+            });
+
             Token.AddTokenToJObject(requestBody);
 
             return requestBody.ToString();

@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Judger.Fetcher.Generic.Entity;
 using Judger.Models;
+using Judger.Models.Exception;
 using Judger.Utils;
+using Newtonsoft.Json.Linq;
 
 namespace Judger.Fetcher.Generic
 {
@@ -24,9 +27,17 @@ namespace Judger.Fetcher.Generic
         /// <returns>评测任务</returns>
         public override JudgeContext[] Fetch()
         {
-            string response = HttpClient.UploadString(Config.TaskFetchUrl, CreateRequestBody());
+            string responseStr = HttpClient.UploadString(Config.TaskFetchUrl, CreateRequestBody());
+            ServerResponse response = SampleJsonSerializer.DeSerialize<ServerResponse>(responseStr);
 
-            return ParseTask(response);
+            if (response.Code == ResponseCode.NoTask)
+                return new JudgeContext[0];
+            
+            if(response.Code == ResponseCode.Fail || response.Code == ResponseCode.WrongToken)
+                throw new FetcherException(response.Message);
+            
+            
+            return CreateTaskContexts(response.Data);
         }
 
         /// <summary>
@@ -41,10 +52,11 @@ namespace Judger.Fetcher.Generic
         /// <summary>
         /// 从Response中解析Task
         /// </summary>
-        /// <returns>JudgeContext</returns>
-        private JudgeContext[] ParseTask(string jsonString)
+        /// <param name="data">来自服务器的JObject任务数组</param>
+        /// <returns>JudgeContexts</returns>
+        private JudgeContext[] CreateTaskContexts(JToken data)
         {
-            InnerJudgeTask[] innerJudgeTasks = SampleJsonSerializer.DeSerialize<InnerJudgeTask[]>(jsonString);
+            InnerJudgeTask[] innerJudgeTasks = data.ToObject<InnerJudgeTask[]>();
 
             if (innerJudgeTasks == null || innerJudgeTasks.Length == 0)
                 return new JudgeContext[0];

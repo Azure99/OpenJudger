@@ -16,18 +16,6 @@ namespace Judger.Fetcher.Generic.Entity
         public int SubmitId { get; set; }
 
         /// <summary>
-        /// 问题Id
-        /// </summary>
-        [JsonProperty(PropertyName = "problemId")]
-        public int ProblemId { get; set; }
-
-        /// <summary>
-        /// 提交者
-        /// </summary>
-        [JsonProperty(PropertyName = "author")]
-        public string Author { get; set; }
-
-        /// <summary>
         /// 判题结果码
         /// </summary>
         [JsonProperty(PropertyName = "resultCode")]
