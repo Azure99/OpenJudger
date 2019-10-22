@@ -13,13 +13,11 @@ namespace Judger.Core.Database.Internal.DbOperator
         /// <returns>数据库操作器</returns>
         public static BaseDbOperator CreateMainOperatorByName(string dbName)
         {
-            if (dbName == DatabaseType.mysql.ToString())
-            {
-                DbLangConfig config = DbManager.GetDbConfiguration(dbName);
-                return Create(config);
-            }
+            if (dbName != DatabaseType.mysql.ToString())
+                throw new NotImplementedException("Db operator not implemented: " + dbName);
 
-            throw new NotImplementedException("Db operator not implemented: " + dbName);
+            DbLangConfig config = DbManager.GetDbConfiguration(dbName);
+            return Create(config);
         }
 
         /// <summary>

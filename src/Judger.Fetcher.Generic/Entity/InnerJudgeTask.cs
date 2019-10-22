@@ -1,4 +1,3 @@
-using Judger.Models;
 using Judger.Models.Judge;
 using Newtonsoft.Json;
 

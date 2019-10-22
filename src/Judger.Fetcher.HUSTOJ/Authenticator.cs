@@ -8,8 +8,8 @@ namespace Judger.Fetcher.HUSTOJ
     public class Authenticator
     {
         private int _delayCheckCount;
-        private HttpWebClient _httpClient = ConfiguredClient.Create();
-        private string loginUrl = "http://localhost/login.php";
+        private readonly HttpWebClient _httpClient = ConfiguredClient.Create();
+        private readonly string loginUrl = "http://localhost/login.php";
 
         static Authenticator()
         {
@@ -34,9 +34,9 @@ namespace Judger.Fetcher.HUSTOJ
             Login();
         }
 
-        public static Authenticator Singleton { get; set; }
+        public static Authenticator Singleton { get; }
 
-        public CookieContainer CookieContainer { get; private set; }
+        public CookieContainer CookieContainer { get; }
 
         private Configuration Config { get; } = ConfigManager.Config;
 
@@ -48,7 +48,7 @@ namespace Judger.Fetcher.HUSTOJ
             if (CheckLogin())
                 return true;
 
-            string requestBody = string.Format("user_id={0}&password={1}", Config.JudgerName, Config.Password);
+            string requestBody = $"user_id={Config.JudgerName}&password={Config.Password}";
             try
             {
                 _httpClient.UploadString(loginUrl, requestBody, 3);
@@ -64,7 +64,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// </summary>
         public bool CheckLogin()
         {
-            string requestBody = "checklogin=1";
+            var requestBody = "checklogin=1";
             try
             {
                 string response = _httpClient.UploadString(Config.TaskFetchUrl, requestBody);
@@ -81,11 +81,10 @@ namespace Judger.Fetcher.HUSTOJ
         /// </summary>
         public void CheckAndLogin()
         {
-            if (_delayCheckCount++ > 10)
-            {
-                _delayCheckCount = 0;
-                Login();
-            }
+            if (_delayCheckCount++ <= 10)
+                return;
+            _delayCheckCount = 0;
+            Login();
         }
 
         /// <summary>
@@ -99,9 +98,8 @@ namespace Judger.Fetcher.HUSTOJ
         public void UpdateSolution(int sid, int result, int time, int memory, double passRate)
         {
             string requestBody =
-                string.Format(
-                    "update_solution=1&sid={0}&result={1}&time={2}&memory={3}&sim=0&simid=0&pass_rate={4}",
-                    sid, result, time, memory, passRate);
+                $"update_solution=1&sid={sid}&result={result}&time={time}" +
+                $"&memory={memory}&sim=0&simid=0&pass_rate={passRate}";
 
             try
             {

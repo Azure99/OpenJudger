@@ -4,6 +4,7 @@ using System.Timers;
 using Judger.Fetcher;
 using Judger.Managers;
 using Judger.Models;
+using Judger.Models.Program;
 
 namespace Judger.Service
 {
@@ -14,9 +15,9 @@ namespace Judger.Service
     {
         // 指示当前OnWork代码段是否正在执行
         private bool _innerWorking;
-        private object _innerWorkLock = new object();
-        private ITaskFetcher _taskFetcher;
-        private Timer _workTimer;
+        private readonly object _innerWorkLock = new object();
+        private readonly ITaskFetcher _taskFetcher;
+        private readonly Timer _workTimer;
 
         /// <summary>
         /// 评测服务
@@ -33,10 +34,7 @@ namespace Judger.Service
         /// <summary>
         /// 服务是否在运行
         /// </summary>
-        public bool Working
-        {
-            get { return _workTimer.Enabled; }
-        }
+        public bool Working => _workTimer.Enabled;
 
         /// <summary>
         /// 并发判题管理器
@@ -74,7 +72,7 @@ namespace Judger.Service
         {
             LogManager.Info("Clear temp directory");
 
-            foreach (var lang in Config.Languages)
+            foreach (ProgramLangConfig lang in Config.Languages)
             {
                 try
                 {
@@ -125,7 +123,7 @@ namespace Judger.Service
                 return;
 
             JudgeContext[] tasks = _taskFetcher.Fetch();
-            foreach (var task in tasks)
+            foreach (JudgeContext task in tasks)
                 Controller.AddTask(task);
 
             // 若当前成功取到任务, 不等待继续尝试取回任务

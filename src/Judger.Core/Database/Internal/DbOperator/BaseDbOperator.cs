@@ -24,12 +24,12 @@ namespace Judger.Core.Database.Internal.DbOperator
         /// <summary>
         /// 数据库连接字符串
         /// </summary>
-        public string ConnectionString { get; private set; }
+        public string ConnectionString { get; }
 
         /// <summary>
         /// 数据库驱动
         /// </summary>
-        public DbDriver DbDriver { get; private set; }
+        public DbDriver DbDriver { get; }
 
         public abstract void Dispose();
 
@@ -100,15 +100,15 @@ namespace Judger.Core.Database.Internal.DbOperator
         public static DbQueryData ReadQueryData(DbDataReader reader, string name = "")
         {
             int fieldCount = reader.FieldCount;
-            string[] fieldNames = new string[fieldCount];
-            for (int i = 0; i < fieldCount; i++)
+            var fieldNames = new string[fieldCount];
+            for (var i = 0; i < fieldCount; i++)
                 fieldNames[i] = reader.GetName(i);
 
-            List<string[]> records = new List<string[]>();
+            var records = new List<string[]>();
             while (reader.Read())
             {
-                string[] record = new string[fieldCount];
-                for (int i = 0; i < fieldCount; i++)
+                var record = new string[fieldCount];
+                for (var i = 0; i < fieldCount; i++)
                 {
                     if (reader.IsDBNull(i))
                         record[i] = null;

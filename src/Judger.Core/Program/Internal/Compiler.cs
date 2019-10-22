@@ -18,8 +18,8 @@ namespace Judger.Core.Program.Internal
             LangConfig = context.LangConfig as ProgramLangConfig;
         }
 
-        private JudgeTask JudgeTask { get; set; }
-        private ProgramLangConfig LangConfig { get; set; }
+        private JudgeTask JudgeTask { get; }
+        private ProgramLangConfig LangConfig { get; }
 
         /// <summary>
         /// 编译评测任务的代码
@@ -30,10 +30,10 @@ namespace Judger.Core.Program.Internal
             using (ProcessRunner runner = CreateProcessRunner())
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
-                if (LangConfig.UseUTF8)
+                if (LangConfig.UseUtf8)
                     runner.Encoding = Encoding.UTF8;
 
-                RuntimeMonitor monitor = new RuntimeMonitor(runner.Process, 50)
+                var monitor = new RuntimeMonitor(runner.Process, 50)
                 {
                     TimeLimit = LangConfig.MaxCompileTime,
                     TotalTimeLimit = LangConfig.MaxCompileTime
@@ -41,12 +41,12 @@ namespace Judger.Core.Program.Internal
 
                 monitor.Start();
 
-                int exitcode;
-                string output, error;
+                int exitCode;
+                string error;
 
                 try
                 {
-                    exitcode = runner.Run("", out output, out error);
+                    exitCode = runner.Run("", out string _, out error);
                 }
                 catch (Exception ex)
                 {
@@ -57,7 +57,7 @@ namespace Judger.Core.Program.Internal
                     monitor.Dispose();
                 }
 
-                if (exitcode != 0)
+                if (exitCode != 0)
                 {
                     if (monitor.LimitExceed)
                         return "Compile timeout.";

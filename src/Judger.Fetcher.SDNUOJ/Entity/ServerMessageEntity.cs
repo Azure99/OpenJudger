@@ -15,9 +15,6 @@ namespace Judger.Fetcher.SDNUOJ.Entity
         /// <summary>
         /// 操作是否成功
         /// </summary>
-        public bool IsSuccess
-        {
-            get { return Status == "success"; }
-        }
+        public bool IsSuccess => Status == "success";
     }
 }

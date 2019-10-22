@@ -3,6 +3,8 @@ using System.Text;
 using System.Web;
 using Judger.Fetcher.SDNUOJ.Entity;
 using Judger.Models;
+using Judger.Models.Database;
+using Judger.Models.Program;
 using Newtonsoft.Json.Linq;
 
 namespace Judger.Fetcher.SDNUOJ
@@ -30,15 +32,15 @@ namespace Judger.Fetcher.SDNUOJ
         /// </summary>
         private string CreateRequestBody()
         {
-            StringBuilder bodyBuilder = new StringBuilder();
+            var bodyBuilder = new StringBuilder();
             bodyBuilder.Append("count=1&");
             bodyBuilder.Append("supported_languages=");
 
-            StringBuilder langBuilder = new StringBuilder();
-            foreach (var lang in Config.Languages)
+            var langBuilder = new StringBuilder();
+            foreach (ProgramLangConfig lang in Config.Languages)
                 langBuilder.Append(lang.Name + "[],");
 
-            foreach (var lang in Config.Databases)
+            foreach (DbLangConfig lang in Config.Databases)
                 langBuilder.Append(lang.Name + "[],");
 
             langBuilder.Remove(langBuilder.Length - 1, 1);
@@ -60,11 +62,11 @@ namespace Judger.Fetcher.SDNUOJ
             if (jArray.Count == 0)
                 return new JudgeContext[0];
 
-            JObject jObject = jArray[0] as JObject;
+            var jObject = jArray[0] as JObject;
             if (!CheckTaskJObject(jObject))
                 return new JudgeContext[0];
 
-            SDNUOJTaskEntity taskEntity = jObject.ToObject<SDNUOJTaskEntity>();
+            var taskEntity = jObject.ToObject<SDNUOJTaskEntity>();
 
             JudgeContext task = JudgeContextFactory.Create(
                 int.Parse(taskEntity.SubmitId), int.Parse(taskEntity.ProblemId), taskEntity.DataVersion,
@@ -80,18 +82,15 @@ namespace Judger.Fetcher.SDNUOJ
         /// </summary>
         private bool CheckTaskJObject(JObject obj)
         {
-            HashSet<string> keySet = new HashSet<string>();
+            var keySet = new HashSet<string>();
             foreach (JProperty key in obj.Properties())
                 keySet.Add(key.Name.ToLower());
 
-            if (!keySet.Contains("sid") ||
-                !keySet.Contains("pid") ||
-                !keySet.Contains("dataversion") ||
-                !keySet.Contains("language") ||
-                !keySet.Contains("sourcecode"))
-                return false;
-
-            return true;
+            return keySet.Contains("sid") &&
+                   keySet.Contains("pid") &&
+                   keySet.Contains("dataversion") &&
+                   keySet.Contains("language") &&
+                   keySet.Contains("sourcecode");
         }
     }
 }

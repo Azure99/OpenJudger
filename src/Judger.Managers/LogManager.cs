@@ -27,22 +27,22 @@ namespace Judger.Managers
         /// <summary>
         /// 信息缓冲区
         /// </summary>
-        private static StringBuilder _infoBuffer = new StringBuilder();
+        private static readonly StringBuilder _infoBuffer = new StringBuilder();
 
         /// <summary>
         /// 缓冲区锁
         /// </summary>
-        private static object _bufferLock = new object();
+        private static readonly object _bufferLock = new object();
 
         /// <summary>
         /// 写操作锁
         /// </summary>
-        private static object _writeLock = new object();
+        private static readonly object _writeLock = new object();
 
         /// <summary>
         /// 自动刷新缓冲区任务
         /// </summary>
-        private static Task _autoFlushTask = new Task(AutoFlush, TaskCreationOptions.LongRunning);
+        private static readonly Task _autoFlushTask = new Task(AutoFlush, TaskCreationOptions.LongRunning);
 
         static LogManager()
         {
@@ -94,7 +94,7 @@ namespace Judger.Managers
             string originalType = ex.GetType().FullName;
             string originalMessage = ex.Message;
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             while (ex != null)
             {
                 sb.AppendLine("[" + ex.GetType().FullName + "]");
@@ -131,7 +131,7 @@ namespace Judger.Managers
         {
             string time = DateTime.Now.ToString(LOG_DATE_FORMAT);
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendFormat("[{0}] {1}", level, time);
             sb.AppendLine();
             sb.AppendLine(content);
@@ -144,10 +144,10 @@ namespace Judger.Managers
                 lock (_infoBuffer)
                 {
                     _infoBuffer.Append(content);
-                }
 
-                if (_infoBuffer.Length > INFO_BUFFER_SIZE)
-                    Flush();
+                    if (_infoBuffer.Length > INFO_BUFFER_SIZE)
+                        Flush();
+                }
 
                 return;
             }
@@ -179,10 +179,7 @@ namespace Judger.Managers
 
             try
             {
-                lock (_writeLock)
-                {
-                    File.AppendAllText(path, content);
-                }
+                lock (_writeLock) File.AppendAllText(path, content);
             }
             catch (Exception ex)
             {

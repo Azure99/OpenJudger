@@ -23,8 +23,8 @@ namespace Judger.Core.Database.Internal
             Type commandType = null;
             Assembly assembly = Assembly.LoadFile(assemblyPath);
 
-            var types = assembly.GetTypes();
-            foreach (var type in types)
+            Type[] types = assembly.GetTypes();
+            foreach (Type type in types)
             {
                 if (!type.IsClass)
                     continue;

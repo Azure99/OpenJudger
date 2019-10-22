@@ -10,7 +10,7 @@ namespace Judger.Core.Database.Internal.DbOperator
     /// </summary>
     public class MySQL5xOperator : BaseDbOperator
     {
-        private DbConnection _connection;
+        private readonly DbConnection _connection;
 
         public MySQL5xOperator(string connectionString, DbDriver driver) : base(connectionString, driver)
         {
@@ -19,31 +19,31 @@ namespace Judger.Core.Database.Internal.DbOperator
 
         public override void CreateDatabase(string database)
         {
-            string cmd = string.Format("CREATE DATABASE {0}", database);
+            string cmd = $"CREATE DATABASE {database}";
             ExecuteNonQuery(cmd);
         }
 
         public override void DropDatabase(string database)
         {
-            string cmd = string.Format("DROP DATABASE {0}", database);
+            string cmd = $"DROP DATABASE {database}";
             ExecuteNonQuery(cmd);
         }
 
         public override void CreateUser(string username, string password)
         {
-            string cmd = string.Format("CREATE USER '{0}'@'localhost' IDENTIFIED BY '{1}'", username, password);
+            string cmd = $"CREATE USER '{username}'@'localhost' IDENTIFIED BY '{password}'";
             ExecuteNonQuery(cmd);
         }
 
         public override void DropUser(string username)
         {
-            string cmd = string.Format("DROP USER '{0}'@'localhost'", username);
+            string cmd = $"DROP USER '{username}'@'localhost'";
             ExecuteNonQuery(cmd);
         }
 
         public override void GeneratePrivileges(string database, string username)
         {
-            string cmd = string.Format("GRANT ALL ON {0}.* to '{1}'@'localhost'", database, username);
+            string cmd = $"GRANT ALL ON {database}.* to '{username}'@'localhost'";
             ExecuteNonQuery(cmd);
         }
 
@@ -73,15 +73,15 @@ namespace Judger.Core.Database.Internal.DbOperator
         public override DbData ReadDbData()
         {
             string[] tablesName = GetAllTablesName();
-            DbQueryData[] datas = new DbQueryData[tablesName.Length];
-            for (int i = 0; i < tablesName.Length; i++)
-                datas[i] = GetTableData(tablesName[i]);
+            var data = new DbQueryData[tablesName.Length];
+            for (var i = 0; i < tablesName.Length; i++)
+                data[i] = GetTableData(tablesName[i]);
 
-            Array.Sort(datas, (a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+            Array.Sort(data, (a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
 
             return new DbData
             {
-                TablesData = datas
+                TablesData = data
             };
         }
 
@@ -93,7 +93,7 @@ namespace Judger.Core.Database.Internal.DbOperator
         {
             DbDataReader reader = ExecuteReader("SHOW TABLES");
 
-            List<string> tables = new List<string>();
+            var tables = new List<string>();
             while (reader.Read())
                 tables.Add(reader.GetString(0));
 
@@ -107,7 +107,7 @@ namespace Judger.Core.Database.Internal.DbOperator
         /// <returns>表数据</returns>
         private DbQueryData GetTableData(string tableName)
         {
-            string cmd = string.Format("SELECT * FROM {0}", tableName);
+            string cmd = $"SELECT * FROM {tableName}";
             DbDataReader reader = ExecuteReader(cmd);
 
             DbQueryData queryData = ReadQueryData(reader, tableName);

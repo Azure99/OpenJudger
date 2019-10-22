@@ -11,8 +11,8 @@ namespace Judger.Fetcher.SDNUOJ
     /// </summary>
     public class Authenticator
     {
-        private HttpWebClient _httpClient = ConfiguredClient.Create();
-        private string loginUrl = "http://localhost/judge/login";
+        private readonly HttpWebClient _httpClient = ConfiguredClient.Create();
+        private readonly string _loginUrl = "http://localhost/judge/login";
 
         private Authenticator()
         {
@@ -21,11 +21,11 @@ namespace Judger.Fetcher.SDNUOJ
 
             if (Config.AdditionalConfigs.ContainsKey("LoginUrl"))
             {
-                loginUrl = Config.AdditionalConfigs["LoginUrl"];
+                _loginUrl = Config.AdditionalConfigs["LoginUrl"];
             }
             else
             {
-                Config.AdditionalConfigs.Add("LoginUrl", loginUrl);
+                Config.AdditionalConfigs.Add("LoginUrl", _loginUrl);
                 ConfigManager.SaveConfig();
             }
 
@@ -43,13 +43,13 @@ namespace Judger.Fetcher.SDNUOJ
         /// </summary>
         public bool Login()
         {
-            string requestBody = string.Format("username={0}&password={1}", Config.JudgerName, Config.Password);
+            string requestBody = $"username={Config.JudgerName}&password={Config.Password}";
 
             try
             {
-                string response = _httpClient.UploadString(loginUrl, requestBody, 3);
+                string response = _httpClient.UploadString(_loginUrl, requestBody, 3);
 
-                ServerMessageEntity message = SampleJsonSerializer.DeSerialize<ServerMessageEntity>(response);
+                var message = SampleJsonSerializer.DeSerialize<ServerMessageEntity>(response);
                 return message.IsSuccess;
             }
             catch

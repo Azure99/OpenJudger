@@ -20,14 +20,12 @@ namespace Judger.Core.Program
             LangConfig = context.LangConfig as ProgramLangConfig;
         }
 
-        private ProgramLangConfig LangConfig { get; set; }
+        private ProgramLangConfig LangConfig { get; }
 
         public override void Judge()
         {
-            //判题结果
             JudgeResult result = Context.Result;
 
-            //正则恶意代码检查
             if (!CodeChecker.Singleton.CheckCode(JudgeTask.SourceCode, JudgeTask.Language, out string unsafeCode,
                 out int line))
             {
@@ -38,14 +36,14 @@ namespace Judger.Core.Program
                 return;
             }
 
-            //写出源代码
+            // 写出源代码
             string sourceFileName = Path.Combine(Context.TempDirectory, LangConfig.SourceCodeFileName);
             File.WriteAllText(sourceFileName, JudgeTask.SourceCode);
 
-            //编译代码
+            // 编译代码
             if (LangConfig.NeedCompile)
             {
-                Compiler compiler = new Compiler(Context);
+                var compiler = new Compiler(Context);
                 string compileRes = compiler.Compile();
 
                 //检查是否有编译错误(compileRes不为空则代表有错误)
@@ -60,7 +58,7 @@ namespace Judger.Core.Program
             }
 
             //创建单例Judger
-            SingleCaseJudger judger = new SingleCaseJudger(Context);
+            var judger = new SingleCaseJudger(Context);
 
             //获取所有测试点文件名
             Tuple<string, string>[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemId);
@@ -71,8 +69,8 @@ namespace Judger.Core.Program
                 return;
             }
 
-            int acceptedCasesCount = 0; //通过的测试点数
-            for (int i = 0; i < dataFiles.Length; i++)
+            var acceptedCasesCount = 0; //通过的测试点数
+            for (var i = 0; i < dataFiles.Length; i++)
             {
                 try
                 {
@@ -139,7 +137,7 @@ namespace Judger.Core.Program
             //判题结束时文件可能仍然被占用，尝试删除
             new Task(() =>
             {
-                int tryCount = 0;
+                var tryCount = 0;
                 while (true)
                 {
                     try

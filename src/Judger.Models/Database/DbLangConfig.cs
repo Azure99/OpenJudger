@@ -10,16 +10,6 @@ namespace Judger.Models.Database
     public class DbLangConfig : ILangConfig
     {
         /// <summary>
-        /// 数据库管理系统名称
-        /// </summary>
-        public string Name { get; set; } = "";
-
-        /// <summary>
-        /// 是否为数据库配置
-        /// </summary>
-        public bool IsDbConfig { get; set; } = true;
-
-        /// <summary>
         /// 对查询字段是否大小写敏感
         /// </summary>
         public bool CaseSensitive { get; set; } = false;
@@ -71,6 +61,16 @@ namespace Judger.Models.Database
                 return connString;
             }
         }
+
+        /// <summary>
+        /// 数据库管理系统名称
+        /// </summary>
+        public string Name { get; set; } = "";
+
+        /// <summary>
+        /// 是否为数据库配置
+        /// </summary>
+        public bool IsDbConfig { get; set; } = true;
 
         public object Clone()
         {

@@ -10,7 +10,7 @@ namespace Judger.Utils
     /// </summary>
     public static class SampleJsonSerializer
     {
-        private static JsonSerializer _serializer = new JsonSerializer();
+        private static readonly JsonSerializer _serializer = new JsonSerializer();
 
         static SampleJsonSerializer()
         {
@@ -25,8 +25,8 @@ namespace Judger.Utils
         /// <returns>序列化后的Json字符串</returns>
         public static string Serialize(object obj, Type type)
         {
-            StringBuilder sb = new StringBuilder();
-            using (StringWriter sw = new StringWriter(sb))
+            var sb = new StringBuilder();
+            using (var sw = new StringWriter(sb))
             {
                 _serializer.Serialize(sw, obj, type);
 
@@ -42,8 +42,8 @@ namespace Judger.Utils
         /// <returns>序列化后的Json字符串</returns>
         public static string Serialize<T>(T obj)
         {
-            StringBuilder sb = new StringBuilder();
-            using (StringWriter sw = new StringWriter(sb))
+            var sb = new StringBuilder();
+            using (var sw = new StringWriter(sb))
             {
                 _serializer.Serialize(sw, obj, typeof(T));
                 return sb.ToString();
@@ -58,10 +58,7 @@ namespace Judger.Utils
         /// <returns>反序列化的对象</returns>
         public static object DeSerialize(string jsonObject, Type type)
         {
-            using (StringReader sr = new StringReader(jsonObject))
-            {
-                return _serializer.Deserialize(sr, type);
-            }
+            using (var sr = new StringReader(jsonObject)) return _serializer.Deserialize(sr, type);
         }
 
         /// <summary>
@@ -72,10 +69,7 @@ namespace Judger.Utils
         /// <returns>反序列化后的对象</returns>
         public static T DeSerialize<T>(string jsonObject)
         {
-            using (StringReader sr = new StringReader(jsonObject))
-            {
-                return (T) _serializer.Deserialize(sr, typeof(T));
-            }
+            using (var sr = new StringReader(jsonObject)) return (T) _serializer.Deserialize(sr, typeof(T));
         }
     }
 }

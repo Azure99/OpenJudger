@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Judger.Utils;
 using Xunit;
 
@@ -12,16 +13,16 @@ namespace MainUnitTest
         [Fact]
         public void TestProcessRunnerKill()
         {
-            using (ProcessRunner pr = new ProcessRunner("cmd"))
+            using (var pr = new ProcessRunner("cmd"))
             {
                 new Thread(() =>
                 {
                     Thread.Sleep(1000);
                     pr.Process.Kill();
                 }).Start();
-                int exitcode = pr.Run("ping 127.0.0.1\nping 127.0.0.1", out string output, out string error);
+                int exitCode = pr.Run("ping 127.0.0.1\nping 127.0.0.1", out string output, out string error);
 
-                Assert.True(exitcode == -1);
+                Assert.True(exitCode == -1);
             }
         }
 
@@ -31,12 +32,13 @@ namespace MainUnitTest
         [Fact]
         public void TestProcessRunnerRun()
         {
-            using (ProcessRunner pr = new ProcessRunner("cmd"))
+            using (var pr = new ProcessRunner("cmd"))
             {
-                string cmd = "ping 127.0.0.1\nping 127.0.0.1";
-                int exitcode = pr.Run(cmd, out string output, out string error);
+                const string cmd = "ping 127.0.0.1\nping 127.0.0.1";
+                int exitCode = pr.Run(cmd, out string output, out string error);
 
-                Assert.True(exitcode == 0 && output.IndexOf("127.0.0.1") != -1);
+                Assert.True(exitCode == 0);
+                Assert.True(output.IndexOf("127.0.0.1", StringComparison.Ordinal) != -1);
             }
         }
     }

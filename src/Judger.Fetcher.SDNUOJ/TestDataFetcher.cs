@@ -42,31 +42,24 @@ namespace Judger.Fetcher.SDNUOJ
         private byte[] ChangeVersionFileName(byte[] data)
         {
             byte[] res;
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 ms.Write(data);
                 ms.Position = 0;
-                using (ZipArchive zipArchive = new ZipArchive(ms, ZipArchiveMode.Update))
+                using (var zipArchive = new ZipArchive(ms, ZipArchiveMode.Update))
                 {
-                    string version = "";
+                    var version = "";
                     ZipArchiveEntry oldEntry = zipArchive.GetEntry("last_modified");
                     if (oldEntry != null)
-                    {
-                        using (StreamReader sr = new StreamReader(oldEntry.Open()))
-                        {
+                        using (var sr = new StreamReader(oldEntry.Open()))
                             version = sr.ReadToEnd();
-                        }
-                    }
 
                     ZipArchiveEntry newEntry = zipArchive.CreateEntry("version.txt");
-                    using (StreamWriter writer = new StreamWriter(newEntry.Open()))
-                    {
-                        writer.Write(version);
-                    }
+                    using (var writer = new StreamWriter(newEntry.Open())) writer.Write(version);
 
                     zipArchive.UpdateBaseStream();
 
-                    int nowPos = (int) ms.Position;
+                    var nowPos = (int) ms.Position;
                     res = new byte[ms.Length];
                     ms.Position = 0;
                     ms.Read(res, 0, (int) ms.Length);

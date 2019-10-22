@@ -12,15 +12,15 @@ namespace Judger.Utils
     public class RuntimeMonitor : IDisposable
     {
         // 指示当前平台是否为Linux
-        private bool _platformIsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        private readonly bool _platformIsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
         // 指示当前平台是否为Windows
-        private bool _platformIsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        private readonly bool _platformIsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         // 指示子进程是否运行在虚拟机中(如Java, Python)
-        private bool _runningInVm;
+        private readonly bool _runningInVm;
 
-        private Timer _timer = new Timer();
+        private readonly Timer _timer = new Timer();
 
         /// <summary>
         /// 运行时监控器
@@ -134,8 +134,8 @@ namespace Judger.Utils
             // 使用的总时间
             TotalTimeCost = (int) (DateTime.Now - Process.StartTime).TotalMilliseconds;
 
-            if ((TimeCost > TimeLimit && TimeLimit > 0) ||
-                (TotalTimeCost > TotalTimeLimit && TotalTimeLimit > 0))
+            if (TimeCost > TimeLimit && TimeLimit > 0 ||
+                TotalTimeCost > TotalTimeLimit && TotalTimeLimit > 0)
             {
                 TimeCost = TimeLimit;
                 TotalTimeCost = TotalTimeLimit;
@@ -200,7 +200,6 @@ namespace Judger.Utils
         /// Linux下获取进程内存使用的峰值
         /// </summary>
         /// <returns>进程内存使用的峰值</returns>
-        /// 
         /// 方法从/proc/ProcessId/status中解析峰值内存使用
         /// VmPeak为内存使用峰值, 适合大多数情况
         /// VmHWM为物理内存使用峰值, 适合运行在虚拟机中的语言
@@ -208,7 +207,7 @@ namespace Judger.Utils
         {
             string queryKey = _runningInVm ? "VmHWM" : "VmPeak";
 
-            string[] lines = File.ReadAllLines(string.Format("/proc/{0}/status", Process.Id));
+            string[] lines = File.ReadAllLines($"/proc/{Process.Id}/status");
             foreach (string line in lines)
             {
                 if (!line.StartsWith(queryKey))
@@ -227,7 +226,6 @@ namespace Judger.Utils
         /// 未知平台下获取进程的内存使用量
         /// </summary>
         /// <returns>进程的内存使用量</returns>
-        /// 
         /// .Net Core确保所有平台下都实现了WorkingSet64属性, 但此值是不可靠的
         private int PeakMemoryOnUnknown()
         {

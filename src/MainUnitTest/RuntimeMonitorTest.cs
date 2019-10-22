@@ -12,10 +12,10 @@ namespace MainUnitTest
         [Fact]
         public void TestMonitor()
         {
-            Process process = new Process();
+            var process = new Process();
             process.StartInfo.FileName = "cmd";
 
-            RuntimeMonitor monitor = new RuntimeMonitor(process)
+            var monitor = new RuntimeMonitor(process)
             {
                 MemoryLimit = 100000,
                 TimeLimit = 3000,

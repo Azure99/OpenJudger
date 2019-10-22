@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Judger.Managers;
 using Judger.Models;
@@ -25,9 +26,9 @@ namespace Judger.Fetcher.HUSTOJ
         public byte[] Fetch(int problemId)
         {
             string[] fileNames = GetTestDataList(problemId);
-            Tuple<string, byte[]>[] files = new Tuple<string, byte[]>[fileNames.Length];
+            var files = new Tuple<string, byte[]>[fileNames.Length];
 
-            for (int i = 0; i < files.Length; i++)
+            for (var i = 0; i < files.Length; i++)
             {
                 string fileName = fileNames[i];
                 files[i] = new Tuple<string, byte[]>(fileName, GetTestDataFile(problemId, fileName));
@@ -47,14 +48,9 @@ namespace Judger.Fetcher.HUSTOJ
 
             string[] split = Regex.Split(response, "\r\n|\r|\n");
 
-            List<string> dataList = new List<string>();
-            foreach (string s in split)
-            {
-                if (!string.IsNullOrEmpty(s))
-                    dataList.Add(s);
-            }
-
-            return dataList.ToArray();
+            return split
+                .Where(s => !string.IsNullOrEmpty(s))
+                .ToArray();
         }
 
         /// <summary>
@@ -77,11 +73,11 @@ namespace Judger.Fetcher.HUSTOJ
         private byte[] CreateZip(Tuple<string, byte[]>[] files, string dataVersion)
         {
             byte[] zipData;
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
-                using (ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create))
+                using (var zip = new ZipArchive(ms, ZipArchiveMode.Create))
                 {
-                    foreach (var file in files)
+                    foreach (Tuple<string, byte[]> file in files)
                     {
                         ZipArchiveEntry entry = null;
                         if (file.Item1.EndsWith(".in"))
@@ -93,24 +89,17 @@ namespace Judger.Fetcher.HUSTOJ
                                                     Path.GetExtension(file.Item1));
 
                         if (entry != null)
-                        {
                             using (Stream stream = entry.Open())
-                            {
                                 stream.Write(file.Item2);
-                            }
-                        }
                     }
 
                     ZipArchiveEntry verEntry = zip.CreateEntry("version.txt");
-                    using (StreamWriter sw = new StreamWriter(verEntry.Open()))
-                    {
-                        sw.Write(dataVersion);
-                    }
+                    using (var sw = new StreamWriter(verEntry.Open())) sw.Write(dataVersion);
 
                     zip.UpdateBaseStream();
 
                     zipData = new byte[ms.Length];
-                    int nowPos = (int) ms.Position;
+                    var nowPos = (int) ms.Position;
                     ms.Position = 0;
                     ms.Read(zipData, 0, (int) ms.Length);
                     ms.Position = nowPos;
@@ -126,7 +115,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// <param name="pid">题目ID</param>
         private string GetTestDataMd5(int pid)
         {
-            string requestBody = string.Format("gettestdatalist=1&pid={0}&time=1", pid);
+            string requestBody = $"gettestdatalist=1&pid={pid}&time=1";
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
 
             return Md5Encrypt.EncryptToHexString(response);
@@ -139,7 +128,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// <returns>是否为SPJ源代码</returns>
         private bool CheckSpecialJudgeFile(string fileName)
         {
-            HashSet<string> extensionSet = new HashSet<string>();
+            var extensionSet = new HashSet<string>();
 
             foreach (ProgramLangConfig lang in Config.Languages)
             {
@@ -155,10 +144,8 @@ namespace Judger.Fetcher.HUSTOJ
             string extension = Path.GetExtension(fileName).TrimStart('.').ToLower();
 
             if (name == "spj")
-            {
                 if (extensionSet.Contains(extension))
                     return true;
-            }
 
             return false;
         }

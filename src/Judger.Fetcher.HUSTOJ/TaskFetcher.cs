@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using Judger.Models;
+using Judger.Models.Program;
 using Judger.Utils;
 
 namespace Judger.Fetcher.HUSTOJ
@@ -15,7 +16,7 @@ namespace Judger.Fetcher.HUSTOJ
 
         public override JudgeContext[] Fetch()
         {
-            List<JudgeContext> taskList = new List<JudgeContext>();
+            var taskList = new List<JudgeContext>();
             int[] pendingSids = GetPending();
             foreach (int sid in pendingSids)
             {
@@ -37,7 +38,7 @@ namespace Judger.Fetcher.HUSTOJ
         {
             Authenticator.Singleton.CheckLogin();
 
-            string response = "";
+            string response;
             try
             {
                 string requestBody = CreateGetPendingRequestBody();
@@ -49,7 +50,7 @@ namespace Judger.Fetcher.HUSTOJ
             }
 
             string[] split = Regex.Split(response, "\r\n|\r|\n");
-            List<int> sidList = new List<int>();
+            var sidList = new List<int>();
             foreach (string s in split)
             {
                 if (int.TryParse(s, out int sid))
@@ -64,11 +65,11 @@ namespace Judger.Fetcher.HUSTOJ
         /// </summary>
         private string CreateGetPendingRequestBody()
         {
-            StringBuilder bodyBuilder = new StringBuilder();
+            var bodyBuilder = new StringBuilder();
             bodyBuilder.Append("getpending=1&");
 
             bodyBuilder.Append("oj_lang_set=");
-            foreach (var lang in Config.Languages)
+            foreach (ProgramLangConfig lang in Config.Languages)
                 bodyBuilder.Append(lang.Name + ",");
 
             bodyBuilder.Remove(bodyBuilder.Length - 1, 1);
@@ -154,7 +155,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// <param name="pid">问题ID</param>
         private string GetTestDataMd5(int pid)
         {
-            string requestBody = string.Format("gettestdatalist=1&pid={0}&time=1", pid);
+            string requestBody = $"gettestdatalist=1&pid={pid}&time=1";
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
 
             return Md5Encrypt.EncryptToHexString(response);

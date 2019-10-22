@@ -17,7 +17,7 @@ namespace Judger.Core.Database.Internal
         /// <summary>
         /// 对查询字段是否大小写敏感
         /// </summary>
-        private bool _caseSensitive;
+        private readonly bool _caseSensitive;
 
         public SingleCaseJudger(JudgeContext context, BaseDbOperator dbOperator)
         {
@@ -30,17 +30,17 @@ namespace Judger.Core.Database.Internal
         /// <summary>
         /// 用户的数据库操作器
         /// </summary>
-        private BaseDbOperator UserOperator { get; set; }
+        private BaseDbOperator UserOperator { get; }
 
         /// <summary>
         /// 评测上下文
         /// </summary>
-        private JudgeContext JudgeContext { get; set; }
+        private JudgeContext JudgeContext { get; }
 
         /// <summary>
         /// 评测任务
         /// </summary>
-        private JudgeTask JudgeTask { get; set; }
+        private JudgeTask JudgeTask { get; }
 
         /// <summary>
         /// 评测一组用例
@@ -51,15 +51,14 @@ namespace Judger.Core.Database.Internal
         /// <returns></returns>
         public SingleJudgeResult Judge(string stdInput, DbData stdOutput, DbQueryData stdQuery)
         {
-            Stopwatch sw = new Stopwatch();
-            DbDataReader reader = null;
-            DbQueryData usrQuery = null;
-            DbData usrOutput = null;
+            var sw = new Stopwatch();
+            DbQueryData usrQuery;
+            DbData usrOutput;
 
             try
             {
                 sw.Start();
-                reader = UserOperator.ExecuteReader(JudgeTask.SourceCode, JudgeTask.TimeLimit);
+                DbDataReader reader = UserOperator.ExecuteReader(JudgeTask.SourceCode, JudgeTask.TimeLimit);
 
                 usrQuery = BaseDbOperator.ReadQueryData(reader);
                 usrOutput = UserOperator.ReadDbData();
@@ -79,7 +78,7 @@ namespace Judger.Core.Database.Internal
             }
 
             CompareResult result = CompareAnswer(stdOutput, stdQuery, usrOutput, usrQuery);
-            JudgeResultCode resultCode = (result == CompareResult.Accepted)
+            JudgeResultCode resultCode = result == CompareResult.Accepted
                 ? JudgeResultCode.Accepted
                 : JudgeResultCode.WrongAnswer;
 
@@ -108,7 +107,7 @@ namespace Judger.Core.Database.Internal
                 return CompareResult.WrongAnswer;
 
             int tableCount = stdOutput.TablesData.Length;
-            for (int i = 0; i < tableCount; i++)
+            for (var i = 0; i < tableCount; i++)
             {
                 if (!CmpString(stdOutput.TablesData[i].Name, usrOutput.TablesData[i].Name))
                     return CompareResult.WrongAnswer;
@@ -128,15 +127,15 @@ namespace Judger.Core.Database.Internal
             int filedCount = stdQuery.FieldCount;
             int recordCount = stdQuery.Records.Count;
 
-            for (int i = 0; i < filedCount; i++)
+            for (var i = 0; i < filedCount; i++)
             {
                 if (!CmpString(stdQuery.FieldNames[i], usrQuery.FieldNames[i]))
                     return CompareResult.WrongAnswer;
             }
 
-            for (int i = 0; i < recordCount; i++)
+            for (var i = 0; i < recordCount; i++)
             {
-                for (int i2 = 0; i2 < filedCount; i2++)
+                for (var i2 = 0; i2 < filedCount; i2++)
                 {
                     if (stdQuery.Records[i][i2] != usrQuery.Records[i][i2])
                         return CompareResult.WrongAnswer;
@@ -157,7 +156,7 @@ namespace Judger.Core.Database.Internal
             if (_caseSensitive)
                 return a == b;
 
-            return a.ToLower() == b.ToLower();
+            return string.Equals(a, b, StringComparison.CurrentCultureIgnoreCase);
         }
     }
 }

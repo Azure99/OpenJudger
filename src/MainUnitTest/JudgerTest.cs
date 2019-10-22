@@ -15,11 +15,11 @@ namespace MainUnitTest
         [Fact]
         public void TestSingleJudgerCompare()
         {
-            SingleCaseJudger judger =
+            var judger =
                 new SingleCaseJudger(new JudgeContext(new JudgeTask(), new JudgeResult(), "", new ProgramLangConfig()));
 
-            string test1 = @"123123";
-            string test2 = @"123123";
+            var test1 = @"123123";
+            var test2 = @"123123";
             Assert.True(judger.CompareAnswer(test1, test2) == CompareResult.Accepted);
 
             test1 = "123\r\n123";

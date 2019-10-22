@@ -39,7 +39,7 @@ namespace Judger.Fetcher.Generic
         /// <returns>带有校验字段的JObject</returns>
         public static JObject CreateJObject()
         {
-            JObject obj = new JObject();
+            var obj = new JObject();
             AddTokenToJObject(obj);
 
             return obj;

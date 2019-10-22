@@ -22,10 +22,7 @@ namespace Judger.Core.Database.Internal.Entity
         /// 字段数
         /// </summary>
         [JsonIgnore]
-        public int FieldCount
-        {
-            get { return FieldNames.Length; }
-        }
+        public int FieldCount => FieldNames.Length;
 
         /// <summary>
         /// 记录

@@ -14,10 +14,10 @@ namespace Judger.Core.Database
 {
     public class DbJudger : BaseJudger
     {
-        private string _dbName;
-        private string _dbPassword;
-        private DatabaseType _dbType;
-        private string _dbUser;
+        private readonly string _dbName;
+        private readonly string _dbPassword;
+        private readonly DatabaseType _dbType;
+        private readonly string _dbUser;
 
         public DbJudger(JudgeContext context) : base(context)
         {
@@ -28,7 +28,7 @@ namespace Judger.Core.Database
             _dbType = DbManager.GetDatabaseType(context.Task.Language);
         }
 
-        private BaseDbOperator MainOperator { get; set; }
+        private BaseDbOperator MainOperator { get; }
 
         public override void Judge()
         {
@@ -42,7 +42,7 @@ namespace Judger.Core.Database
                 return;
             }
 
-            int acceptedCasesCount = 0;
+            var acceptedCasesCount = 0;
             foreach (string dataName in dataNames)
             {
                 SingleJudgeResult singleResult = JudgeOneCase(dataName);
@@ -71,7 +71,7 @@ namespace Judger.Core.Database
 
             BaseDbOperator userOper = CreateJudgeEnv(inputData);
 
-            SingleCaseJudger singleCaseJudger = new SingleCaseJudger(Context, userOper);
+            var singleCaseJudger = new SingleCaseJudger(Context, userOper);
             SingleJudgeResult result = singleCaseJudger.Judge(inputData, outputData, queryData);
 
             ClearJudgeEnv(userOper);

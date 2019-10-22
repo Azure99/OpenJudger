@@ -11,7 +11,7 @@ namespace Judger.Fetcher
         /// <returns></returns>
         public static HttpWebClient Create()
         {
-            HttpWebClient client = new HttpWebClient
+            var client = new HttpWebClient
             {
                 Proxy = null,
                 Timeout = ConfigManager.Config.FetchTimeout,

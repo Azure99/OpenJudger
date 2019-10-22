@@ -81,12 +81,12 @@ namespace Judger.Utils
             if (ProcessorAffinity.ToInt64() != 0)
                 Process.ProcessorAffinity = ProcessorAffinity;
 
-            Task<string> readOutputTask = new Task<string>(
+            var readOutputTask = new Task<string>(
                 TryReadStreamToEnd, Process.StandardOutput,
                 TaskCreationOptions.LongRunning);
             readOutputTask.Start();
 
-            Task<string> readErrorTask = new Task<string>(
+            var readErrorTask = new Task<string>(
                 TryReadStreamToEnd, Process.StandardError,
                 TaskCreationOptions.LongRunning);
             readErrorTask.Start();
@@ -129,7 +129,7 @@ namespace Judger.Utils
         /// <returns>结果</returns>
         private string TryReadStreamToEnd(object readerObject)
         {
-            StreamReader reader = readerObject as StreamReader;
+            var reader = readerObject as StreamReader;
             if (Encoding != null)
                 reader = new StreamReader(reader.BaseStream, Encoding);
 
@@ -153,19 +153,19 @@ namespace Judger.Utils
         /// <returns>结果</returns>
         private string ReadStreamToEnd(StreamReader reader)
         {
-            StringBuilder sb = new StringBuilder();
-            char[] buffer = new char[4096];
+            var sb = new StringBuilder();
+            var buffer = new char[4096];
 
             // 记录总输出长度
-            int sumLength = 0;
+            var sumLength = 0;
 
-            int len = 0;
+            int len;
             while ((len = reader.Read(buffer, 0, buffer.Length)) > 0)
             {
                 sb.Append(buffer, 0, len);
 
                 sumLength += len;
-                if (sumLength > OutputLimit) //检查输出超限
+                if (sumLength > OutputLimit) // 检查输出超限
                 {
                     reader.Close();
                     return sb.ToString();

@@ -41,7 +41,7 @@ namespace Judger.Models
 
         public object Clone()
         {
-            JudgeContext context = MemberwiseClone() as JudgeContext;
+            var context = MemberwiseClone() as JudgeContext;
             context.Task = Task.Clone() as JudgeTask;
             context.LangConfig = LangConfig.Clone() as ILangConfig;
             context.Result = Result.Clone() as JudgeResult;

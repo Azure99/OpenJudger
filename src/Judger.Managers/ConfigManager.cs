@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Judger.Models;
 using Judger.Models.Database;
 using Judger.Models.Program;
@@ -68,20 +69,25 @@ namespace Judger.Managers
         public static ILangConfig GetLanguageConfig(string languageName)
         {
             ProgramLangConfig[] programConfigs = Config.Languages;
-            foreach (var item in programConfigs)
+            foreach (ProgramLangConfig item in programConfigs)
             {
                 if (item.Name == languageName)
                     return item.Clone() as ProgramLangConfig;
             }
 
+            
+
             DbLangConfig[] dbConfigs = Config.Databases;
-            foreach (var item in dbConfigs)
+            foreach (DbLangConfig item in dbConfigs)
             {
                 if (item.Name == languageName)
                     return item.Clone() as DbLangConfig;
             }
 
-            return null;
+            return Config.Databases
+                .Where(i => i.Name == languageName)
+                .Select(i => i.Clone() as DbLangConfig)
+                .FirstOrDefault();
         }
 
         /// <summary>
@@ -92,9 +98,9 @@ namespace Judger.Managers
         {
             char sparChar = Path.DirectorySeparatorChar;
 
-            List<ProgramLangConfig> langConfigs = new List<ProgramLangConfig>();
+            var langConfigs = new List<ProgramLangConfig>();
 
-            ProgramLangConfig c = new ProgramLangConfig
+            var c = new ProgramLangConfig
             {
                 Name = "c",
                 IsDbConfig = false,
@@ -103,7 +109,7 @@ namespace Judger.Managers
                 SourceCodeFileName = "src.c",
                 SourceCodeFileExtension = "c",
                 ProgramFileName = "program.exe",
-                UseUTF8 = true,
+                UseUtf8 = true,
                 MaxCompileTime = 20000,
                 JudgeDirectory = "JudgeTemp" + sparChar + "CJudge",
                 CompilerPath = "gcc",
@@ -116,7 +122,7 @@ namespace Judger.Managers
                 TimeCompensation = 1.0
             };
 
-            ProgramLangConfig cpp = new ProgramLangConfig
+            var cpp = new ProgramLangConfig
             {
                 Name = "cpp",
                 IsDbConfig = false,
@@ -125,7 +131,7 @@ namespace Judger.Managers
                 SourceCodeFileName = "src.cpp",
                 SourceCodeFileExtension = "cc|cpp",
                 ProgramFileName = "program.exe",
-                UseUTF8 = true,
+                UseUtf8 = true,
                 MaxCompileTime = 20000,
                 JudgeDirectory = "JudgeTemp" + sparChar + "CppJudge",
                 CompilerPath = "g++",
@@ -139,7 +145,7 @@ namespace Judger.Managers
             };
 
 
-            ProgramLangConfig java = new ProgramLangConfig
+            var java = new ProgramLangConfig
             {
                 Name = "java",
                 IsDbConfig = false,
@@ -148,7 +154,7 @@ namespace Judger.Managers
                 SourceCodeFileName = "Main.java",
                 SourceCodeFileExtension = "java",
                 ProgramFileName = "Main.class",
-                UseUTF8 = false,
+                UseUtf8 = false,
                 MaxCompileTime = 30000,
                 JudgeDirectory = "JudgeTemp" + sparChar + "JavaJudge",
                 CompilerPath = "javac",
@@ -161,7 +167,7 @@ namespace Judger.Managers
                 TimeCompensation = 1.0
             };
 
-            ProgramLangConfig python = new ProgramLangConfig
+            var python = new ProgramLangConfig
             {
                 Name = "python",
                 IsDbConfig = false,
@@ -170,7 +176,7 @@ namespace Judger.Managers
                 SourceCodeFileName = "src.py",
                 SourceCodeFileExtension = "py",
                 ProgramFileName = "src.py",
-                UseUTF8 = true,
+                UseUtf8 = true,
                 MaxCompileTime = 20000,
                 JudgeDirectory = "JudgeTemp" + sparChar + "PythonJudge",
                 CompilerPath = "",
@@ -197,9 +203,9 @@ namespace Judger.Managers
         /// <returns>数据库配置</returns>
         private static DbLangConfig[] GetDefaultDbConfigs()
         {
-            List<DbLangConfig> langConfigs = new List<DbLangConfig>();
+            var langConfigs = new List<DbLangConfig>();
 
-            DbLangConfig mysql = new DbLangConfig
+            var mysql = new DbLangConfig
             {
                 Name = "mysql",
                 IsDbConfig = true,

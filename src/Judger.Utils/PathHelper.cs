@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace Judger.Utils
 {
@@ -32,13 +33,8 @@ namespace Judger.Utils
         {
             string[] files = Directory.GetFiles(directory);
 
-            foreach (string file in files)
-            {
-                if (Path.GetFileName(file).ToLower() == filename.ToLower())
-                    return file;
-            }
-
-            return null;
+            return files
+                .FirstOrDefault(file => string.Equals(Path.GetFileName(file), filename, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

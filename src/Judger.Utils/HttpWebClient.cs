@@ -38,8 +38,8 @@ namespace Judger.Utils
         /// <returns>请求结果</returns>
         public string UploadString(string address, string data, int maxTry)
         {
-            int tryCount = 0;
-            Exception lastEx = new Exception();
+            var tryCount = 0;
+            var lastEx = new Exception();
 
             while (tryCount++ < maxTry)
             {
@@ -64,8 +64,8 @@ namespace Judger.Utils
         /// <returns>请求结果</returns>
         public string DownloadString(string address, int maxTry)
         {
-            int tryCount = 0;
-            Exception lastEx = new Exception();
+            var tryCount = 0;
+            var lastEx = new Exception();
 
             while (tryCount++ < maxTry)
             {
@@ -186,8 +186,8 @@ namespace Judger.Utils
         /// <returns>请求结果</returns>
         public byte[] UploadData(string address, string data, int maxTry)
         {
-            int tryCount = 0;
-            Exception lastEx = new Exception();
+            var tryCount = 0;
+            var lastEx = new Exception();
 
             while (tryCount++ < maxTry)
             {
@@ -206,7 +206,7 @@ namespace Judger.Utils
 
         protected override WebRequest GetWebRequest(Uri address)
         {
-            HttpWebRequest request = (HttpWebRequest) base.GetWebRequest(address);
+            var request = (HttpWebRequest) base.GetWebRequest(address);
 
             request.Timeout = Timeout;
             request.ReadWriteTimeout = ReadWriteTimeout;
@@ -214,11 +214,9 @@ namespace Judger.Utils
 
             // 请求无ContentType
             if (string.IsNullOrEmpty(request.ContentType))
-            {
                 // 设置了默认ContentType
                 if (!string.IsNullOrEmpty(DefaultContentType))
                     request.ContentType = DefaultContentType;
-            }
 
             return request;
         }

@@ -19,12 +19,9 @@ namespace Judger.Utils
                 str = "";
 
             byte[] res;
-            using (MD5 md5 = MD5.Create())
-            {
-                res = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
-            }
+            using (MD5 md5 = MD5.Create()) res = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach (byte b in res)
                 sb.Append(b.ToString("x2"));
 

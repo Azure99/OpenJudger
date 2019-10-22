@@ -25,17 +25,17 @@ namespace Judger.Core.Database.Internal
         /// <summary>
         /// DbConnection类
         /// </summary>
-        private Type DbConnectionType { get; set; }
+        private Type DbConnectionType { get; }
 
         /// <summary>
         /// DbCommand类
         /// </summary>
-        private Type DbCommandType { get; set; }
+        private Type DbCommandType { get; }
 
         /// <summary>
         /// DbDriver程序集
         /// </summary>
-        private Assembly DriverAssembly { get; set; }
+        private Assembly DriverAssembly { get; }
 
         /// <summary>
         /// 创建数据库连接
@@ -46,7 +46,7 @@ namespace Judger.Core.Database.Internal
         public DbConnection CreateConnection(string connectionString, bool openConnection = true)
         {
             object[] args = {connectionString};
-            DbConnection conn = CreateInstance(DbConnectionType.FullName, args) as DbConnection;
+            var conn = CreateInstance(DbConnectionType.FullName, args) as DbConnection;
             if (conn != null && openConnection)
                 conn.Open();
 
@@ -62,7 +62,7 @@ namespace Judger.Core.Database.Internal
         public DbCommand CreateCommand(string cmdText, DbConnection connection)
         {
             object[] args = {cmdText, connection};
-            DbCommand command = CreateInstance(DbCommandType.FullName, args) as DbCommand;
+            var command = CreateInstance(DbCommandType.FullName, args) as DbCommand;
 
             return command;
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Judger.Fetcher.Generic.Entity;
 using Judger.Models;
 using Judger.Models.Exception;
@@ -28,15 +27,15 @@ namespace Judger.Fetcher.Generic
         public override JudgeContext[] Fetch()
         {
             string responseStr = HttpClient.UploadString(Config.TaskFetchUrl, CreateRequestBody());
-            ServerResponse response = SampleJsonSerializer.DeSerialize<ServerResponse>(responseStr);
+            var response = SampleJsonSerializer.DeSerialize<ServerResponse>(responseStr);
 
             if (response.Code == ResponseCode.NoTask)
                 return new JudgeContext[0];
-            
-            if(response.Code == ResponseCode.Fail || response.Code == ResponseCode.WrongToken)
+
+            if (response.Code == ResponseCode.Fail || response.Code == ResponseCode.WrongToken)
                 throw new FetcherException(response.Message);
-            
-            
+
+
             return CreateTaskContexts(response.Data);
         }
 
@@ -56,13 +55,13 @@ namespace Judger.Fetcher.Generic
         /// <returns>JudgeContexts</returns>
         private JudgeContext[] CreateTaskContexts(JToken data)
         {
-            InnerJudgeTask[] innerJudgeTasks = data.ToObject<InnerJudgeTask[]>();
+            var innerJudgeTasks = data.ToObject<InnerJudgeTask[]>();
 
             if (innerJudgeTasks == null || innerJudgeTasks.Length == 0)
                 return new JudgeContext[0];
 
-            List<JudgeContext> judgeTasks = new List<JudgeContext>();
-            foreach (var item in innerJudgeTasks)
+            var judgeTasks = new List<JudgeContext>();
+            foreach (InnerJudgeTask item in innerJudgeTasks)
             {
                 JudgeContext task = JudgeContextFactory.Create(
                     item.SubmitId, item.ProblemId, item.DataVersion,

@@ -15,7 +15,7 @@ namespace Judger.Fetcher
         /// <summary>
         /// Fetcher程序集
         /// </summary>
-        private static Assembly _fetcherAssembly;
+        private static readonly Assembly _fetcherAssembly;
 
         static FetcherFactory()
         {

@@ -26,7 +26,7 @@ namespace Judger.Core.Program.Internal
 
         private const string SPJ_INPUT_NAME = "input.txt";
         private const string SPJ_OUTPUT_NAME = "output.txt";
-        private const string SPJ_USEROUTPUT_NAME = "user.txt";
+        private const string SPJ_USER_OUTPUT_NAME = "user.txt";
 
         public SpecialSingleCaseJudger(JudgeContext judgeContext, JudgeContext spjContext)
         {
@@ -47,15 +47,15 @@ namespace Judger.Core.Program.Internal
 
         public SingleJudgeResult Judge(string input, string output)
         {
-            string userOutput = "";
-            string userError = "";
-            int exitcode = 0;
+            string userOutput;
+            string userError;
+            int exitCode;
             RuntimeMonitor monitor;
 
             using (ProcessRunner runner = CreateProcessRunner())
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
-                if (LangConfig.UseUTF8)
+                if (LangConfig.UseUtf8)
                     runner.Encoding = Encoding.UTF8;
 
                 // 创建监视器
@@ -70,13 +70,13 @@ namespace Judger.Core.Program.Internal
                 monitor.Start();
 
                 runner.OutputLimit = LangConfig.OutputLimit;
-                exitcode = runner.Run(input, out userOutput, out userError,
+                exitCode = runner.Run(input, out userOutput, out userError,
                     ProcessPriorityClass.RealTime, ConfigManager.Config.MonitorInterval * 2);
 
                 monitor.Dispose();
             }
 
-            SingleJudgeResult result = new SingleJudgeResult
+            var result = new SingleJudgeResult
             {
                 TimeCost = monitor.TimeCost,
                 MemoryCost = monitor.MemoryCost,
@@ -84,8 +84,8 @@ namespace Judger.Core.Program.Internal
                 ResultCode = JudgeResultCode.Accepted
             };
 
-            if ((userOutput.Length >= LangConfig.OutputLimit ||
-                 userError.Length >= LangConfig.OutputLimit))
+            if (userOutput.Length >= LangConfig.OutputLimit ||
+                userError.Length >= LangConfig.OutputLimit)
             {
                 result.ResultCode = JudgeResultCode.OutputLimitExceed;
                 return result;
@@ -93,13 +93,13 @@ namespace Judger.Core.Program.Internal
 
             if (monitor.LimitExceed)
             {
-                result.ResultCode = (JudgeTask.TimeLimit == monitor.TimeCost)
+                result.ResultCode = JudgeTask.TimeLimit == monitor.TimeCost
                     ? JudgeResultCode.TimeLimitExceed
                     : JudgeResultCode.MemoryLimitExceed;
                 return result;
             }
 
-            if (exitcode != 0) //判断是否运行错误
+            if (exitCode != 0) //判断是否运行错误
             {
                 result.ResultCode = JudgeResultCode.RuntimeError;
                 return result;
@@ -120,13 +120,13 @@ namespace Judger.Core.Program.Internal
         {
             string inputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_INPUT_NAME);
             string outputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_OUTPUT_NAME);
-            string userOutputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_USEROUTPUT_NAME);
+            string userOutputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_USER_OUTPUT_NAME);
             File.WriteAllText(inputPath, input);
             File.WriteAllText(outputPath, output);
             File.WriteAllText(userOutputPath, userOutput);
 
 
-            int exitcode = 0;
+            int exitCode;
             RuntimeMonitor monitor;
             using (ProcessRunner runner = CreateSpecialJudgeProcessRunner())
             {
@@ -142,7 +142,7 @@ namespace Judger.Core.Program.Internal
                 monitor.Start();
 
                 runner.OutputLimit = SpjLangConfig.OutputLimit;
-                exitcode = runner.Run("", out string o, out string e, ProcessPriorityClass.RealTime);
+                exitCode = runner.Run("", out string o, out string e, ProcessPriorityClass.RealTime);
                 monitor.Dispose();
             }
 
@@ -159,7 +159,7 @@ namespace Judger.Core.Program.Internal
                 throw new JudgeException("Special judge program time limit exceed");
             }
 
-            switch (exitcode)
+            switch (exitCode)
             {
                 case 0: return CompareResult.Accepted;
                 case 2: return CompareResult.PresentationError;
@@ -179,9 +179,9 @@ namespace Judger.Core.Program.Internal
         {
             string inputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_INPUT_NAME);
             string outputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_OUTPUT_NAME);
-            string userOutputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_USEROUTPUT_NAME);
+            string userOutputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_USER_OUTPUT_NAME);
 
-            string dataArgs = string.Format(" \"{0}\" \"{1}\" \"{2}\"", inputPath, outputPath, userOutputPath);
+            string dataArgs = $" \"{inputPath}\" \"{outputPath}\" \"{userOutputPath}\"";
 
             return new ProcessRunner(
                 SpjLangConfig.RunnerPath,

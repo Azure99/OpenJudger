@@ -11,17 +11,6 @@ namespace Judger.Models.Program
     public class ProgramLangConfig : ILangConfig
     {
         /// <summary>
-        /// 语言名称
-        /// </summary>
-        public string Name { get; set; } = "";
-
-        /// <summary>
-        /// 是否为数据库配置
-        /// </summary>
-        [JsonIgnore]
-        public bool IsDbConfig { get; set; }
-
-        /// <summary>
         /// 是否需要编译(脚本语言(如Python)不需要)
         /// </summary>
         public bool NeedCompile { get; set; } = true;
@@ -49,7 +38,7 @@ namespace Judger.Models.Program
         /// <summary>
         /// 使用UTF8编码读写流
         /// </summary>
-        public bool UseUTF8 { get; set; } = true;
+        public bool UseUtf8 { get; set; } = true;
 
         /// <summary>
         /// 最大编译时间
@@ -101,6 +90,17 @@ namespace Judger.Models.Program
         /// 时间消耗=真实时间*补偿系数，用于保证分布式判题机性能不同时结果一致
         /// </summary>
         public double TimeCompensation { get; set; } = 1.0;
+
+        /// <summary>
+        /// 语言名称
+        /// </summary>
+        public string Name { get; set; } = "";
+
+        /// <summary>
+        /// 是否为数据库配置
+        /// </summary>
+        [JsonIgnore]
+        public bool IsDbConfig { get; set; }
 
         public object Clone()
         {

@@ -15,8 +15,8 @@ namespace Judger.Service
     public class JudgeController
     {
         // 评测任务等待队列
-        private ConcurrentQueue<JudgeContext> _judgeQueue = new ConcurrentQueue<JudgeContext>();
-        private object _queueLock = new object();
+        private readonly ConcurrentQueue<JudgeContext> _judgeQueue = new ConcurrentQueue<JudgeContext>();
+        private readonly object _queueLock = new object();
         private Configuration Config { get; } = ConfigManager.Config;
 
         /// <summary>
@@ -27,10 +27,7 @@ namespace Judger.Service
         /// <summary>
         /// 在等待队列中的评测任务数量
         /// </summary>
-        public int InQueueCount
-        {
-            get { return _judgeQueue.Count; }
-        }
+        public int InQueueCount => _judgeQueue.Count;
 
         /// <summary>
         /// 添加JudgeTask
@@ -46,7 +43,7 @@ namespace Judger.Service
         /// <summary>
         /// 检查是否可以进行新任务
         /// </summary>
-        public void CheckTask()
+        private void CheckTask()
         {
             lock (_queueLock)
             {
@@ -71,7 +68,7 @@ namespace Judger.Service
         /// <param name="judgeTaskObject">JudgeTask对象</param>
         private void RunJudgeTask(object judgeTaskObject)
         {
-            JudgeContext context = judgeTaskObject as JudgeContext;
+            var context = judgeTaskObject as JudgeContext;
 
             try
             {
@@ -82,10 +79,7 @@ namespace Judger.Service
                 LogException(ex);
             }
 
-            lock (_queueLock)
-            {
-                RunningCount--;
-            }
+            lock (_queueLock) RunningCount--;
 
             //重新检查是否有任务
             CheckTask();
@@ -116,7 +110,7 @@ namespace Judger.Service
             {
                 LogJudgeFailed(ex, task.SubmitId);
                 context.Result = CreateFailedJudgeResult(context, ex.ToString());
-                throw ex;
+                throw;
             }
             finally
             {
@@ -148,7 +142,7 @@ namespace Judger.Service
         /// <returns>结果为失败的JudgeResult</returns>
         private JudgeResult CreateFailedJudgeResult(JudgeContext context, string message = "")
         {
-            JudgeResult result = new JudgeResult
+            var result = new JudgeResult
             {
                 Author = context.Task.Author,
                 JudgeDetail = message,
@@ -178,17 +172,16 @@ namespace Judger.Service
         private void LogAddTask(JudgeContext context)
         {
             JudgeTask task = context.Task;
-            LogManager.Info(string.Format(
-                "New task: SubmitID:{0} Language:{1} CodeLength:{2} ProblemID:{3} Author:{4}",
-                task.SubmitId, task.Language, task.SourceCode.Length, task.ProblemId, task.Author));
+            LogManager.Info(
+                $"New task: SubmitID:{task.SubmitId} Language:{task.Language} " +
+                $"CodeLength:{task.SourceCode.Length} ProblemID:{task.ProblemId} Author:{task.Author}");
         }
 
         private void LogJudgeResult(JudgeResult result)
         {
-            LogManager.Info(string.Format(
-                "Task {0} result: Time:{1} Mem:{2} Code:{3} PassRate:{4} Details:{5} ",
-                result.SubmitId, result.TimeCost, result.MemoryCost, result.ResultCode,
-                result.PassRate, result.JudgeDetail));
+            LogManager.Info(
+                $"Task {result.SubmitId} result: Time:{result.TimeCost} Mem:{result.MemoryCost} " +
+                $"Code:{result.ResultCode} PassRate:{result.PassRate} Details:{result.JudgeDetail} ");
         }
 
         private void LogInvalidTestData(int problemId)

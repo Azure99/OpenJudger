@@ -1,5 +1,4 @@
-﻿using System;
-using Judger.Fetcher.Generic.Entity;
+﻿using Judger.Fetcher.Generic.Entity;
 using Judger.Models;
 using Judger.Models.Exception;
 using Judger.Models.Judge;
@@ -29,11 +28,11 @@ namespace Judger.Fetcher.Generic
         public override bool Submit(JudgeContext context)
         {
             string responseStr = HttpClient.UploadString(Config.ResultSubmitUrl, CreateRequestBody(context.Result), 3);
-            ServerResponse response = SampleJsonSerializer.DeSerialize<ServerResponse>(responseStr);
-            
-            if(response.Code == ResponseCode.Fail || response.Code == ResponseCode.WrongToken)
+            var response = SampleJsonSerializer.DeSerialize<ServerResponse>(responseStr);
+
+            if (response.Code == ResponseCode.Fail || response.Code == ResponseCode.WrongToken)
                 throw new FetcherException(context.Result.SubmitId + " submit failed: " + response.Message);
-            
+
             return true;
         }
 
@@ -43,7 +42,7 @@ namespace Judger.Fetcher.Generic
         /// <returns>提交测试结果的请求</returns>
         private string CreateRequestBody(JudgeResult result)
         {
-            InnerJudgeResult judgeResult = new InnerJudgeResult
+            var judgeResult = new InnerJudgeResult
             {
                 SubmitId = result.SubmitId,
                 JudgeDetail = result.JudgeDetail,

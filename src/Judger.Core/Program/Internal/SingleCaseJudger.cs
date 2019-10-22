@@ -31,20 +31,20 @@ namespace Judger.Core.Program.Internal
             LangConfig = context.LangConfig as ProgramLangConfig;
         }
 
-        private JudgeTask JudgeTask { get; set; }
-        private ProgramLangConfig LangConfig { get; set; }
+        private JudgeTask JudgeTask { get; }
+        private ProgramLangConfig LangConfig { get; }
 
         public SingleJudgeResult Judge(string input, string output)
         {
-            string userOutput = "";
-            string userError = "";
-            int exitcode = 0;
+            var userOutput = "";
+            var userError = "";
+            var exitCode = 0;
             RuntimeMonitor monitor;
 
             using (ProcessRunner runner = CreateProcessRunner())
             {
                 runner.ProcessorAffinity = JudgeTask.ProcessorAffinity;
-                if (LangConfig.UseUTF8)
+                if (LangConfig.UseUtf8)
                     runner.Encoding = Encoding.UTF8;
 
                 // 创建监视器
@@ -59,13 +59,13 @@ namespace Judger.Core.Program.Internal
                 monitor.Start();
 
                 runner.OutputLimit = LangConfig.OutputLimit;
-                exitcode = runner.Run(input, out userOutput, out userError,
+                exitCode = runner.Run(input, out userOutput, out userError,
                     ProcessPriorityClass.RealTime, ConfigManager.Config.MonitorInterval * 2);
 
                 monitor.Dispose();
             }
 
-            SingleJudgeResult result = new SingleJudgeResult
+            var result = new SingleJudgeResult
             {
                 TimeCost = monitor.TimeCost,
                 MemoryCost = monitor.MemoryCost,
@@ -73,8 +73,8 @@ namespace Judger.Core.Program.Internal
                 ResultCode = JudgeResultCode.Accepted
             };
 
-            if ((userOutput.Length >= LangConfig.OutputLimit ||
-                 userError.Length >= LangConfig.OutputLimit))
+            if (userOutput.Length >= LangConfig.OutputLimit ||
+                userError.Length >= LangConfig.OutputLimit)
             {
                 result.ResultCode = JudgeResultCode.OutputLimitExceed;
                 return result;
@@ -82,13 +82,13 @@ namespace Judger.Core.Program.Internal
 
             if (monitor.LimitExceed)
             {
-                result.ResultCode = (JudgeTask.TimeLimit == monitor.TimeCost)
+                result.ResultCode = JudgeTask.TimeLimit == monitor.TimeCost
                     ? JudgeResultCode.TimeLimitExceed
                     : JudgeResultCode.MemoryLimitExceed;
                 return result;
             }
 
-            if (exitcode != 0) //判断是否运行错误
+            if (exitCode != 0) //判断是否运行错误
             {
                 result.ResultCode = JudgeResultCode.RuntimeError;
                 return result;
@@ -132,8 +132,8 @@ namespace Judger.Core.Program.Internal
 
             if (crtLength == usrLength)
             {
-                bool correct = true;
-                for (int i = 0; i < crtLength; i++)
+                var correct = true;
+                for (var i = 0; i < crtLength; i++)
                 {
                     if (crtArr[i] != usrArr[i])
                     {
@@ -146,13 +146,13 @@ namespace Judger.Core.Program.Internal
                     return CompareResult.Accepted;
             }
 
-            bool wrongAnswer = false;
+            var wrongAnswer = false;
             //判断PE不再重新生成去空数组，减少时空开销
-            int crtPos = 0;
-            int usrPos = 0;
+            var crtPos = 0;
+            var usrPos = 0;
             while (crtPos < crtLength && usrPos < usrLength)
             {
-                bool jump = false;
+                var jump = false;
                 while (crtPos < crtLength && crtArr[crtPos] == "") //跳过空白行
                 {
                     crtPos++;

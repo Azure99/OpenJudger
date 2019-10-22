@@ -13,11 +13,11 @@ namespace Judger.Managers
         /// <summary>
         /// 数据库配置字典
         /// </summary>
-        private static Dictionary<string, DbLangConfig> _dbDic = new Dictionary<string, DbLangConfig>();
+        private static readonly Dictionary<string, DbLangConfig> _dbDic = new Dictionary<string, DbLangConfig>();
 
         static DbManager()
         {
-            foreach (var dbConf in Config.Databases)
+            foreach (DbLangConfig dbConf in Config.Databases)
             {
                 if (!_dbDic.ContainsKey(dbConf.Name))
                     _dbDic.Add(dbConf.Name, dbConf);

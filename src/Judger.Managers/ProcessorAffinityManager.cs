@@ -7,17 +7,17 @@ namespace Judger.Managers
     /// </summary>
     public static class ProcessorAffinityManager
     {
-        private static object _lock = new object();
+        private static readonly object _lock = new object();
 
         /// <summary>
         /// CPU核心数
         /// </summary>
-        private static int _processorCount;
+        private static readonly int _processorCount;
 
         /// <summary>
         /// 默认亲和性
         /// </summary>
-        private static int _defaultAffinity;
+        private static readonly int _defaultAffinity;
 
         /// <summary>
         /// 被使用的核心(二进制表示)
@@ -27,17 +27,14 @@ namespace Judger.Managers
         static ProcessorAffinityManager()
         {
             _processorCount = Environment.ProcessorCount;
-            for (int i = 0; i < _processorCount; i++)
-                _defaultAffinity += (1 << i);
+            for (var i = 0; i < _processorCount; i++)
+                _defaultAffinity += 1 << i;
         }
 
         /// <summary>
         /// 默认处理器亲和性
         /// </summary>
-        public static IntPtr DefaultAffinity
-        {
-            get { return new IntPtr(_defaultAffinity); }
-        }
+        public static IntPtr DefaultAffinity => new IntPtr(_defaultAffinity);
 
         /// <summary>
         /// 申请处理器使用权
@@ -47,11 +44,11 @@ namespace Judger.Managers
             lock (_lock)
             {
                 int affinity = _defaultAffinity;
-                for (int i = 0; i < _processorCount; i++) // 遍历所有处理器核心
+                for (var i = 0; i < _processorCount; i++) // 遍历所有处理器核心
                 {
                     if ((_usingProcessor & (1 << i)) == 0) // 判断此处理器核心是否被占用
                     {
-                        affinity = (1 << i);
+                        affinity = 1 << i;
                         _usingProcessor |= affinity;
                         break;
                     }

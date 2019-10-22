@@ -1,4 +1,5 @@
-﻿using Judger.Models;
+﻿using System;
+using Judger.Models;
 using Judger.Models.Judge;
 
 namespace Judger.Fetcher.SDNUOJ
@@ -20,7 +21,7 @@ namespace Judger.Fetcher.SDNUOJ
         /// </summary>
         private string CreateResultBody(JudgeResult result)
         {
-            int resultCode = 0;
+            var resultCode = 0;
             switch (result.ResultCode)
             {
                 case JudgeResultCode.Accepted:
@@ -50,6 +51,8 @@ namespace Judger.Fetcher.SDNUOJ
                 case JudgeResultCode.WrongAnswer:
                     resultCode = 8;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             int sid = result.SubmitId;
@@ -58,9 +61,9 @@ namespace Judger.Fetcher.SDNUOJ
             int memCost = result.MemoryCost;
             int pid = result.ProblemId;
             string username = result.Author;
-            string body = string.Format(
-                "sid={0}&resultcode={1}&detail={2}&timecost={3}&memorycost={4}&pid={5}&username={6}",
-                sid, resultCode, detail, timeCost, memCost, pid, username);
+            string body =
+                $"sid={sid}&resultcode={resultCode}&detail={detail}" +
+                $"&timecost={timeCost}&memorycost={memCost}&pid={pid}&username={username}";
 
             return body;
         }

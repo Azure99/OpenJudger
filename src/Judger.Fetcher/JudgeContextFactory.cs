@@ -35,7 +35,7 @@ namespace Judger.Fetcher
             int timeLimit = 1000, int memoryLimit = 262144, bool judgeAllCases = false,
             bool specialJudge = false, bool dbJudge = false)
         {
-            JudgeType judgeType = JudgeType.ProgramJudge;
+            var judgeType = JudgeType.ProgramJudge;
             if (dbJudge)
                 judgeType = JudgeType.DbJudge;
             else if (specialJudge)
@@ -74,16 +74,15 @@ namespace Judger.Fetcher
 
             // 分配评测临时目录
             string tempDirectory = RandomString.Next(16);
-            if (langConfig is ProgramLangConfig)
+            if (langConfig is ProgramLangConfig langCfg)
             {
-                ProgramLangConfig langCfg = langConfig as ProgramLangConfig;
                 tempDirectory = GetTempDirectory(langCfg.JudgeDirectory);
                 UpdatePathInfo(langCfg, tempDirectory);
             }
 
             double timeCompensation = GetTimeCompensation(langConfig);
 
-            JudgeTask task = new JudgeTask
+            var task = new JudgeTask
             {
                 SubmitId = submitId,
                 ProblemId = problemId,
@@ -97,7 +96,7 @@ namespace Judger.Fetcher
                 JudgeType = judgeType
             };
 
-            JudgeResult result = new JudgeResult
+            var result = new JudgeResult
             {
                 SubmitId = task.SubmitId,
                 ProblemId = task.ProblemId,
@@ -166,7 +165,12 @@ namespace Judger.Fetcher
         /// <returns>时间补偿系数</returns>
         private static double GetTimeCompensation(ILangConfig langConfig)
         {
-            return langConfig is ProgramLangConfig ? (langConfig as ProgramLangConfig).TimeCompensation : 1;
+            if (langConfig is ProgramLangConfig config)
+            {
+                return config.TimeCompensation;
+            }
+
+            return 1;
         }
     }
 }

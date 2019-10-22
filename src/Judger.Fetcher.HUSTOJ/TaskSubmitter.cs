@@ -17,7 +17,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// </summary>
         private string CreateResultBody(JudgeResult result)
         {
-            int resultCode = 0;
+            int resultCode;
             switch (result.ResultCode)
             {
                 case JudgeResultCode.Accepted:
@@ -47,11 +47,14 @@ namespace Judger.Fetcher.HUSTOJ
                 case JudgeResultCode.WrongAnswer:
                     resultCode = 6;
                     break;
+                default:
+                    resultCode = 0;
+                    break;
             }
 
-            string body = string.Format(
-                "update_solution=1&sid={0}&result={1}&time={2}&memory={3}&sim=0&simid=0&pass_rate={4}",
-                result.SubmitId, resultCode, result.TimeCost, result.MemoryCost, result.PassRate);
+            string body =
+                $"update_solution=1&sid={result.SubmitId}&result={resultCode}&time={result.TimeCost}" +
+                $"&memory={result.MemoryCost}&sim=0&simid=0&pass_rate={result.PassRate}";
 
             return body;
         }

@@ -10,16 +10,16 @@ namespace Judger.Utils
     public static class RandomString
     {
         // 字符表
-        private static char[] _chars;
+        private static readonly char[] _chars;
 
         static RandomString()
         {
-            List<char> charsList = new List<char>();
+            var charsList = new List<char>();
 
-            for (int i = 0; i <= 9; i++)
+            for (var i = 0; i <= 9; i++)
                 charsList.Add((char) ('0' + i));
 
-            for (int i = 0; i < 26; i++)
+            for (var i = 0; i < 26; i++)
             {
                 charsList.Add((char) ('a' + i));
                 charsList.Add((char) ('A' + i));
@@ -35,10 +35,10 @@ namespace Judger.Utils
         /// <returns>随机字符串</returns>
         public static string Next(int length)
         {
-            Random random = new Random();
-            StringBuilder sb = new StringBuilder();
+            var random = new Random();
+            var sb = new StringBuilder();
 
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
                 char chr = _chars[random.Next(0, _chars.Length - 1)];
                 sb.Append(chr);
