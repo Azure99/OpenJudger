@@ -9,15 +9,8 @@ namespace Judger
     /// </summary>
     public static class Startup
     {
-        /// <summary>
-        /// 评测服务
-        /// </summary>
         public static JudgeService Service { get; private set; }
 
-        /// <summary>
-        /// 运行Jugder
-        /// </summary>
-        /// <param name="args"></param>
         public static void Run(string[] args)
         {
             Console.WriteLine("--- Open Judger ---");
@@ -25,7 +18,7 @@ namespace Judger
             StartUp();
             Console.WriteLine("All done!");
 
-            CommandLine.Read();
+            CommandLine.Loop();
         }
 
         /// <summary>
@@ -42,9 +35,6 @@ namespace Judger
             LogManager.Info("Judger started");
         }
 
-        /// <summary>
-        /// 设置应用Handle
-        /// </summary>
         private static void SetAppHandle()
         {
             AppDomain.CurrentDomain.UnhandledException += LogManager.OnUnhandledException;
