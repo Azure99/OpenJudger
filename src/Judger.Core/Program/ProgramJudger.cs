@@ -61,7 +61,7 @@ namespace Judger.Core.Program
             var judger = new SingleCaseJudger(Context);
 
             // 获取所有测试点文件名
-            Tuple<string, string>[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemId);
+            ProgramTestDataFile[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemId);
             if (dataFiles.Length == 0) // 无测试数据
             {
                 result.ResultCode = JudgeResultCode.JudgeFailed;
@@ -75,11 +75,9 @@ namespace Judger.Core.Program
                 try
                 {
                     // 读入测试数据
-                    TestDataManager.GetTestData(
-                        JudgeTask.ProblemId, dataFiles[i].Item1, dataFiles[i].Item2,
-                        out string input, out string output);
+                    ProgramTestData data = TestDataManager.GetTestData(JudgeTask.ProblemId, dataFiles[i]);
 
-                    SingleJudgeResult singleRes = judger.Judge(input, output); // 测试此测试点
+                    SingleJudgeResult singleRes = judger.Judge(data.Input, data.Output); // 测试此测试点
 
                     // 评测所有测试点时, 只记录第一组出错的信息
                     if (result.ResultCode == JudgeResultCode.Accepted)

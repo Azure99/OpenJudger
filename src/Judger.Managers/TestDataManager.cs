@@ -72,10 +72,10 @@ namespace Judger.Managers
         private static Configuration Config { get; } = ConfigManager.Config;
 
         /// <summary>
-        /// 检查测试数据版本是否正确, 若不正确返回false, 需要重新获取数据
+        /// 检查本地测试数据版本是否与最新版本一致, 如果不是就需要重新获取数据
         /// </summary>
         /// <param name="problemId">问题ID</param>
-        /// <param name="version">欲检测版本</param>
+        /// <param name="version">最新版本</param>
         public static bool CheckData(int problemId, string version)
         {
             string dirPath = Cmb(Config.TestDataDirectory, problemId);
@@ -137,8 +137,8 @@ namespace Judger.Managers
         /// 获取测试数据文件名列表, 使用GetTestData方法获取具体数据
         /// </summary>
         /// <param name="problemId">问题ID</param>
-        /// <returns>测试数据(输入/输出)文件名，使用元组数组保存</returns>
-        public static Tuple<string, string>[] GetTestDataFilesName(int problemId)
+        /// <returns>测试数据(输入/输出)文件名</returns>
+        public static ProgramTestDataFile[] GetTestDataFilesName(int problemId)
         {
             string dirPath = Cmb(Config.TestDataDirectory, problemId);
 
@@ -159,35 +159,36 @@ namespace Judger.Managers
                 from output in outputFiles
                 where Path.GetFileNameWithoutExtension(input) ==
                       Path.GetFileNameWithoutExtension(output)
-                select new
+                select new ProgramTestDataFile
                 {
+                    Name = Path.GetFileNameWithoutExtension(input),
                     InputFile = input,
                     OutputFile = output
                 };
 
-            return query
-                .Select(
-                    testData => new Tuple<string, string>(testData.InputFile, testData.OutputFile))
-                .ToArray();
+            return query.ToArray();
         }
 
         /// <summary>
         /// 获取指定的测试数据
         /// </summary>
         /// <param name="problemId">题目ID</param>
-        /// <param name="inputName">测试输入名称</param>
-        /// <param name="outputName">测试输出名称</param>
-        /// <param name="input">测试输入</param>
-        /// <param name="output">测试输出</param>
-        public static void GetTestData(int problemId, string inputName, string outputName,
-            out string input, out string output)
+        /// <param name="dataFile">程序测试数据文件</param>
+        /// <returns>测试数据</returns>
+        public static ProgramTestData GetTestData(int problemId, ProgramTestDataFile dataFile)
         {
+            string inputName = dataFile.InputFile;
+            string outputName = dataFile.OutputFile;
             string dirPath = Cmb(Config.TestDataDirectory, problemId);
 
             lock (GetDataLock(problemId))
             {
-                input = File.ReadAllText(Cmb(dirPath, DIR_INPUT, inputName));
-                output = File.ReadAllText(Cmb(dirPath, DIR_OUTPUT, outputName));
+                return new ProgramTestData
+                {
+                    Name = Path.GetFileNameWithoutExtension(inputName),
+                    Input =  File.ReadAllText(Cmb(dirPath, DIR_INPUT, inputName)),
+                    Output =  File.ReadAllText(Cmb(dirPath, DIR_OUTPUT, outputName))
+                };
             }
         }
 
