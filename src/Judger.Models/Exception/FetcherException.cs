@@ -3,7 +3,7 @@
     /// <summary>
     /// Fetcher异常
     /// </summary>
-    public class FetcherException : System.Exception
+    public class FetcherException : BaseException
     {
         /// <summary>
         /// Fetcher异常

@@ -3,7 +3,7 @@
     /// <summary>
     /// 判题异常
     /// </summary>
-    public class JudgeException : System.Exception
+    public class JudgeException : BaseException
     {
         /// <summary>
         /// 判题异常

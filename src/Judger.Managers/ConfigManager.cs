@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Judger.Models;
 using Judger.Models.Database;
+using Judger.Models.Exception;
 using Judger.Models.Program;
 using Judger.Utils;
 
@@ -75,19 +76,14 @@ namespace Judger.Managers
                     return item.Clone() as ProgramLangConfig;
             }
 
-            
-
             DbLangConfig[] dbConfigs = Config.Databases;
-            foreach (DbLangConfig item in dbConfigs)
+            foreach (var item in dbConfigs)
             {
                 if (item.Name == languageName)
                     return item.Clone() as DbLangConfig;
             }
 
-            return Config.Databases
-                .Where(i => i.Name == languageName)
-                .Select(i => i.Clone() as DbLangConfig)
-                .FirstOrDefault();
+            throw new LanguageNotFoundException(languageName);
         }
 
         /// <summary>
