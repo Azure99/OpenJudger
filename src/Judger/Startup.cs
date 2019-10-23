@@ -4,9 +4,6 @@ using Judger.Service;
 
 namespace Judger
 {
-    /// <summary>
-    /// Judger启动类
-    /// </summary>
     public static class Startup
     {
         public static JudgeService Service { get; private set; }

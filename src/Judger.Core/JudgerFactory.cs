@@ -6,13 +6,10 @@ using Judger.Models.Judge;
 
 namespace Judger.Core
 {
-    /// <summary>
-    /// Judger工厂
-    /// </summary>
     public static class JudgerFactory
     {
         /// <summary>
-        /// 创建Judger实例
+        /// 根据上下文创建Judger实例
         /// </summary>
         /// <param name="context">JudgeContext</param>
         /// <returns>Judger实例</returns>

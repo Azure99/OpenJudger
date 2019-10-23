@@ -46,10 +46,10 @@ namespace Judger.Core.Program
                 var compiler = new Compiler(Context);
                 string compileRes = compiler.Compile();
 
-                //检查是否有编译错误(compileRes不为空则代表有错误)
+                // 检查是否有编译错误(compileRes不为空则代表有错误)
                 if (!string.IsNullOrEmpty(compileRes))
                 {
-                    //去除路径信息
+                    // 去除路径信息
                     result.JudgeDetail = compileRes.Replace(Context.TempDirectory, "");
                     result.ResultCode = JudgeResultCode.CompileError;
                     result.MemoryCost = 0;
@@ -57,29 +57,29 @@ namespace Judger.Core.Program
                 }
             }
 
-            //创建单例Judger
+            // 创建单例Judger
             var judger = new SingleCaseJudger(Context);
 
-            //获取所有测试点文件名
+            // 获取所有测试点文件名
             Tuple<string, string>[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemId);
-            if (dataFiles.Length == 0) //无测试数据
+            if (dataFiles.Length == 0) // 无测试数据
             {
                 result.ResultCode = JudgeResultCode.JudgeFailed;
                 result.JudgeDetail = "No test data.";
                 return;
             }
 
-            var acceptedCasesCount = 0; //通过的测试点数
+            var acceptedCasesCount = 0; // 通过的测试点数
             for (var i = 0; i < dataFiles.Length; i++)
             {
                 try
                 {
-                    //读入测试数据
+                    // 读入测试数据
                     TestDataManager.GetTestData(
                         JudgeTask.ProblemId, dataFiles[i].Item1, dataFiles[i].Item2,
                         out string input, out string output);
 
-                    SingleJudgeResult singleRes = judger.Judge(input, output); //测试此测试点
+                    SingleJudgeResult singleRes = judger.Judge(input, output); // 测试此测试点
 
                     // 评测所有测试点时, 只记录第一组出错的信息
                     if (result.ResultCode == JudgeResultCode.Accepted)
@@ -115,16 +115,16 @@ namespace Judger.Core.Program
                 }
             }
 
-            //去除目录信息
+            // 去除目录信息
             result.JudgeDetail = result.JudgeDetail.Replace(Context.TempDirectory, "");
 
-            //通过率
+            // 通过率
             result.PassRate = (double) acceptedCasesCount / dataFiles.Length;
         }
 
         public override void Dispose()
         {
-            // 释放占用的独立处理器核心
+            // 释放占用的处理器核心
             ProcessorAffinityManager.ReleaseUsage(JudgeTask.ProcessorAffinity);
             DeleteTempDirectory();
         }
@@ -134,7 +134,7 @@ namespace Judger.Core.Program
         /// </summary>
         private void DeleteTempDirectory()
         {
-            //判题结束时文件可能仍然被占用，尝试删除
+            // 判题结束时文件可能仍然被占用，尝试删除
             new Task(() =>
             {
                 var tryCount = 0;

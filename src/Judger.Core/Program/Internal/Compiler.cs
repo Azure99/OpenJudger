@@ -7,9 +7,6 @@ using Judger.Utils;
 
 namespace Judger.Core.Program.Internal
 {
-    /// <summary>
-    /// 程序编译器
-    /// </summary>
     public class Compiler
     {
         public Compiler(JudgeContext context)
@@ -24,7 +21,7 @@ namespace Judger.Core.Program.Internal
         /// <summary>
         /// 编译评测任务的代码
         /// </summary>
-        /// <returns></returns>
+        /// <returns>信息(不为空则有编译错误)</returns>
         public string Compile()
         {
             using (ProcessRunner runner = CreateProcessRunner())

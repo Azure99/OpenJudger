@@ -49,7 +49,7 @@ namespace Judger.Core.Program.Internal
                     }
                     catch
                     {
-                        // 若语言信息不规范, 直接忽略当前语言所有规则
+                        // 若此语言的拦截规则不规范, 直接忽略当前语言所有规则
                         nowLang = "";
                         LogManager.Error("Can not parse interception rules!");
                     }

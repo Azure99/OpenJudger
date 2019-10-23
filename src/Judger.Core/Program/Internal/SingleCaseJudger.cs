@@ -88,13 +88,13 @@ namespace Judger.Core.Program.Internal
                 return result;
             }
 
-            if (exitCode != 0) //判断是否运行错误
+            if (exitCode != 0) // 判断是否运行错误
             {
                 result.ResultCode = JudgeResultCode.RuntimeError;
                 return result;
             }
 
-            CompareResult cmpResult = CompareAnswer(output, userOutput); //对比答案输出
+            CompareResult cmpResult = CompareAnswer(output, userOutput); // 对比答案输出
             if (cmpResult == CompareResult.Accepted)
                 result.ResultCode = JudgeResultCode.Accepted;
             else if (cmpResult == CompareResult.PresentationError)
@@ -123,7 +123,7 @@ namespace Judger.Core.Program.Internal
             int crtLength = crtArr.Length;
             int usrLength = usrArr.Length;
 
-            //替代TrimEnd('\n'), 以减少内存开销
+            // 替代TrimEnd('\n'), 以减少内存开销
             while (crtLength > 0 && string.IsNullOrEmpty(crtArr[crtLength - 1]))
                 crtLength--;
 
@@ -142,7 +142,7 @@ namespace Judger.Core.Program.Internal
                     }
                 }
 
-                if (correct) //Accepted
+                if (correct) // Accepted
                     return CompareResult.Accepted;
             }
 
@@ -153,7 +153,7 @@ namespace Judger.Core.Program.Internal
             while (crtPos < crtLength && usrPos < usrLength)
             {
                 var jump = false;
-                while (crtPos < crtLength && crtArr[crtPos] == "") //跳过空白行
+                while (crtPos < crtLength && crtArr[crtPos] == "") // 跳过空白行
                 {
                     crtPos++;
                     jump = true;
@@ -178,7 +178,7 @@ namespace Judger.Core.Program.Internal
                 usrPos++;
             }
 
-            while (crtPos < crtLength && crtArr[crtPos] == "") //跳过空白行
+            while (crtPos < crtLength && crtArr[crtPos] == "") // 跳过空白行
                 crtPos++;
 
             while (usrPos < usrLength && usrArr[usrPos] == "")
