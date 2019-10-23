@@ -26,7 +26,7 @@ namespace Judger.Core
         /// <summary>
         /// 评测此任务
         /// </summary>
-        /// <returns>评测结果s</returns>
+        /// <returns>评测结果</returns>
         public abstract void Judge();
     }
 }

@@ -10,9 +10,9 @@ namespace Judger.Models.Database
     public class DbLangConfig : ILangConfig
     {
         /// <summary>
-        /// 对查询字段是否大小写敏感
+        /// 数据库管理系统名称
         /// </summary>
-        public bool CaseSensitive { get; set; } = false;
+        public string Name { get; set; } = "";
 
         /// <summary>
         /// 数据库驱动路径
@@ -45,6 +45,11 @@ namespace Judger.Models.Database
         public string ConnStringTemplate { get; set; } = "";
 
         /// <summary>
+        /// 对查询字段是否大小写敏感
+        /// </summary>
+        public bool CaseSensitive { get; set; } = false;
+
+        /// <summary>
         /// 数据库的连接字符串
         /// </summary>
         [JsonIgnore]
@@ -61,11 +66,6 @@ namespace Judger.Models.Database
                 return connString;
             }
         }
-
-        /// <summary>
-        /// 数据库管理系统名称
-        /// </summary>
-        public string Name { get; set; } = "";
 
         /// <summary>
         /// 是否为数据库配置
