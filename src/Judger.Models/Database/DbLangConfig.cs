@@ -53,19 +53,11 @@ namespace Judger.Models.Database
         /// 数据库的连接字符串
         /// </summary>
         [JsonIgnore]
-        public string ConnectionString
-        {
-            get
-            {
-                string connString = ConnStringTemplate;
-                connString = connString.Replace("<Server>", Server);
-                connString = connString.Replace("<Database>", Database);
-                connString = connString.Replace("<User>", User);
-                connString = connString.Replace("<Password>", Password);
-
-                return connString;
-            }
-        }
+        public string ConnectionString => ConnStringTemplate
+            .Replace("<Server>", Server)
+            .Replace("<Database>", Database)
+            .Replace("<User>", User)
+            .Replace("<Password>", Password);
 
         /// <summary>
         /// 是否为数据库配置
