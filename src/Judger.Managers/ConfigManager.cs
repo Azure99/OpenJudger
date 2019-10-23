@@ -14,24 +14,16 @@ namespace Judger.Managers
     /// </summary>
     public static class ConfigManager
     {
+        private const string CONFIG_FILE_NAME = "Config.json";
+
         static ConfigManager()
         {
-            FileHelper.TryReadAllText("Config.json", out string configJson);
+            FileHelper.TryReadAllText(CONFIG_FILE_NAME, out string configJson);
 
-            if (string.IsNullOrEmpty(configJson)) //创建新配置文件
-            {
-                Config = new Configuration
-                {
-                    Languages = GetDefaultLangConfigs(),
-                    Databases = GetDefaultDbConfigs(),
-                    Password = RandomString.Next(16)
-                };
-                Config.AdditionalConfigs.Add("SampleKey", "SampleValue");
-            }
+            if (string.IsNullOrEmpty(configJson)) // 创建新配置文件
+                Config = CreateNewConfig();
             else
-            {
                 Config = SampleJsonSerializer.DeSerialize<Configuration>(configJson);
-            }
 
             SetIsDbConfigField();
             SaveConfig();
@@ -54,12 +46,21 @@ namespace Judger.Managers
                 item.IsDbConfig = true;
         }
 
-        /// <summary>
-        /// 保存配置信息
-        /// </summary>
+        public static Configuration CreateNewConfig()
+        {
+            var config = new Configuration
+            {
+                Languages = GetDefaultLangConfigs(),
+                Databases = GetDefaultDbConfigs(),
+                Password = RandomString.Next(16)
+            };
+            Config.AdditionalConfigs.Add("SampleKey", "SampleValue");
+            return config;
+        }
+
         public static void SaveConfig()
         {
-            FileHelper.TryWriteAllText("Config.json", SampleJsonSerializer.Serialize(Config));
+            FileHelper.TryWriteAllText(CONFIG_FILE_NAME, SampleJsonSerializer.Serialize(Config));
         }
 
         /// <summary>
@@ -86,10 +87,6 @@ namespace Judger.Managers
             throw new LanguageNotFoundException(languageName);
         }
 
-        /// <summary>
-        /// 获取默认编程语言配置
-        /// </summary>
-        /// <returns>编程语言配置</returns>
         private static ProgramLangConfig[] GetDefaultLangConfigs()
         {
             char sparChar = Path.DirectorySeparatorChar;
@@ -193,10 +190,6 @@ namespace Judger.Managers
             return langConfigs.ToArray();
         }
 
-        /// <summary>
-        /// 获取默认数据库配置
-        /// </summary>
-        /// <returns>数据库配置</returns>
         private static DbLangConfig[] GetDefaultDbConfigs()
         {
             var langConfigs = new List<DbLangConfig>();
