@@ -27,20 +27,9 @@ namespace Judger.Core.Database.Internal
             _caseSensitive = (context.LangConfig as DbLangConfig).CaseSensitive;
         }
 
-        /// <summary>
-        /// 用户的数据库操作器
-        /// </summary>
-        private BaseDbOperator UserOperator { get; }
-
-        /// <summary>
-        /// 评测上下文
-        /// </summary>
         private JudgeContext JudgeContext { get; }
-
-        /// <summary>
-        /// 评测任务
-        /// </summary>
         private JudgeTask JudgeTask { get; }
+        private BaseDbOperator UserOperator { get; }
 
         /// <summary>
         /// 评测一组用例
@@ -51,15 +40,14 @@ namespace Judger.Core.Database.Internal
         /// <returns></returns>
         public SingleJudgeResult Judge(string stdInput, DbData stdOutput, DbQueryData stdQuery)
         {
-            var sw = new Stopwatch();
+            var watch = new Stopwatch();
             DbQueryData usrQuery;
             DbData usrOutput;
 
             try
             {
-                sw.Start();
+                watch.Start();
                 DbDataReader reader = UserOperator.ExecuteReader(JudgeTask.SourceCode, JudgeTask.TimeLimit);
-
                 usrQuery = BaseDbOperator.ReadQueryData(reader);
                 usrOutput = UserOperator.ReadDbData();
             }
@@ -74,18 +62,19 @@ namespace Judger.Core.Database.Internal
             }
             finally
             {
-                sw.Stop();
+                watch.Stop();
             }
 
             CompareResult result = CompareAnswer(stdOutput, stdQuery, usrOutput, usrQuery);
-            JudgeResultCode resultCode = result == CompareResult.Accepted
-                ? JudgeResultCode.Accepted
-                : JudgeResultCode.WrongAnswer;
+            JudgeResultCode resultCode =
+                result == CompareResult.Accepted
+                    ? JudgeResultCode.Accepted
+                    : JudgeResultCode.WrongAnswer;
 
             return new SingleJudgeResult
             {
                 ResultCode = resultCode,
-                TimeCost = (int) sw.ElapsedMilliseconds
+                TimeCost = (int) watch.ElapsedMilliseconds
             };
         }
 

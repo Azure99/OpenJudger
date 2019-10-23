@@ -85,10 +85,6 @@ namespace Judger.Core.Database.Internal.DbOperator
             };
         }
 
-        /// <summary>
-        /// 获取所有表的名称
-        /// </summary>
-        /// <returns>表名</returns>
         private string[] GetAllTablesName()
         {
             DbDataReader reader = ExecuteReader("SHOW TABLES");
