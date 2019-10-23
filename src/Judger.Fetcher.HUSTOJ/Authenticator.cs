@@ -13,7 +13,7 @@ namespace Judger.Fetcher.HUSTOJ
 
         static Authenticator()
         {
-            Singleton = new Authenticator();
+            Instance = new Authenticator();
         }
 
         private Authenticator()
@@ -34,7 +34,7 @@ namespace Judger.Fetcher.HUSTOJ
             Login();
         }
 
-        public static Authenticator Singleton { get; }
+        public static Authenticator Instance { get; }
 
         public CookieContainer CookieContainer { get; }
 

@@ -21,10 +21,7 @@ namespace Judger.Core.Program.Internal
                 InitRulesDictionary();
         }
 
-        /// <summary>
-        /// 实例
-        /// </summary>
-        public static CodeChecker Singleton { get; } = new CodeChecker();
+        public static CodeChecker Instance { get; } = new CodeChecker();
 
         private Configuration Config { get; } = ConfigManager.Config;
 

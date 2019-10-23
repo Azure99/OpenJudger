@@ -16,7 +16,7 @@ namespace Judger.Fetcher.SDNUOJ
     {
         public TaskFetcher()
         {
-            HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
+            HttpClient.CookieContainer = Authenticator.Instance.CookieContainer;
         }
 
         public override JudgeContext[] Fetch()

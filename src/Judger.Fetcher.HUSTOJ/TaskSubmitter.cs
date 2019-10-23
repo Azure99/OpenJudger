@@ -7,7 +7,7 @@ namespace Judger.Fetcher.HUSTOJ
     {
         public override bool Submit(JudgeContext context)
         {
-            HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
+            HttpClient.CookieContainer = Authenticator.Instance.CookieContainer;
             HttpClient.UploadString(Config.TaskFetchUrl, CreateResultBody(context.Result), 3);
             return true;
         }

@@ -26,7 +26,7 @@ namespace Judger.Core.Program
         {
             JudgeResult result = Context.Result;
 
-            if (!CodeChecker.Singleton.CheckCode(JudgeTask.SourceCode, JudgeTask.Language, out string unsafeCode,
+            if (!CodeChecker.Instance.CheckCode(JudgeTask.SourceCode, JudgeTask.Language, out string unsafeCode,
                 out int line))
             {
                 result.ResultCode = JudgeResultCode.CompileError;

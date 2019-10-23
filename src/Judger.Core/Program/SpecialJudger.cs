@@ -38,7 +38,7 @@ namespace Judger.Core.Program
         {
             JudgeResult result = Context.Result;
 
-            if (!CodeChecker.Singleton.CheckCode(
+            if (!CodeChecker.Instance.CheckCode(
                 JudgeTask.SourceCode, JudgeTask.Language,
                 out string unsafeCode, out int line))
             {

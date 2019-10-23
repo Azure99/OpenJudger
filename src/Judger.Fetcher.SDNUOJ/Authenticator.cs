@@ -32,7 +32,7 @@ namespace Judger.Fetcher.SDNUOJ
             Login();
         }
 
-        public static Authenticator Singleton { get; } = new Authenticator();
+        public static Authenticator Instance { get; } = new Authenticator();
 
         // 保存Cookie
         public CookieContainer CookieContainer { get; }

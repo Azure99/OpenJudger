@@ -15,7 +15,7 @@ namespace Judger.Fetcher.HUSTOJ
     {
         public TestDataFetcher()
         {
-            HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
+            HttpClient.CookieContainer = Authenticator.Instance.CookieContainer;
         }
 
         public override byte[] Fetch(JudgeContext context)

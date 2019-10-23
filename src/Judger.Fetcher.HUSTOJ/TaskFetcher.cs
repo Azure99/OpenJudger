@@ -11,7 +11,7 @@ namespace Judger.Fetcher.HUSTOJ
     {
         public TaskFetcher()
         {
-            HttpClient.CookieContainer = Authenticator.Singleton.CookieContainer;
+            HttpClient.CookieContainer = Authenticator.Instance.CookieContainer;
         }
 
         public override JudgeContext[] Fetch()
@@ -36,7 +36,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// </summary>
         private int[] GetPending()
         {
-            Authenticator.Singleton.CheckLogin();
+            Authenticator.Instance.CheckLogin();
 
             string response;
             try
@@ -94,7 +94,7 @@ namespace Judger.Fetcher.HUSTOJ
                 submitId, problemId, dateMd5, lang, sourceCode,
                 author, timeLimit, memoryLimit, false, spj);
 
-            Authenticator.Singleton.UpdateSolution(submitId, 3, 0, 0, 0.0);
+            Authenticator.Instance.UpdateSolution(submitId, 3, 0, 0, 0.0);
 
             return task;
         }
