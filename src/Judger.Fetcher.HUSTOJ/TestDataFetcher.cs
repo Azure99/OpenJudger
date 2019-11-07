@@ -23,7 +23,7 @@ namespace Judger.Fetcher.HUSTOJ
             return Fetch(context.Task.ProblemId);
         }
 
-        public byte[] Fetch(int problemId)
+        private byte[] Fetch(string problemId)
         {
             string[] fileNames = GetTestDataList(problemId);
             var files = new Tuple<string, byte[]>[fileNames.Length];
@@ -41,7 +41,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// 根据题目ID获取测试数据文件名列表
         /// </summary>
         /// <param name="pid">题目ID</param>
-        private string[] GetTestDataList(int pid)
+        private string[] GetTestDataList(string pid)
         {
             string requestBody = "gettestdatalist=1&pid=" + pid;
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
@@ -58,7 +58,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// </summary>
         /// <param name="pid">题目ID</param>
         /// <param name="fileName">远程文件名</param>
-        private byte[] GetTestDataFile(int pid, string fileName)
+        private byte[] GetTestDataFile(string pid, string fileName)
         {
             string requestBody = "gettestdata=1&filename=" + pid + "/" + fileName;
 
@@ -113,7 +113,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// 根据题目ID获取测试数据的MD5
         /// </summary>
         /// <param name="pid">题目ID</param>
-        private string GetTestDataMd5(int pid)
+        private string GetTestDataMd5(string pid)
         {
             string requestBody = $"gettestdatalist=1&pid={pid}&time=1";
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);

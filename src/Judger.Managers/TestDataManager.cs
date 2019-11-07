@@ -54,7 +54,7 @@ namespace Judger.Managers
         /// <summary>
         /// 数据锁字典, 防止统一题目测试数据争用
         /// </summary>
-        private static readonly Dictionary<int, object> _dataLockDic;
+        private static readonly Dictionary<string, object> _dataLockDic;
 
         /// <summary>
         /// 数据锁字典的锁
@@ -63,7 +63,7 @@ namespace Judger.Managers
 
         static TestDataManager()
         {
-            _dataLockDic = new Dictionary<int, object>();
+            _dataLockDic = new Dictionary<string, object>();
 
             if (!Directory.Exists(Config.TestDataDirectory))
                 Directory.CreateDirectory(Config.TestDataDirectory);
@@ -76,7 +76,7 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="problemId">问题ID</param>
         /// <param name="version">最新版本</param>
-        public static bool CheckData(int problemId, string version)
+        public static bool CheckData(string problemId, string version)
         {
             string dirPath = Cmb(Config.TestDataDirectory, problemId);
             string verPath = Cmb(dirPath, VERSION_FILENAME);
@@ -96,7 +96,7 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="problemId">问题ID</param>
         /// <param name="zipData">ZIP数据</param>
-        public static void WriteTestData(int problemId, byte[] zipData)
+        public static void WriteTestData(string problemId, byte[] zipData)
         {
             using (var ms = new MemoryStream())
             {
@@ -111,7 +111,7 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="problemId">问题ID</param>
         /// <param name="zipStream">保存ZIP的Stream</param>
-        public static void WriteTestData(int problemId, Stream zipStream)
+        public static void WriteTestData(string problemId, Stream zipStream)
         {
             using (var zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Read))
                 WriteTestData(problemId, zipArchive);
@@ -122,7 +122,7 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="problemId">问题ID</param>
         /// <param name="zipArchive">ZipArchive</param>
-        public static void WriteTestData(int problemId, ZipArchive zipArchive)
+        public static void WriteTestData(string problemId, ZipArchive zipArchive)
         {
             string dirPath = Cmb(Config.TestDataDirectory, problemId);
             lock (GetDataLock(problemId))
@@ -138,7 +138,7 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="problemId">问题ID</param>
         /// <returns>测试数据(输入/输出)文件名</returns>
-        public static ProgramTestDataFile[] GetTestDataFilesName(int problemId)
+        public static ProgramTestDataFile[] GetTestDataFilesName(string problemId)
         {
             string dirPath = Cmb(Config.TestDataDirectory, problemId);
 
@@ -175,7 +175,7 @@ namespace Judger.Managers
         /// <param name="problemId">题目ID</param>
         /// <param name="dataFile">程序测试数据文件</param>
         /// <returns>测试数据</returns>
-        public static ProgramTestData GetTestData(int problemId, ProgramTestDataFile dataFile)
+        public static ProgramTestData GetTestData(string problemId, ProgramTestDataFile dataFile)
         {
             string inputName = dataFile.InputFile;
             string outputName = dataFile.OutputFile;
@@ -197,7 +197,7 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="problemId">问题ID</param>
         /// <returns>是否需要SPJ</returns>
-        public static bool IsSpecialJudge(int problemId)
+        public static bool IsSpecialJudge(string problemId)
         {
             string spjDir = Cmb(Config.TestDataDirectory, problemId, DIR_SPJ);
 
@@ -212,7 +212,7 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="problemId">问题ID</param>
         /// <param name="programFile">SPJ程序</param>
-        public static void WriteSpecialJudgeProgramFile(int problemId, SpecialJudgeProgram programFile)
+        public static void WriteSpecialJudgeProgramFile(string problemId, SpecialJudgeProgram programFile)
         {
             lock (GetDataLock(problemId))
             {
@@ -230,7 +230,7 @@ namespace Judger.Managers
         /// <param name="problemId">问题ID</param>
         /// <param name="index">索引</param>
         /// <returns>SPJ程序</returns>
-        public static SpecialJudgeProgram GetSpecialJudgeProgramFile(int problemId, int index = 0)
+        public static SpecialJudgeProgram GetSpecialJudgeProgramFile(string problemId, int index = 0)
         {
             lock (GetDataLock(problemId))
             {
@@ -256,7 +256,7 @@ namespace Judger.Managers
         /// <param name="problemId">问题ID</param>
         /// <param name="dbType">数据库名称</param>
         /// <returns>全部测试数据的名称</returns>
-        public static string[] GetDbTestDataNames(int problemId, DatabaseType dbType)
+        public static string[] GetDbTestDataNames(string problemId, DatabaseType dbType)
         {
             lock (GetDataLock(problemId))
             {
@@ -278,7 +278,7 @@ namespace Judger.Managers
         /// <param name="dbType">数据库类型</param>
         /// <param name="dataName">测试数据名称</param>
         /// <returns>测试数据</returns>
-        public static DbTestData GetDbTestData(int problemId, DatabaseType dbType, string dataName)
+        public static DbTestData GetDbTestData(string problemId, DatabaseType dbType, string dataName)
         {
             lock (GetDataLock(problemId))
             {
@@ -318,7 +318,7 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="problemId">问题ID</param>
         /// <returns>是否为数据库题目</returns>
-        public static bool IsDatabaseJudge(int problemId)
+        public static bool IsDatabaseJudge(string problemId)
         {
             string dbDir = Cmb(Config.TestDataDirectory, problemId, DIR_DB);
 
@@ -336,7 +336,7 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="problemId">题目ID</param>
         /// <returns>锁</returns>
-        private static object GetDataLock(int problemId)
+        private static object GetDataLock(string problemId)
         {
             lock (_dicLock)
             {

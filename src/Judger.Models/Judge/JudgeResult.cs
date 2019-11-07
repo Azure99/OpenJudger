@@ -10,12 +10,12 @@ namespace Judger.Models.Judge
         /// <summary>
         /// 提交ID
         /// </summary>
-        public int SubmitId { get; set; }
+        public string SubmitId { get; set; }
 
         /// <summary>
         /// 问题ID
         /// </summary>
-        public int ProblemId { get; set; }
+        public string ProblemId { get; set; }
 
         /// <summary>
         /// 提交者

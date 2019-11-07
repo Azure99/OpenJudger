@@ -30,7 +30,7 @@ namespace Judger.Fetcher
         /// <param name="specialJudge">是否为SpecialJudge</param>
         /// <param name="dbJudge">是否为数据库评测</param>
         /// <returns>JudgeTask实例</returns>
-        public static JudgeContext Create(int submitId, int problemId, string dataVersion,
+        public static JudgeContext Create(string submitId, string problemId, string dataVersion,
             string language, string sourceCode, string author = "",
             int timeLimit = 1000, int memoryLimit = 262144, bool judgeAllCases = false,
             bool specialJudge = false, bool dbJudge = false)
@@ -62,7 +62,7 @@ namespace Judger.Fetcher
         /// <param name="judgeAllCases">是否评测全部样例(即使遇到错误答案)</param>
         /// <param name="judgeType">评测类型</param>
         /// <returns>JudgeTask实例</returns>
-        public static JudgeContext Create(int submitId, int problemId, string dataVersion,
+        public static JudgeContext Create(string submitId, string problemId, string dataVersion,
             string language, string sourceCode, string author = "",
             int timeLimit = 1000, int memoryLimit = 262144, bool judgeAllCases = false,
             JudgeType judgeType = JudgeType.ProgramJudge)

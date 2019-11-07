@@ -9,7 +9,7 @@ namespace Judger.Fetcher.HUSTOJ
     {
         private int _delayCheckCount;
         private readonly HttpWebClient _httpClient = ConfiguredClient.Create();
-        private readonly string loginUrl = "http://localhost/login.php";
+        private readonly string _loginUrl = "http://localhost/login.php";
 
         static Authenticator()
         {
@@ -23,11 +23,11 @@ namespace Judger.Fetcher.HUSTOJ
 
             if (Config.AdditionalConfigs.ContainsKey("LoginUrl"))
             {
-                loginUrl = Config.AdditionalConfigs["LoginUrl"];
+                _loginUrl = Config.AdditionalConfigs["LoginUrl"];
             }
             else
             {
-                Config.AdditionalConfigs["LoginUrl"] = loginUrl;
+                Config.AdditionalConfigs["LoginUrl"] = _loginUrl;
                 ConfigManager.SaveConfig();
             }
 
@@ -43,7 +43,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// <summary>
         /// 登录HUSTOJ
         /// </summary>
-        public bool Login()
+        private bool Login()
         {
             if (CheckLogin())
                 return true;
@@ -51,7 +51,7 @@ namespace Judger.Fetcher.HUSTOJ
             string requestBody = $"user_id={Config.JudgerName}&password={Config.Password}";
             try
             {
-                _httpClient.UploadString(loginUrl, requestBody, 3);
+                _httpClient.UploadString(_loginUrl, requestBody, 3);
             }
             catch
             { }
@@ -67,8 +67,7 @@ namespace Judger.Fetcher.HUSTOJ
             var requestBody = "checklogin=1";
             try
             {
-                string response = _httpClient.UploadString(Config.TaskFetchUrl, requestBody);
-                return response == "1";
+                return _httpClient.UploadString(Config.TaskFetchUrl, requestBody) == "1";
             }
             catch
             {
@@ -95,7 +94,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// <param name="time">时间</param>
         /// <param name="memory">内存消耗</param>
         /// <param name="passRate">通过率</param>
-        public void UpdateSolution(int sid, int result, int time, int memory, double passRate)
+        public void UpdateSolution(string sid, int result, int time, int memory, double passRate)
         {
             string requestBody =
                 $"update_solution=1&sid={sid}&result={result}&time={time}" +

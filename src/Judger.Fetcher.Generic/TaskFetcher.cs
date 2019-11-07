@@ -26,15 +26,17 @@ namespace Judger.Fetcher.Generic
         /// <returns>评测任务</returns>
         public override JudgeContext[] Fetch()
         {
-            string responseStr = HttpClient.UploadString(Config.TaskFetchUrl, CreateRequestBody());
-            var response = SampleJsonSerializer.DeSerialize<ServerResponse>(responseStr);
+            string url = Config.TaskFetchUrl;
+            string requestBody = CreateRequestBody();
+
+            string responseData = HttpClient.UploadString(url, requestBody);
+            var response = Json.DeSerialize<ServerResponse>(responseData);
 
             if (response.Code == ResponseCode.NoTask)
                 return new JudgeContext[0];
 
             if (response.Code == ResponseCode.Fail || response.Code == ResponseCode.WrongToken)
                 throw new FetcherException(response.Message);
-
 
             return CreateTaskContexts(response.Data);
         }

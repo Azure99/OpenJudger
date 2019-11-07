@@ -184,22 +184,22 @@ namespace Judger.Service
                 $"Code:{result.ResultCode} PassRate:{result.PassRate} Details:{result.JudgeDetail} ");
         }
 
-        private void LogInvalidTestData(int problemId)
+        private void LogInvalidTestData(string problemId)
         {
             LogManager.Info("Invalid test data, fetch new data. ProblemID: " + problemId);
         }
 
-        private void LogTestDataFetched(int problemId)
+        private void LogTestDataFetched(string problemId)
         {
             LogManager.Info("Problem " + problemId + " data fetched");
         }
 
-        private void LogStartJudgeTask(int submitId)
+        private void LogStartJudgeTask(string submitId)
         {
             LogManager.Info("Judge task " + submitId);
         }
 
-        private void LogJudgeFailed(Exception ex, int submitId)
+        private void LogJudgeFailed(Exception ex, string submitId)
         {
             LogManager.Info("Judge failed, SubmitID: " + submitId);
             LogManager.Exception(ex);

@@ -21,7 +21,7 @@ namespace Judger.Fetcher.SDNUOJ
         /// </summary>
         private string CreateResultBody(JudgeResult result)
         {
-            var resultCode = 0;
+            int resultCode;
             switch (result.ResultCode)
             {
                 case JudgeResultCode.Accepted:
@@ -55,11 +55,11 @@ namespace Judger.Fetcher.SDNUOJ
                     throw new ArgumentOutOfRangeException();
             }
 
-            int sid = result.SubmitId;
+            string sid = result.SubmitId;
             string detail = result.JudgeDetail;
             int timeCost = result.TimeCost;
             int memCost = result.MemoryCost;
-            int pid = result.ProblemId;
+            string pid = result.ProblemId;
             string username = result.Author;
             string body =
                 $"sid={sid}&resultcode={resultCode}&detail={detail}" +

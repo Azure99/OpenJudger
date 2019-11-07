@@ -17,8 +17,8 @@ namespace Judger.Fetcher.HUSTOJ
         public override JudgeContext[] Fetch()
         {
             var taskList = new List<JudgeContext>();
-            int[] pendingSids = GetPending();
-            foreach (int sid in pendingSids)
+            string[] pendingSids = GetPending();
+            foreach (string sid in pendingSids)
             {
                 try
                 {
@@ -34,7 +34,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// <summary>
         /// 获取正在Pending的Solution ID
         /// </summary>
-        private int[] GetPending()
+        private string[] GetPending()
         {
             Authenticator.Instance.CheckLogin();
 
@@ -46,18 +46,10 @@ namespace Judger.Fetcher.HUSTOJ
             }
             catch
             {
-                return new int[0];
+                return new string[0];
             }
 
-            string[] split = Regex.Split(response, "\r\n|\r|\n");
-            var sidList = new List<int>();
-            foreach (string s in split)
-            {
-                if (int.TryParse(s, out int sid))
-                    sidList.Add(sid);
-            }
-
-            return sidList.ToArray();
+            return Regex.Split(response, "\r\n|\r|\n");
         }
 
         /// <summary>
@@ -83,9 +75,9 @@ namespace Judger.Fetcher.HUSTOJ
         /// 根据SubmitID获取JudgeTask
         /// </summary>
         /// <param name="submitId">提交ID</param>
-        private JudgeContext GetJudgeTask(int submitId)
+        private JudgeContext GetJudgeTask(string submitId)
         {
-            GetSolutionInfo(submitId, out int problemId, out string author, out string lang);
+            GetSolutionInfo(submitId, out string problemId, out string author, out string lang);
             string sourceCode = GetSolution(submitId);
             GetProblemInfo(problemId, out int timeLimit, out int memoryLimit, out bool spj);
             string dateMd5 = GetTestDataMd5(problemId);
@@ -106,14 +98,14 @@ namespace Judger.Fetcher.HUSTOJ
         /// <param name="problemId">问题ID</param>
         /// <param name="username">用户名</param>
         /// <param name="lang">编程语言</param>
-        private void GetSolutionInfo(int sid, out int problemId, out string username, out string lang)
+        private void GetSolutionInfo(string sid, out string problemId, out string username, out string lang)
         {
             string requestBody = "getsolutioninfo=1&sid=" + sid;
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
 
             string[] split = Regex.Split(response, "\r\n|\r|\n");
 
-            problemId = int.Parse(split[0]);
+            problemId = split[0];
             username = split[1];
             lang = split[2];
         }
@@ -123,7 +115,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// </summary>
         /// <param name="sid">提交ID</param>
         /// <returns>源代码</returns>
-        private string GetSolution(int sid)
+        private string GetSolution(string sid)
         {
             string requestBody = "getsolution=1&sid=" + sid;
 
@@ -137,7 +129,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// <param name="timeLimit">时间限制</param>
         /// <param name="memoryLimit">内存限制</param>
         /// <param name="spj">是否为Special Judge</param>
-        private void GetProblemInfo(int pid, out int timeLimit, out int memoryLimit, out bool spj)
+        private void GetProblemInfo(string pid, out int timeLimit, out int memoryLimit, out bool spj)
         {
             string requestBody = "getprobleminfo=1&pid=" + pid;
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
@@ -153,7 +145,7 @@ namespace Judger.Fetcher.HUSTOJ
         /// 根据问题ID获取测试数据的MD5
         /// </summary>
         /// <param name="pid">问题ID</param>
-        private string GetTestDataMd5(int pid)
+        private string GetTestDataMd5(string pid)
         {
             string requestBody = $"gettestdatalist=1&pid={pid}&time=1";
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);

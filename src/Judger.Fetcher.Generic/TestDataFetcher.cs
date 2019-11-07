@@ -25,7 +25,9 @@ namespace Judger.Fetcher.Generic
         /// <returns>测试数据</returns>
         public override byte[] Fetch(JudgeContext context)
         {
-            return HttpClient.UploadData(Config.TestDataFetchUrl, CreateRequestBody(context.Task.ProblemId), 3);
+            string url = Config.TestDataFetchUrl;
+            string requestBody = CreateRequestBody(context.Task.ProblemId);
+            return HttpClient.UploadData(url, requestBody, 3);
         }
 
         /// <summary>
@@ -33,7 +35,7 @@ namespace Judger.Fetcher.Generic
         /// </summary>
         /// <param name="problemId">题目Id</param>
         /// <returns>取回测试数据的请求</returns>
-        private string CreateRequestBody(int problemId)
+        private string CreateRequestBody(string problemId)
         {
             JObject requestBody = Token.CreateJObject();
             requestBody.Add(JOBJECT_PROBLEM_ID, problemId);

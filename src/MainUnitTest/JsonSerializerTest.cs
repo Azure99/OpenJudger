@@ -44,20 +44,20 @@ namespace MainUnitTest
                 Arr = new[] {1, 2, 3}
             };
 
-            string json = SampleJsonSerializer.Serialize(classA, typeof(TempTestClass));
-            string json2 = SampleJsonSerializer.Serialize(classA);
+            string json = Json.Serialize(classA, typeof(TempTestClass));
+            string json2 = Json.Serialize(classA);
 
             //序列化是否成功
             Assert.True(json == json2);
 
-            var classB = SampleJsonSerializer.DeSerialize(json2, typeof(TempTestClass)) as TempTestClass;
+            var classB = Json.DeSerialize(json2, typeof(TempTestClass)) as TempTestClass;
 
             //反序列化是否成功
             Assert.True(Compare(classA, classB) && Compare(classA, classB));
 
             json = json.Replace("NNN", "A");
-            classB = SampleJsonSerializer.DeSerialize<TempTestClass>(json);
-            var classC = SampleJsonSerializer.DeSerialize<TempTestClass>(json2);
+            classB = Json.DeSerialize<TempTestClass>(json);
+            var classC = Json.DeSerialize<TempTestClass>(json2);
 
             //修改json的情况下是否正确
             Assert.False(Compare(classB, classC));

@@ -12,7 +12,7 @@ namespace Judger.Fetcher.Generic.Entity
         /// 提交Id
         /// </summary>
         [JsonProperty(PropertyName = "submitId")]
-        public int SubmitId { get; set; }
+        public string SubmitId { get; set; }
 
         /// <summary>
         /// 判题结果码

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Judger.Models;
 using Judger.Models.Database;
 using Judger.Models.Exception;
@@ -20,12 +19,10 @@ namespace Judger.Managers
         {
             FileHelper.TryReadAllText(CONFIG_FILE_NAME, out string configJson);
 
-            if (string.IsNullOrEmpty(configJson)) // 创建新配置文件
-                Config = CreateNewConfig();
-            else
-                Config = SampleJsonSerializer.DeSerialize<Configuration>(configJson);
-
+            bool invalidConfig = string.IsNullOrEmpty(configJson);
+            Config = invalidConfig ? CreateNewConfig() : Json.DeSerialize<Configuration>(configJson);
             SetIsDbConfigField();
+
             SaveConfig();
         }
 
@@ -46,7 +43,7 @@ namespace Judger.Managers
                 item.IsDbConfig = true;
         }
 
-        public static Configuration CreateNewConfig()
+        private static Configuration CreateNewConfig()
         {
             var config = new Configuration
             {
@@ -54,13 +51,13 @@ namespace Judger.Managers
                 Databases = GetDefaultDbConfigs(),
                 Password = RandomString.Next(16)
             };
-            Config.AdditionalConfigs.Add("SampleKey", "SampleValue");
+            config.AdditionalConfigs.Add("SampleKey", "SampleValue");
             return config;
         }
 
         public static void SaveConfig()
         {
-            FileHelper.TryWriteAllText(CONFIG_FILE_NAME, SampleJsonSerializer.Serialize(Config));
+            FileHelper.TryWriteAllText(CONFIG_FILE_NAME, Json.Serialize(Config));
         }
 
         /// <summary>
@@ -136,7 +133,6 @@ namespace Judger.Managers
                 OutputLimit = 67108864,
                 TimeCompensation = 1.0
             };
-
 
             var java = new ProgramLangConfig
             {

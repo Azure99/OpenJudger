@@ -17,10 +17,10 @@ namespace Judger.Fetcher.SDNUOJ
 
         public override byte[] Fetch(JudgeContext context)
         {
-            return Fetch(context.Task.ProblemId.ToString());
+            return Fetch(context.Task.ProblemId);
         }
 
-        public byte[] Fetch(string problemId)
+        private byte[] Fetch(string problemId)
         {
             string body = CreateRequestBody(problemId);
 

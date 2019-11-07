@@ -71,7 +71,7 @@ namespace Judger.Managers
         /// </summary>
         /// <param name="problemId">题目ID</param>
         /// <returns>SPJ目录</returns>
-        public static string GetSpjDirectoryInTestData(int problemId)
+        public static string GetSpjDirectoryInTestData(string problemId)
         {
             return Path.Combine(Config.TestDataDirectory, problemId.ToString(), SPJ_TEST_DATA_DIR);
         }
@@ -94,7 +94,7 @@ namespace Judger.Managers
         /// <param name="problemId">问题ID</param>
         /// <param name="index">索引</param>
         /// <returns>SPJ源文件路径</returns>
-        public static string FindSpjSourceFileInTestData(int problemId, int index = 0)
+        public static string FindSpjSourceFileInTestData(string problemId, int index = 0)
         {
             Dictionary<string, ProgramLangConfig> extDic = GetLangSourceExtensionDictionary();
             string spjDirectory = GetSpjDirectoryInTestData(problemId);
@@ -146,7 +146,7 @@ namespace Judger.Managers
         /// <param name="problemId">问题ID</param>
         /// <param name="index">索引</param>
         /// <returns>SPJ程序</returns>
-        public static string FindSpjProgramInTestData(int problemId, int index = 0)
+        public static string FindSpjProgramInTestData(string problemId, int index = 0)
         {
             Dictionary<string, ProgramLangConfig> extDic = GetLangSourceExtensionDictionary();
             string spjDirectory = GetSpjDirectoryInTestData(problemId);
@@ -188,7 +188,7 @@ namespace Judger.Managers
         /// <param name="problemId">问题ID</param>
         /// <param name="lang">语言</param>
         /// <returns>SPJ程序路径</returns>
-        public static string GetSpjProgramPathInTestData(int problemId, ProgramLangConfig lang)
+        public static string GetSpjProgramPathInTestData(string problemId, ProgramLangConfig lang)
         {
             string spjDirectory = GetSpjDirectoryInTestData(problemId);
             string programExt = Path.GetExtension(lang.ProgramFileName).TrimStart('.').ToLower();

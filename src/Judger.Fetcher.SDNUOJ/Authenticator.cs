@@ -41,7 +41,7 @@ namespace Judger.Fetcher.SDNUOJ
         /// <summary>
         /// 登录SDNUOJ
         /// </summary>
-        public bool Login()
+        private bool Login()
         {
             string requestBody = $"username={Config.JudgerName}&password={Config.Password}";
 
@@ -49,7 +49,7 @@ namespace Judger.Fetcher.SDNUOJ
             {
                 string response = _httpClient.UploadString(_loginUrl, requestBody, 3);
 
-                var message = SampleJsonSerializer.DeSerialize<ServerMessageEntity>(response);
+                var message = Json.DeSerialize<ServerMessageEntity>(response);
                 return message.IsSuccess;
             }
             catch
