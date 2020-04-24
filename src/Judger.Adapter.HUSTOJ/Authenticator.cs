@@ -40,9 +40,6 @@ namespace Judger.Adapter.HUSTOJ
 
         private Configuration Config { get; } = ConfigManager.Config;
 
-        /// <summary>
-        /// 登录HUSTOJ
-        /// </summary>
         private bool Login()
         {
             if (CheckLogin())

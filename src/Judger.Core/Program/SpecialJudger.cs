@@ -52,17 +52,14 @@ namespace Judger.Core.Program
             // 构建SPJ程序
             BuildSpecialJudgeProgram();
 
-            // 写出源代码
             string sourceFileName = Path.Combine(Context.TempDirectory + LangConfig.SourceCodeFileName);
             File.WriteAllText(sourceFileName, JudgeTask.SourceCode);
 
-            // 编译代码
             if (LangConfig.NeedCompile)
             {
                 var compiler = new Compiler(Context);
                 string compileRes = compiler.Compile();
 
-                // 检查是否有编译错误(compileRes不为空则代表有错误)
                 if (!string.IsNullOrEmpty(compileRes))
                 {
                     // 去除路径信息
@@ -73,32 +70,28 @@ namespace Judger.Core.Program
                 }
             }
 
-            // 创建单例Judger
             var judger = new SpecialSingleCaseJudger(Context, SpjContext);
 
-            // 获取所有测试点文件名
             ProgramTestDataFile[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemId);
-            if (dataFiles.Length == 0) // 无测试数据
+            if (dataFiles.Length == 0)
             {
                 result.ResultCode = JudgeResultCode.JudgeFailed;
                 result.JudgeDetail = "No test data.";
                 return;
             }
 
-            var acceptedCasesCount = 0; // 通过的测试点数
+            var acceptedCasesCount = 0;
             for (var i = 0; i < dataFiles.Length; i++)
             {
                 try
                 {
-                    // 读入测试数据
                     ProgramTestData data = TestDataManager.GetTestData(JudgeTask.ProblemId, dataFiles[i]);
 
-                    SingleJudgeResult singleRes = judger.Judge(data.Input, data.Output); //测试此测试点
+                    SingleJudgeResult singleRes = judger.Judge(data.Input, data.Output);
 
-                    // 评测所有测试点时, 只记录第一组出错的信息
                     if (result.ResultCode == JudgeResultCode.Accepted)
                     {
-                        // 计算有时间补偿的总时间
+
                         result.TimeCost = Math.Max(result.TimeCost,
                             (int) (singleRes.TimeCost * LangConfig.TimeCompensation));
                         result.MemoryCost = Math.Max(result.MemoryCost, singleRes.MemoryCost);
@@ -110,7 +103,6 @@ namespace Judger.Core.Program
                     }
                     else
                     {
-                        // 出错时记录第一组出错的信息
                         if (result.ResultCode == JudgeResultCode.Accepted)
                         {
                             result.ResultCode = singleRes.ResultCode;
@@ -129,10 +121,7 @@ namespace Judger.Core.Program
                 }
             }
 
-            // 去除目录信息
             result.JudgeDetail = result.JudgeDetail.Replace(Context.TempDirectory, "");
-
-            // 通过率
             result.PassRate = (double) acceptedCasesCount / dataFiles.Length;
         }
 
@@ -148,7 +137,7 @@ namespace Judger.Core.Program
             if (!LangConfig.NeedCompile)
                 return;
 
-            //构建SPJ程序
+            // 构建SPJ程序
             if (TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemId) == null)
                 if (!CompileSpecialJudgeProgram())
                     throw new CompileException("Can not build special judge program!");
@@ -194,19 +183,16 @@ namespace Judger.Core.Program
             DeleteTempDirectory();
         }
 
-        /// <summary>
-        /// 删除临时目录
-        /// </summary>
         private void DeleteTempDirectory()
         {
-            new Task(() => // 判题结束时文件可能仍然被占用，尝试删除
+            new Task(() =>
             {
                 var tryCount = 0;
                 while (true)
                 {
                     try
                     {
-                        Directory.Delete(Context.TempDirectory, true); // 删除判题临时目录
+                        Directory.Delete(Context.TempDirectory, true);
                         break;
                     }
                     catch (DirectoryNotFoundException)

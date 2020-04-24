@@ -4,9 +4,6 @@ using Judger.Utils;
 
 namespace Judger.Adapter
 {
-    /// <summary>
-    /// TaskSubmitter基类
-    /// </summary>
     public abstract class BaseTaskSubmitter : ITaskSubmitter
     {
         /// <summary>

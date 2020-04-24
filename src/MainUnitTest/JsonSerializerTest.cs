@@ -30,10 +30,7 @@ namespace MainUnitTest
             public string Name { get; set; }
             public int[] Arr { get; set; }
         }
-
-        /// <summary>
-        /// 测试序列化反序列化功能
-        /// </summary>
+        
         [Fact]
         public void TestSerializer()
         {
@@ -47,19 +44,19 @@ namespace MainUnitTest
             string json = Json.Serialize(classA, typeof(TempTestClass));
             string json2 = Json.Serialize(classA);
 
-            //序列化是否成功
+            // 序列化是否成功
             Assert.True(json == json2);
 
             var classB = Json.DeSerialize(json2, typeof(TempTestClass)) as TempTestClass;
 
-            //反序列化是否成功
+            // 反序列化是否成功
             Assert.True(Compare(classA, classB) && Compare(classA, classB));
 
             json = json.Replace("NNN", "A");
             classB = Json.DeSerialize<TempTestClass>(json);
             var classC = Json.DeSerialize<TempTestClass>(json2);
 
-            //修改json的情况下是否正确
+            // 修改json的情况下是否正确
             Assert.False(Compare(classB, classC));
         }
     }

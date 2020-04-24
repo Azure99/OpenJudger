@@ -11,13 +11,12 @@
         mysql = 1,
 
         /// <summary>
-        /// Microsoft Sql Server
+        /// Microsoft Sql Server (暂未适配)
         /// </summary>
-        //暂未适配
         mssql = 2,
 
         /// <summary>
-        /// Oracle
+        /// Oracle (暂未适配)
         /// </summary>
         //暂未适配
         oracle = 3

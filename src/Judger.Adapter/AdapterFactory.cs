@@ -8,13 +8,11 @@ using Judger.Models.Exception;
 namespace Judger.Adapter
 {
     /// <summary>
-    /// 通过反射动态加载Adapter
+    /// 通过反射加载Adapter
     /// </summary>
     public static class AdapterFactory
     {
-        /// <summary>
-        /// Adapter程序集
-        /// </summary>
+        // Adapter程序集
         private static readonly Assembly _adapterAssembly;
 
         static AdapterFactory()
@@ -27,9 +25,6 @@ namespace Judger.Adapter
 
         private static Configuration Config { get; } = ConfigManager.Config;
 
-        /// <summary>
-        /// 动态创建TaskFetcher
-        /// </summary>
         public static ITaskFetcher CreateTaskFetcher()
         {
             foreach (Type type in _adapterAssembly.ExportedTypes)
@@ -42,9 +37,6 @@ namespace Judger.Adapter
             throw new AdapterException("ITaskFetcher not implement!");
         }
 
-        /// <summary>
-        /// 动态创建TaskSubmitter
-        /// </summary>
         public static ITaskSubmitter CreateTaskSubmitter()
         {
             foreach (Type type in _adapterAssembly.ExportedTypes)
@@ -57,9 +49,6 @@ namespace Judger.Adapter
             throw new AdapterException("ITaskSubmitter not implement!");
         }
 
-        /// <summary>
-        /// 动态创建TestDataFetcher
-        /// </summary>
         public static ITestDataFetcher CreateTestDataFetcher()
         {
             foreach (Type type in _adapterAssembly.ExportedTypes)

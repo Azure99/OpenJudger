@@ -7,7 +7,7 @@ using Judger.Models;
 namespace Judger.Core.Program.Internal
 {
     /// <summary>
-    /// 基于正则的恶意代码检查器
+    /// 基于正则的恶意代码检查
     /// </summary>
     public class CodeChecker
     {

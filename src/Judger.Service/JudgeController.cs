@@ -10,23 +10,16 @@ using Judger.Models.Judge;
 namespace Judger.Service
 {
     /// <summary>
-    /// 并发评测控制器
+    /// 评测控制器
     /// </summary>
     public class JudgeController
     {
-        // 评测任务等待队列
         private readonly ConcurrentQueue<JudgeContext> _judgeQueue = new ConcurrentQueue<JudgeContext>();
         private readonly object _queueLock = new object();
         private Configuration Config { get; } = ConfigManager.Config;
 
-        /// <summary>
-        /// 正在运行的评测任务数量
-        /// </summary>
         public int RunningCount { get; private set; }
 
-        /// <summary>
-        /// 在等待队列中的评测任务数量
-        /// </summary>
         public int InQueueCount => _judgeQueue.Count;
 
         /// <summary>
@@ -85,9 +78,6 @@ namespace Judger.Service
             CheckTask();
         }
 
-        /// <summary>
-        /// 评测此JudgeTask
-        /// </summary>
         private void Judge(JudgeContext context)
         {
             JudgeTask task = context.Task;

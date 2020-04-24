@@ -12,9 +12,6 @@ namespace Judger.Adapter.Generic
     /// </summary>
     public class TaskSubmitter : BaseTaskSubmitter
     {
-        /// <summary>
-        /// JudgeResult提交器
-        /// </summary>
         public TaskSubmitter()
         {
             HttpClient.DefaultContentType = "application/json";
@@ -22,6 +19,8 @@ namespace Judger.Adapter.Generic
 
         /// <summary>
         /// 提交评测任务
+        /// 此方法在评测完成后回调，以向Web后端提交结果
+        /// 评测结果可从JudgeContext.Result中获取
         /// </summary>
         /// <param name="context">评测任务</param>
         /// <returns>提交是否成功</returns>

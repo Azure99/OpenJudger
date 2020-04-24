@@ -18,7 +18,6 @@ namespace Judger.Adapter.Generic
         /// <summary>
         /// 创建带有校验字段的JObject
         /// </summary>
-        /// <returns>带有校验字段的JObject</returns>
         public static JObject CreateJObject()
         {
             var obj = new JObject();

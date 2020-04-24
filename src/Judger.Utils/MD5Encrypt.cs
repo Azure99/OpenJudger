@@ -4,14 +4,14 @@ using System.Text;
 namespace Judger.Utils
 {
     /// <summary>
-    /// MD5加密辅助类
+    /// MD5辅助类
     /// </summary>
     public static class Md5Encrypt
     {
         /// <summary>
         /// 计算String的MD5(小写32位)
         /// </summary>
-        /// <param name="str">欲加密的string</param>
+        /// <param name="str">欲计算的string</param>
         /// <returns>计算结果</returns>
         public static string EncryptToHexString(string str)
         {

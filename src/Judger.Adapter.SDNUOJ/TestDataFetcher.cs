@@ -5,9 +5,6 @@ using Judger.Utils;
 
 namespace Judger.Adapter.SDNUOJ
 {
-    /// <summary>
-    /// TestData获取器
-    /// </summary>
     public class TestDataFetcher : BaseTestDataFetcher
     {
         public TestDataFetcher()

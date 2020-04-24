@@ -18,12 +18,9 @@ namespace Judger.Core
         protected JudgeResult JudgeResult { get; }
 
         public virtual void Dispose()
-        { }
+        {
+        }
 
-        /// <summary>
-        /// 评测此任务
-        /// </summary>
-        /// <returns>评测结果</returns>
         public abstract void Judge();
     }
 }

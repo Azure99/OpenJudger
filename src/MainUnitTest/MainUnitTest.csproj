@@ -5,7 +5,7 @@
     <Authors>Azure99</Authors>
     <Company>Rainng</Company>
     <Product>OpenJudger</Product>
-    <Copyright>Copyright © Azue99 Rainng 2019</Copyright>
+    <Copyright>Copyright © Azue99 Rainng</Copyright>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>

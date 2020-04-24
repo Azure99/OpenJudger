@@ -3,9 +3,6 @@ using Judger.Models;
 
 namespace Judger.Adapter
 {
-    /// <summary>
-    /// JudgeResult提交接口
-    /// </summary>
     public interface ITaskSubmitter : IDisposable
     {
         /// <summary>

@@ -95,7 +95,7 @@ namespace Judger.Utils
 
             TryWriteToStream(Process.StandardInput, stdInput);
 
-            //等待读取完成
+            // 等待读取完成
             Task.WaitAll(readOutputTask, readErrorTask);
             Process.WaitForExit();
 

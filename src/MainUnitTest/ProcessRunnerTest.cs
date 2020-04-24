@@ -28,7 +28,7 @@ namespace MainUnitTest
         }
 
         /// <summary>
-        /// 测试ProcessRunner运行
+        /// 测试ProcessRunner运行及I/O操作
         /// </summary>
         [Fact]
         public void TestProcessRunnerRun()

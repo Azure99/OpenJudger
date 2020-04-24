@@ -17,7 +17,7 @@ namespace Judger.Utils
         // 指示当前平台是否为Windows
         private readonly bool _platformIsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
-        // 指示子进程是否运行在虚拟机中(如Java, Python)
+        // 指示子进程是否运行在虚拟机/解释器中(如Java, Python)
         private readonly bool _runningInVm;
 
         private readonly Timer _timer = new Timer();
@@ -26,8 +26,8 @@ namespace Judger.Utils
         /// 运行时监控器
         /// </summary>
         /// <param name="process">需要监控的Process</param>
-        /// <param name="interval">监控周期</param>
-        /// <param name="runningInVm">是否运行在虚拟机中</param>
+        /// <param name="interval">监控检查周期</param>
+        /// <param name="runningInVm">是否运行在虚拟机/解释器中</param>
         public RuntimeMonitor(Process process, int interval = 20, bool runningInVm = false)
         {
             Process = process;
@@ -67,7 +67,7 @@ namespace Judger.Utils
         public int MemoryLimit { get; set; }
 
         /// <summary>
-        /// 是否因超出限制而Kill掉进程
+        /// 是否因为超出(时间/内存)限制而杀死进程
         /// </summary>
         public bool LimitExceed { get; private set; }
 
@@ -101,14 +101,15 @@ namespace Judger.Utils
                 CheckMemoryCost();
             }
             catch
-            { }
+            {
+            }
 
             _timer.Stop();
         }
 
         private void OnMonitor(object sender, ElapsedEventArgs e)
         {
-            try //防止无效操作异常
+            try // 防止无效操作异常
             {
                 if (Process.HasExited)
                 {
@@ -120,7 +121,8 @@ namespace Judger.Utils
                     Process.Kill();
             }
             catch
-            { }
+            {
+            }
         }
 
         /// <summary>
@@ -129,9 +131,7 @@ namespace Judger.Utils
         /// <returns>是否通过检查</returns>
         private bool CheckTimeCost()
         {
-            // 使用的CPU时间
             TimeCost = (int) Process.TotalProcessorTime.TotalMilliseconds;
-            // 使用的总时间
             TotalTimeCost = (int) (DateTime.Now - Process.StartTime).TotalMilliseconds;
 
             if (TimeCost > TimeLimit && TimeLimit > 0 ||
@@ -149,7 +149,7 @@ namespace Judger.Utils
         /// <summary>
         /// 检查内存消耗
         /// </summary>
-        /// <returns>是否通过检查</returns>
+        /// <returns>是否通过检查(在限制内)</returns>
         private bool CheckMemoryCost()
         {
             int nowMemoryCost = PeakMemory();
@@ -214,7 +214,7 @@ namespace Judger.Utils
                     continue;
 
                 string[] splits = line.Split(' ');
-                string vmPeakStr = splits[splits.Length - 2];
+                string vmPeakStr = splits[^2];
 
                 return int.Parse(vmPeakStr);
             }

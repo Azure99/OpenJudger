@@ -4,9 +4,6 @@ using Judger.Utils;
 
 namespace Judger.Adapter
 {
-    /// <summary>
-    /// TestDataFetcher基类
-    /// </summary>
     public abstract class BaseTestDataFetcher : ITestDataFetcher
     {
         /// <summary>

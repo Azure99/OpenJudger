@@ -1,6 +1,6 @@
 # OpenJudger
 ![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)
-![.NET Core](https://img.shields.io/badge/.netcore-2.1-brightgreen.svg)
+![.NET Core](https://img.shields.io/badge/.netcore-3.1-brightgreen.svg)
 ![Build Status](https://travis-ci.com/Azure99/OpenJudger.svg?branch=master)
 
 ## Introduction

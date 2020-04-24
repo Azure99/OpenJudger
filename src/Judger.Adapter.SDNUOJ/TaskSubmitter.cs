@@ -4,9 +4,6 @@ using Judger.Models.Judge;
 
 namespace Judger.Adapter.SDNUOJ
 {
-    /// <summary>
-    /// JudgeResult提交器
-    /// </summary>
     public class TaskSubmitter : BaseTaskSubmitter
     {
         public override bool Submit(JudgeContext context)

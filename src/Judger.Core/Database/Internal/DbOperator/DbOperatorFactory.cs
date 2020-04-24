@@ -8,9 +8,9 @@ namespace Judger.Core.Database.Internal.DbOperator
     {
         /// <summary>
         /// 根据数据库名创建主操作器
+        /// 主操作器权限为root，负责新建库、创建新用户、分配权限等操作
         /// </summary>
         /// <param name="dbName">数据库名</param>
-        /// <returns>数据库操作器</returns>
         public static BaseDbOperator CreateMainOperatorByName(string dbName)
         {
             if (dbName != DatabaseType.mysql.ToString())
@@ -22,9 +22,9 @@ namespace Judger.Core.Database.Internal.DbOperator
 
         /// <summary>
         /// 创建数据库操作器
+        /// 注意：执行用户代码时使用的是由主操作器分配的无特权用户
         /// </summary>
         /// <param name="dbConfig">数据库配置</param>
-        /// <returns>数据库操作器</returns>
         public static BaseDbOperator Create(DbLangConfig dbConfig)
         {
             string connString = dbConfig.ConnectionString;

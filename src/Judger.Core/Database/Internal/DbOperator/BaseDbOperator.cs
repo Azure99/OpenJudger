@@ -7,14 +7,11 @@ namespace Judger.Core.Database.Internal.DbOperator
 {
     /// <summary>
     /// 数据库操作器基类
+    /// 创建时会提供指定数据库的连接字符串和数据库驱动
+    /// 实现类应当封装对应数据库的基本操作
     /// </summary>
     public abstract class BaseDbOperator : IDisposable
     {
-        /// <summary>
-        /// 数据库操作器基类
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="driver">数据库驱动</param>
         protected BaseDbOperator(string connectionString, DbDriver driver)
         {
             ConnectionString = connectionString;

@@ -74,7 +74,6 @@ namespace Judger.Adapter.HUSTOJ
         /// <summary>
         /// 根据SubmitID获取JudgeTask
         /// </summary>
-        /// <param name="submitId">提交ID</param>
         private JudgeContext GetJudgeTask(string submitId)
         {
             GetSolutionInfo(submitId, out string problemId, out string author, out string lang);
@@ -113,8 +112,6 @@ namespace Judger.Adapter.HUSTOJ
         /// <summary>
         /// 根据提交ID获取源代码
         /// </summary>
-        /// <param name="sid">提交ID</param>
-        /// <returns>源代码</returns>
         private string GetSolution(string sid)
         {
             string requestBody = "getsolution=1&sid=" + sid;
@@ -144,7 +141,6 @@ namespace Judger.Adapter.HUSTOJ
         /// <summary>
         /// 根据问题ID获取测试数据的MD5
         /// </summary>
-        /// <param name="pid">问题ID</param>
         private string GetTestDataMd5(string pid)
         {
             string requestBody = $"gettestdatalist=1&pid={pid}&time=1";

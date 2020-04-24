@@ -35,7 +35,7 @@ namespace Judger.Models
         public JudgeResult Result { get; set; }
 
         /// <summary>
-        /// 附加信息
+        /// 附加配置信息
         /// </summary>
         public Dictionary<string, object> AdditionalInfo { get; set; } = new Dictionary<string, object>();
 

@@ -40,7 +40,6 @@ namespace Judger.Adapter.HUSTOJ
         /// <summary>
         /// 根据题目ID获取测试数据文件名列表
         /// </summary>
-        /// <param name="pid">题目ID</param>
         private string[] GetTestDataList(string pid)
         {
             string requestBody = "gettestdatalist=1&pid=" + pid;

@@ -10,7 +10,8 @@
     <Version>0.01</Version>
     <Product>OpenJudger</Product>
     <Description>Open source, lightweight, cross platform Program Judger.</Description>
-    <Copyright>Copyright © Azue99 Rainng 2019</Copyright>
+    <Copyright>Copyright © Azue99 Rainng 2020</Copyright>
+    <PackageVersion>0.03</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>

@@ -9,9 +9,6 @@ using Newtonsoft.Json.Linq;
 
 namespace Judger.Adapter.SDNUOJ
 {
-    /// <summary>
-    /// JudgeTask取回器
-    /// </summary>
     public class TaskFetcher : BaseTaskFetcher
     {
         public TaskFetcher()

@@ -3,9 +3,6 @@ using Judger.Models;
 
 namespace Judger.Adapter
 {
-    /// <summary>
-    /// 测试数据取回接口
-    /// </summary>
     public interface ITestDataFetcher : IDisposable
     {
         /// <summary>

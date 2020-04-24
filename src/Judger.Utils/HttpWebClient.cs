@@ -30,7 +30,7 @@ namespace Judger.Utils
         public CookieContainer CookieContainer { get; set; } = new CookieContainer();
 
         /// <summary>
-        /// 将指定的字符串上载到指定的资源使用 POST 方法
+        /// 将字符串上传到指定的位置，使用POST方法
         /// </summary>
         /// <param name="address">地址</param>
         /// <param name="data">Post发送的数据</param>
@@ -83,7 +83,7 @@ namespace Judger.Utils
         }
 
         /// <summary>
-        /// 尝试将指定的字符串上载到指定的资源使用 POST 方法
+        /// 尝试将字符串上传到指定的位置，使用POST方法
         /// </summary>
         /// <param name="address">地址</param>
         /// <param name="data">Post发送的数据</param>

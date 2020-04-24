@@ -9,7 +9,7 @@ namespace Judger.Utils
     public static class ZipArchiveExtends
     {
         /// <summary>
-        /// 强制更新基础流
+        /// 通过反射强制更新基础流
         /// </summary>
         /// <param name="zipArchive">ZipArchive实例</param>
         public static void UpdateBaseStream(this ZipArchive zipArchive)

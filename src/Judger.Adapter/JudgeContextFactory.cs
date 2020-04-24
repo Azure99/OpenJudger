@@ -114,8 +114,6 @@ namespace Judger.Adapter
         /// <summary>
         /// 更新语言配置中的路径信息
         /// </summary>
-        /// <param name="langConfig">语言配置</param>
-        /// <param name="tempDirectory">临时目录</param>
         private static void UpdatePathInfo(ProgramLangConfig langConfig, string tempDirectory)
         {
             string appDirectory = PathHelper.GetBaseAbsolutePath("");
@@ -135,10 +133,9 @@ namespace Judger.Adapter
         }
 
         /// <summary>
-        /// 获取语言评测目录下的临时评测目录
+        /// 在语言的评测目录下分配临时评测目录
         /// </summary>
-        /// <param name="judgeDir">语言评测目录</param>
-        /// <returns>临时评测目录</returns>
+        /// <param name="judgeDir">语言的评测目录</param>
         private static string GetTempDirectory(string judgeDir)
         {
             return Path.Combine(
@@ -147,22 +144,16 @@ namespace Judger.Adapter
         }
 
         /// <summary>
-        /// 替换路径信息(替换)
+        /// 替换路径信息
         /// </summary>
-        /// <param name="oldPath">旧路径</param>
-        /// <param name="tempDir">临时目录</param>
-        /// <param name="appDir">Judger目录</param>
-        /// <returns>替换过后的路径信息</returns>
-        private static string ReplacePathInfo(string oldPath, string tempDir, string appDir)
+        private static string ReplacePathInfo(string path, string tempDir, string appDir)
         {
-            return oldPath.Replace("<tempdir>", tempDir).Replace("<appdir>", appDir);
+            return path.Replace("<tempdir>", tempDir).Replace("<appdir>", appDir);
         }
 
         /// <summary>
         /// 获取时间补偿系数
         /// </summary>
-        /// <param name="langConfig">语言配置</param>
-        /// <returns>时间补偿系数</returns>
         private static double GetTimeCompensation(ILangConfig langConfig)
         {
             if (langConfig is ProgramLangConfig config)

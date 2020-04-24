@@ -5,8 +5,7 @@
     <Authors>Azure99</Authors>
     <Company>Rainng</Company>
     <Product>OpenJudger</Product>
-    <Copyright>Copyright © Azue99 Rainng 2019</Copyright>
-    <RootNamespace>Judger.Adapter.Generic</RootNamespace>
+    <Copyright>Copyright © Azue99 Rainng</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

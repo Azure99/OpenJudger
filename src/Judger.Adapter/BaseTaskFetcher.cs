@@ -4,9 +4,6 @@ using Judger.Utils;
 
 namespace Judger.Adapter
 {
-    /// <summary>
-    /// TaskFetcher基类
-    /// </summary>
     public abstract class BaseTaskFetcher : ITaskFetcher
     {
         /// <summary>

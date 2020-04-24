@@ -18,9 +18,6 @@ namespace Judger
             CommandLine.Loop();
         }
 
-        /// <summary>
-        /// 开始服务
-        /// </summary>
         private static void StartUp()
         {
             SetAppHandle();

@@ -12,9 +12,6 @@ namespace Judger.Adapter.Generic
     /// </summary>
     public class TaskFetcher : BaseTaskFetcher
     {
-        /// <summary>
-        /// JudgeTask取回器
-        /// </summary>
         public TaskFetcher()
         {
             HttpClient.DefaultContentType = "application/json";
@@ -22,6 +19,8 @@ namespace Judger.Adapter.Generic
 
         /// <summary>
         /// 尝试取回评测任务
+        /// 此方法由JudgeService定期调用以实现任务轮询
+        /// 如果没有评测任务，返回空JudgeContext数组
         /// </summary>
         /// <returns>评测任务</returns>
         public override JudgeContext[] Fetch()
@@ -41,10 +40,6 @@ namespace Judger.Adapter.Generic
             return CreateTaskContexts(response.Data);
         }
 
-        /// <summary>
-        /// 创建取回评测任务的请求
-        /// </summary>
-        /// <returns>取回评测任务的请求</returns>
         private string CreateRequestBody()
         {
             return Token.CreateJObject().ToString();
