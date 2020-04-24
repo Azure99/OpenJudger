@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Judger.Utils;
 using Xunit;
 
@@ -12,21 +13,23 @@ namespace MainUnitTest
         [Fact]
         public void TestMonitor()
         {
+            var fileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "cmd" : "bash";
+
             var process = new Process();
-            process.StartInfo.FileName = "cmd";
+            process.StartInfo.FileName = fileName;
 
             var monitor = new RuntimeMonitor(process)
             {
-                MemoryLimit = 100000,
-                TimeLimit = 3000,
-                TotalTimeLimit = 5000
+                MemoryLimit = 1024 * 128,
+                TimeLimit = 1000,
+                TotalTimeLimit = 2000
             };
 
             monitor.Start();
             process.Start();
             process.WaitForExit();
 
-            Assert.True(process.ExitCode == -1);
+            Assert.True(process.ExitCode != 0);
             Assert.True(monitor.TimeCost == monitor.TimeLimit);
             Assert.True(monitor.LimitExceed);
         }
