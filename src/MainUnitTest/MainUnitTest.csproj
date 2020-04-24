@@ -20,11 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Judger.Adapter.Generic\Judger.Adapter.Generic.csproj" />
+    <ProjectReference Include="..\Judger.Adapter.HUSTOJ\Judger.Adapter.HUSTOJ.csproj" />
+    <ProjectReference Include="..\Judger.Adapter.SDNUOJ\Judger.Adapter.SDNUOJ.csproj" />
+    <ProjectReference Include="..\Judger.Adapter\Judger.Adapter.csproj" />
     <ProjectReference Include="..\Judger.Core\Judger.Core.csproj" />
-    <ProjectReference Include="..\Judger.Fetcher.Generic\Judger.Fetcher.Generic.csproj" />
-    <ProjectReference Include="..\Judger.Fetcher.HUSTOJ\Judger.Fetcher.HUSTOJ.csproj" />
-    <ProjectReference Include="..\Judger.Fetcher.SDNUOJ\Judger.Fetcher.SDNUOJ.csproj" />
-    <ProjectReference Include="..\Judger.Fetcher\Judger.Fetcher.csproj" />
     <ProjectReference Include="..\Judger.Managers\Judger.Managers.csproj" />
     <ProjectReference Include="..\Judger.Models\Judger.Models.csproj" />
     <ProjectReference Include="..\Judger.Service\Judger.Service.csproj" />

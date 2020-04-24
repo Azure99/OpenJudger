@@ -7,19 +7,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger", "Judger\Judger.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Service", "Judger.Service\Judger.Service.csproj", "{0DC9A844-D72D-467E-8931-DDBAA9273C8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Fetcher", "Judger.Fetcher\Judger.Fetcher.csproj", "{DCDB6248-F1A8-430C-B30B-DB33ABD8A8E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Adapter", "Judger.Adapter\Judger.Adapter.csproj", "{DCDB6248-F1A8-430C-B30B-DB33ABD8A8E9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Utils", "Judger.Utils\Judger.Utils.csproj", "{2AAF8394-F131-441D-BCE9-023529697C8A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Managers", "Judger.Managers\Judger.Managers.csproj", "{E413405C-C2EF-4391-AF8E-91AFE654FF7E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Fetcher.Generic", "Judger.Fetcher.Generic\Judger.Fetcher.Generic.csproj", "{3574C53A-1818-436F-A2FA-7BC504A46356}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Adapter.Generic", "Judger.Adapter.Generic\Judger.Adapter.Generic.csproj", "{3574C53A-1818-436F-A2FA-7BC504A46356}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fetchers", "Fetchers", "{484B2F02-ECCF-4878-9FBE-249CB72B8403}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapter", "Adapter", "{484B2F02-ECCF-4878-9FBE-249CB72B8403}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Fetcher.SDNUOJ", "Judger.Fetcher.SDNUOJ\Judger.Fetcher.SDNUOJ.csproj", "{B623EA2A-E993-4546-8ED3-AAA2E28EF368}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Adapter.SDNUOJ", "Judger.Adapter.SDNUOJ\Judger.Adapter.SDNUOJ.csproj", "{B623EA2A-E993-4546-8ED3-AAA2E28EF368}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Fetcher.HUSTOJ", "Judger.Fetcher.HUSTOJ\Judger.Fetcher.HUSTOJ.csproj", "{C5971B72-BB1E-433B-8CF9-6F423B1F670D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Judger.Adapter.HUSTOJ", "Judger.Adapter.HUSTOJ\Judger.Adapter.HUSTOJ.csproj", "{C5971B72-BB1E-433B-8CF9-6F423B1F670D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainUnitTest", "MainUnitTest\MainUnitTest.csproj", "{26DB6532-DEB7-4592-AABE-6BA1B381E0CF}"
 EndProject

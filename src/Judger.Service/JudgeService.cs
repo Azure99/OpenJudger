@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Timers;
-using Judger.Fetcher;
+using Judger.Adapter;
 using Judger.Managers;
 using Judger.Models;
 using Judger.Models.Program;
@@ -24,7 +24,7 @@ namespace Judger.Service
         /// </summary>
         public JudgeService()
         {
-            _taskFetcher = FetcherFactory.CreateTaskFetcher();
+            _taskFetcher = AdapterFactory.CreateTaskFetcher();
             _workTimer = new Timer(Config.TaskFetchInterval);
             _workTimer.Elapsed += OnWork;
         }

@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Judger.Core;
-using Judger.Fetcher;
+using Judger.Adapter;
 using Judger.Managers;
 using Judger.Models;
 using Judger.Models.Judge;
@@ -92,7 +92,7 @@ namespace Judger.Service
         {
             JudgeTask task = context.Task;
 
-            ITaskSubmitter submitter = FetcherFactory.CreateTaskSubmitter();
+            ITaskSubmitter submitter = AdapterFactory.CreateTaskSubmitter();
 
             try
             {
@@ -127,7 +127,7 @@ namespace Judger.Service
             {
                 LogInvalidTestData(task.ProblemId);
 
-                ITestDataFetcher fetcher = FetcherFactory.CreateTestDataFetcher();
+                ITestDataFetcher fetcher = AdapterFactory.CreateTestDataFetcher();
                 TestDataManager.WriteTestData(task.ProblemId, fetcher.Fetch(context));
 
                 LogTestDataFetched(task.ProblemId);

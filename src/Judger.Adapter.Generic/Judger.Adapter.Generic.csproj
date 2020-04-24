@@ -10,10 +10,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Judger.Adapter\Judger.Adapter.csproj" />
-    <ProjectReference Include="..\Judger.Core\Judger.Core.csproj" />
-    <ProjectReference Include="..\Judger.Managers\Judger.Managers.csproj" />
-    <ProjectReference Include="..\Judger.Models\Judger.Models.csproj" />
-    <ProjectReference Include="..\Judger.Utils\Judger.Utils.csproj" />
   </ItemGroup>
 
 </Project>

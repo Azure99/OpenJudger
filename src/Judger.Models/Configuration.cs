@@ -12,9 +12,9 @@ namespace Judger.Models
     public class Configuration
     {
         /// <summary>
-        /// 启动时加载的Fetcher DLL路径
+        /// 启动时加载的Adapter DLL路径
         /// </summary>
-        public string FetcherDllPath { get; set; } = "Judger.Fetcher.Generic.dll";
+        public string AdapterDllPath { get; set; } = "Judger.Adapter.Generic.dll";
 
         /// <summary>
         /// 评测机名称
