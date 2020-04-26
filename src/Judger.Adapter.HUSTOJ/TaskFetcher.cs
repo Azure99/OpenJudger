@@ -16,7 +16,7 @@ namespace Judger.Adapter.HUSTOJ
 
         public override JudgeContext[] Fetch()
         {
-            var taskList = new List<JudgeContext>();
+            List<JudgeContext> taskList = new List<JudgeContext>();
             string[] pendingSids = GetPending();
             foreach (string sid in pendingSids)
             {
@@ -57,7 +57,7 @@ namespace Judger.Adapter.HUSTOJ
         /// </summary>
         private string CreateGetPendingRequestBody()
         {
-            var bodyBuilder = new StringBuilder();
+            StringBuilder bodyBuilder = new StringBuilder();
             bodyBuilder.Append("getpending=1&");
 
             bodyBuilder.Append("oj_lang_set=");

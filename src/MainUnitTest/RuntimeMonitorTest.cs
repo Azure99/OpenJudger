@@ -13,12 +13,12 @@ namespace MainUnitTest
         [Fact]
         public void TestMonitor()
         {
-            var fileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "cmd" : "bash";
+            string fileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "cmd" : "bash";
 
-            var process = new Process();
+            Process process = new Process();
             process.StartInfo.FileName = fileName;
 
-            var monitor = new RuntimeMonitor(process)
+            RuntimeMonitor monitor = new RuntimeMonitor(process)
             {
                 MemoryLimit = 1024 * 128,
                 TimeLimit = 1000,

@@ -13,11 +13,13 @@ namespace Judger.Service
     /// </summary>
     public class JudgeService : IDisposable
     {
-        // 指示当前OnWork代码段是否正在执行
-        private bool _innerWorking;
         private readonly object _innerWorkLock = new object();
         private readonly ITaskFetcher _taskFetcher;
+
         private readonly Timer _workTimer;
+
+        // 指示当前OnWork代码段是否正在执行
+        private bool _innerWorking;
 
         /// <summary>
         /// 评测服务

@@ -29,7 +29,7 @@ namespace Judger.Adapter.Generic
             string requestBody = CreateRequestBody();
 
             string responseData = HttpClient.UploadString(url, requestBody);
-            var response = Json.DeSerialize<ServerResponse>(responseData);
+            ServerResponse response = Json.DeSerialize<ServerResponse>(responseData);
 
             if (response.Code == ResponseCode.NoTask)
                 return new JudgeContext[0];
@@ -52,12 +52,12 @@ namespace Judger.Adapter.Generic
         /// <returns>JudgeContexts</returns>
         private JudgeContext[] CreateTaskContexts(JToken data)
         {
-            var innerJudgeTasks = data.ToObject<InnerJudgeTask[]>();
+            InnerJudgeTask[] innerJudgeTasks = data.ToObject<InnerJudgeTask[]>();
 
             if (innerJudgeTasks == null || innerJudgeTasks.Length == 0)
                 return new JudgeContext[0];
 
-            var judgeTasks = new List<JudgeContext>();
+            List<JudgeContext> judgeTasks = new List<JudgeContext>();
             foreach (InnerJudgeTask item in innerJudgeTasks)
             {
                 JudgeContext task = JudgeContextFactory.Create(

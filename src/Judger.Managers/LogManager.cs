@@ -27,29 +27,29 @@ namespace Judger.Managers
         /// <summary>
         /// 信息缓冲区
         /// </summary>
-        private static readonly StringBuilder _infoBuffer = new StringBuilder();
+        private static readonly StringBuilder InfoBuffer = new StringBuilder();
 
         /// <summary>
         /// 缓冲区锁
         /// </summary>
-        private static readonly object _bufferLock = new object();
+        private static readonly object BufferLock = new object();
 
         /// <summary>
         /// 写操作锁
         /// </summary>
-        private static readonly object _writeLock = new object();
+        private static readonly object WriteLock = new object();
 
         /// <summary>
         /// 自动刷新缓冲区任务
         /// </summary>
-        private static readonly Task _autoFlushTask = new Task(AutoFlush, TaskCreationOptions.LongRunning);
+        private static readonly Task AutoFlushTask = new Task(AutoFlush, TaskCreationOptions.LongRunning);
 
         static LogManager()
         {
             if (!Directory.Exists(ConfigManager.Config.LogDirectory))
                 Directory.CreateDirectory(ConfigManager.Config.LogDirectory);
 
-            _autoFlushTask.Start();
+            AutoFlushTask.Start();
         }
 
         /// <summary>
@@ -94,30 +94,28 @@ namespace Judger.Managers
             string originalType = ex.GetType().FullName;
             string originalMessage = ex.Message;
 
-            var sb = new StringBuilder();
+            StringBuilder builder = new StringBuilder();
             while (ex != null)
             {
-                sb.AppendLine("[" + ex.GetType().FullName + "]");
-                sb.AppendLine("Message:" + ex.Message);
+                builder.AppendLine("[" + ex.GetType().FullName + "]");
+                builder.AppendLine("Message:" + ex.Message);
 
                 if (!string.IsNullOrEmpty(ex.StackTrace))
                 {
-                    sb.AppendLine("Stack Trace:");
-                    sb.AppendLine(ex.StackTrace);
+                    builder.AppendLine("Stack Trace:");
+                    builder.AppendLine(ex.StackTrace);
                 }
 
                 if (ex.InnerException != null)
-                    sb.Append("-->Caused by:");
+                    builder.Append("-->Caused by:");
 
                 ex = ex.InnerException;
             }
 
-            string content = sb.ToString();
+            string content = builder.ToString();
 
             if (showDetails)
-            {
                 Console.Error.WriteLine(content);
-            }
             else
             {
                 Console.Error.WriteLine("[" + originalType + "]");
@@ -131,21 +129,21 @@ namespace Judger.Managers
         {
             string time = DateTime.Now.ToString(LOG_DATE_FORMAT);
 
-            var sb = new StringBuilder();
-            sb.AppendFormat("[{0}] {1}", level, time);
-            sb.AppendLine();
-            sb.AppendLine(content);
-            sb.AppendLine("-");
+            StringBuilder builder = new StringBuilder();
+            builder.AppendFormat("[{0}] {1}", level, time);
+            builder.AppendLine();
+            builder.AppendLine(content);
+            builder.AppendLine("-");
 
-            content = sb.ToString();
+            content = builder.ToString();
 
             if (level == LOG_LEVEL_INFO)
             {
-                lock (_infoBuffer)
+                lock (InfoBuffer)
                 {
-                    _infoBuffer.Append(content);
+                    InfoBuffer.Append(content);
 
-                    if (_infoBuffer.Length > INFO_BUFFER_SIZE)
+                    if (InfoBuffer.Length > INFO_BUFFER_SIZE)
                         Flush();
                 }
 
@@ -157,10 +155,10 @@ namespace Judger.Managers
 
         public static void Flush()
         {
-            lock (_bufferLock)
+            lock (BufferLock)
             {
-                Write(LOG_LEVEL_INFO, _infoBuffer.ToString());
-                _infoBuffer.Clear();
+                Write(LOG_LEVEL_INFO, InfoBuffer.ToString());
+                InfoBuffer.Clear();
             }
         }
 
@@ -179,7 +177,8 @@ namespace Judger.Managers
 
             try
             {
-                lock (_writeLock) File.AppendAllText(path, content);
+                lock (WriteLock)
+                    File.AppendAllText(path, content);
             }
             catch (Exception ex)
             {

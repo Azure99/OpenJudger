@@ -20,7 +20,7 @@ namespace Judger.Adapter.Generic
         /// </summary>
         public static JObject CreateJObject()
         {
-            var obj = new JObject();
+            JObject obj = new JObject();
             AddTokenToJObject(obj);
 
             return obj;

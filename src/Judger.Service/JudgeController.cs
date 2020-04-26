@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using Judger.Core;
 using Judger.Adapter;
+using Judger.Core;
 using Judger.Managers;
 using Judger.Models;
 using Judger.Models.Judge;
@@ -61,7 +61,7 @@ namespace Judger.Service
         /// <param name="judgeTaskObject">JudgeTask对象</param>
         private void RunJudgeTask(object judgeTaskObject)
         {
-            var context = judgeTaskObject as JudgeContext;
+            JudgeContext context = judgeTaskObject as JudgeContext;
 
             try
             {
@@ -72,7 +72,8 @@ namespace Judger.Service
                 LogException(ex);
             }
 
-            lock (_queueLock) RunningCount--;
+            lock (_queueLock)
+                RunningCount--;
 
             //重新检查是否有任务
             CheckTask();
@@ -132,7 +133,7 @@ namespace Judger.Service
         /// <returns>结果为失败的JudgeResult</returns>
         private JudgeResult CreateFailedJudgeResult(JudgeContext context, string message = "")
         {
-            var result = new JudgeResult
+            JudgeResult result = new JudgeResult
             {
                 Author = context.Task.Author,
                 JudgeDetail = message,

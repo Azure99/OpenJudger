@@ -42,15 +42,13 @@ namespace Judger.Core.Database
                 return;
             }
 
-            var acceptedCasesCount = 0;
+            int acceptedCasesCount = 0;
             foreach (string dataName in dataNames)
             {
                 SingleJudgeResult singleResult = JudgeOneCase(dataName);
                 result.TimeCost = Math.Max(result.TimeCost, singleResult.TimeCost);
                 if (singleResult.ResultCode == JudgeResultCode.Accepted)
-                {
                     acceptedCasesCount++;
-                }
                 else
                 {
                     result.ResultCode = singleResult.ResultCode;
@@ -71,7 +69,7 @@ namespace Judger.Core.Database
 
             BaseDbOperator userOper = CreateJudgeEnv(inputData);
 
-            var singleCaseJudger = new SingleCaseJudger(Context, userOper);
+            SingleCaseJudger singleCaseJudger = new SingleCaseJudger(Context, userOper);
             SingleJudgeResult result = singleCaseJudger.Judge(inputData, outputData, queryData);
 
             ClearJudgeEnv(userOper);

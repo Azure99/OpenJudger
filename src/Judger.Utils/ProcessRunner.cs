@@ -81,12 +81,12 @@ namespace Judger.Utils
             if (ProcessorAffinity.ToInt64() != 0)
                 Process.ProcessorAffinity = ProcessorAffinity;
 
-            var readOutputTask = new Task<string>(
+            Task<string> readOutputTask = new Task<string>(
                 TryReadStreamToEnd, Process.StandardOutput,
                 TaskCreationOptions.LongRunning);
             readOutputTask.Start();
 
-            var readErrorTask = new Task<string>(
+            Task<string> readErrorTask = new Task<string>(
                 TryReadStreamToEnd, Process.StandardError,
                 TaskCreationOptions.LongRunning);
             readErrorTask.Start();
@@ -129,7 +129,7 @@ namespace Judger.Utils
         /// <returns>结果</returns>
         private string TryReadStreamToEnd(object readerObject)
         {
-            var reader = readerObject as StreamReader;
+            StreamReader reader = readerObject as StreamReader;
             if (Encoding != null)
                 reader = new StreamReader(reader.BaseStream, Encoding);
 
@@ -153,27 +153,27 @@ namespace Judger.Utils
         /// <returns>结果</returns>
         private string ReadStreamToEnd(StreamReader reader)
         {
-            var sb = new StringBuilder();
-            var buffer = new char[4096];
+            StringBuilder builder = new StringBuilder();
+            char[] buffer = new char[4096];
 
             // 记录总输出长度
-            var sumLength = 0;
+            int sumLength = 0;
 
             int len;
             while ((len = reader.Read(buffer, 0, buffer.Length)) > 0)
             {
-                sb.Append(buffer, 0, len);
+                builder.Append(buffer, 0, len);
 
                 sumLength += len;
                 if (sumLength > OutputLimit) // 检查输出超限
                 {
                     reader.Close();
-                    return sb.ToString();
+                    return builder.ToString();
                 }
             }
 
             reader.Close();
-            return sb.ToString();
+            return builder.ToString();
         }
     }
 }

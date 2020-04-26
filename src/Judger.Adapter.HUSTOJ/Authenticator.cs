@@ -7,9 +7,9 @@ namespace Judger.Adapter.HUSTOJ
 {
     public class Authenticator
     {
-        private int _delayCheckCount;
         private readonly HttpWebClient _httpClient = ConfiguredClient.Create();
         private readonly string _loginUrl = "http://localhost/login.php";
+        private int _delayCheckCount;
 
         static Authenticator()
         {
@@ -22,9 +22,7 @@ namespace Judger.Adapter.HUSTOJ
             _httpClient.CookieContainer = CookieContainer;
 
             if (Config.AdditionalConfigs.ContainsKey("LoginUrl"))
-            {
                 _loginUrl = Config.AdditionalConfigs["LoginUrl"];
-            }
             else
             {
                 Config.AdditionalConfigs["LoginUrl"] = _loginUrl;
@@ -61,7 +59,7 @@ namespace Judger.Adapter.HUSTOJ
         /// </summary>
         public bool CheckLogin()
         {
-            var requestBody = "checklogin=1";
+            string requestBody = "checklogin=1";
             try
             {
                 return _httpClient.UploadString(Config.TaskFetchUrl, requestBody) == "1";

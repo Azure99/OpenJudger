@@ -15,7 +15,7 @@ namespace Judger.Utils
         /// <returns>移除子字符串后的字符串</returns>
         public static string TrimStart(this string str, string trimString)
         {
-            var count = 0;
+            int count = 0;
             while (str.IndexOf(trimString, trimString.Length * count, StringComparison.Ordinal)
                    % trimString.Length == 0)
                 count++;

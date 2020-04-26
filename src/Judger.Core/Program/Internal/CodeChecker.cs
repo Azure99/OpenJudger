@@ -33,7 +33,7 @@ namespace Judger.Core.Program.Internal
             string rulesData = File.ReadAllText(Config.InterceptionRules);
             string[] rules = Regex.Split(rulesData, "\r\n|\r|\n");
 
-            var nowLang = "";
+            string nowLang = "";
             foreach (string rule in rules)
             {
                 // 空行或注释
@@ -87,7 +87,7 @@ namespace Judger.Core.Program.Internal
 
             string[] lines = Regex.Split(sourceCode, "\r\n|\r|\n");
             List<string> rules = _langRulesDic[language];
-            for (var i = 0; i < lines.Length; i++)
+            for (int i = 0; i < lines.Length; i++)
             {
                 foreach (string rule in rules)
                 {

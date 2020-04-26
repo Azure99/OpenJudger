@@ -10,11 +10,11 @@ namespace Judger.Utils
     /// </summary>
     public static class Json
     {
-        private static readonly JsonSerializer _serializer = new JsonSerializer();
+        private static readonly JsonSerializer Serializer = new JsonSerializer();
 
         static Json()
         {
-            _serializer.Formatting = Formatting.Indented;
+            Serializer.Formatting = Formatting.Indented;
         }
 
         /// <summary>
@@ -25,12 +25,10 @@ namespace Judger.Utils
         /// <returns>序列化后的Json字符串</returns>
         public static string Serialize(object obj, Type type)
         {
-            var sb = new StringBuilder();
-            using (var sw = new StringWriter(sb))
+            using (StringWriter writer = new StringWriter(new StringBuilder()))
             {
-                _serializer.Serialize(sw, obj, type);
-
-                return sb.ToString();
+                Serializer.Serialize(writer, obj, type);
+                return writer.GetStringBuilder().ToString();
             }
         }
 
@@ -42,11 +40,10 @@ namespace Judger.Utils
         /// <returns>序列化后的Json字符串</returns>
         public static string Serialize<T>(T obj)
         {
-            var sb = new StringBuilder();
-            using (var sw = new StringWriter(sb))
+            using (StringWriter writer = new StringWriter(new StringBuilder()))
             {
-                _serializer.Serialize(sw, obj, typeof(T));
-                return sb.ToString();
+                Serializer.Serialize(writer, obj, typeof(T));
+                return writer.ToString();
             }
         }
 
@@ -58,7 +55,8 @@ namespace Judger.Utils
         /// <returns>反序列化的对象</returns>
         public static object DeSerialize(string jsonObject, Type type)
         {
-            using (var sr = new StringReader(jsonObject)) return _serializer.Deserialize(sr, type);
+            using (StringReader reader = new StringReader(jsonObject))
+                return Serializer.Deserialize(reader, type);
         }
 
         /// <summary>
@@ -69,7 +67,8 @@ namespace Judger.Utils
         /// <returns>反序列化后的对象</returns>
         public static T DeSerialize<T>(string jsonObject)
         {
-            using (var sr = new StringReader(jsonObject)) return (T) _serializer.Deserialize(sr, typeof(T));
+            using (StringReader reader = new StringReader(jsonObject))
+                return (T) Serializer.Deserialize(reader, typeof(T));
         }
     }
 }

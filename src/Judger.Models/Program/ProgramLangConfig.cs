@@ -11,16 +11,11 @@ namespace Judger.Models.Program
     public class ProgramLangConfig : ILangConfig
     {
         /// <summary>
-        /// 语言名称
-        /// </summary>
-        public string Name { get; set; } = "";
-        
-        /// <summary>
         /// 判题时使用的目录
         /// </summary>
         public string JudgeDirectory { get; set; }
             = "JudgeTemp" + Path.DirectorySeparatorChar + "Judge";
-        
+
         /// <summary>
         /// 是否需要编译(脚本语言(如Python)不需要)
         /// </summary>
@@ -40,7 +35,7 @@ namespace Judger.Models.Program
         /// 编译后可执行文件名
         /// </summary>
         public string ProgramFileName { get; set; } = "";
-        
+
         /// <summary>
         /// 最大编译时间
         /// </summary>
@@ -75,12 +70,12 @@ namespace Judger.Models.Program
         /// 运行器参数
         /// </summary>
         public string RunnerArgs { get; set; } = "";
-        
+
         /// <summary>
         /// I/O使用UTF8编码
         /// </summary>
         public bool UseUtf8 { get; set; } = true;
-        
+
         /// <summary>
         /// 是否运行在VM中 (Java等语言是)
         /// </summary>
@@ -95,6 +90,11 @@ namespace Judger.Models.Program
         /// 时间消耗=真实时间*补偿系数，用于保证分布式判题机性能不同时减小误差
         /// </summary>
         public double TimeCompensation { get; set; } = 1.0;
+
+        /// <summary>
+        /// 语言名称
+        /// </summary>
+        public string Name { get; set; } = "";
 
         /// <summary>
         /// 是否为数据库配置

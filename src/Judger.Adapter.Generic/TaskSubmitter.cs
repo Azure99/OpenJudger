@@ -30,7 +30,7 @@ namespace Judger.Adapter.Generic
             string requestBody = CreateRequestBody(context.Result);
 
             string responseData = HttpClient.UploadString(url, requestBody, 3);
-            var response = Json.DeSerialize<ServerResponse>(responseData);
+            ServerResponse response = Json.DeSerialize<ServerResponse>(responseData);
 
             if (response.Code == ResponseCode.Fail || response.Code == ResponseCode.WrongToken)
                 throw new AdapterException(context.Result.SubmitId + " submit failed: " + response.Message);
@@ -44,7 +44,7 @@ namespace Judger.Adapter.Generic
         /// <returns>提交测试结果的请求</returns>
         private string CreateRequestBody(JudgeResult result)
         {
-            var judgeResult = new InnerJudgeResult
+            InnerJudgeResult judgeResult = new InnerJudgeResult
             {
                 SubmitId = result.SubmitId,
                 JudgeDetail = result.JudgeDetail,

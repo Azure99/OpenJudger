@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -54,16 +53,16 @@ namespace Judger.Managers
         /// <summary>
         /// 数据锁字典, 防止统一题目测试数据争用
         /// </summary>
-        private static readonly Dictionary<string, object> _dataLockDic;
+        private static readonly Dictionary<string, object> DataLockDic;
 
         /// <summary>
         /// 数据锁字典的锁
         /// </summary>
-        private static readonly object _dicLock = new object();
+        private static readonly object DicLock = new object();
 
         static TestDataManager()
         {
-            _dataLockDic = new Dictionary<string, object>();
+            DataLockDic = new Dictionary<string, object>();
 
             if (!Directory.Exists(Config.TestDataDirectory))
                 Directory.CreateDirectory(Config.TestDataDirectory);
@@ -98,7 +97,7 @@ namespace Judger.Managers
         /// <param name="zipData">ZIP数据</param>
         public static void WriteTestData(string problemId, byte[] zipData)
         {
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 ms.Write(zipData);
                 ms.Position = 0;
@@ -113,7 +112,7 @@ namespace Judger.Managers
         /// <param name="zipStream">保存ZIP的Stream</param>
         public static void WriteTestData(string problemId, Stream zipStream)
         {
-            using (var zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+            using (ZipArchive zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Read))
                 WriteTestData(problemId, zipArchive);
         }
 
@@ -127,7 +126,8 @@ namespace Judger.Managers
             string dirPath = Cmb(Config.TestDataDirectory, problemId);
             lock (GetDataLock(problemId))
             {
-                if (Directory.Exists(dirPath)) Directory.Delete(dirPath, true);
+                if (Directory.Exists(dirPath))
+                    Directory.Delete(dirPath, true);
 
                 zipArchive.ExtractToDirectory(dirPath);
             }
@@ -147,15 +147,15 @@ namespace Judger.Managers
             lock (GetDataLock(problemId))
             {
                 inputFiles = Directory.GetFiles(Cmb(dirPath, DIR_INPUT));
-                for (var i = 0; i < inputFiles.Length; i++)
+                for (int i = 0; i < inputFiles.Length; i++)
                     inputFiles[i] = Path.GetFileName(inputFiles[i]);
 
                 outputFiles = Directory.GetFiles(Cmb(dirPath, DIR_OUTPUT));
-                for (var i = 0; i < outputFiles.Length; i++)
+                for (int i = 0; i < outputFiles.Length; i++)
                     outputFiles[i] = Path.GetFileName(outputFiles[i]);
             }
 
-            var query = from input in inputFiles
+            ProgramTestDataFile[] files = (from input in inputFiles
                 from output in outputFiles
                 where Path.GetFileNameWithoutExtension(input) ==
                       Path.GetFileNameWithoutExtension(output)
@@ -164,9 +164,9 @@ namespace Judger.Managers
                     Name = Path.GetFileNameWithoutExtension(input),
                     InputFile = input,
                     OutputFile = output
-                };
+                }).ToArray();
 
-            return query.ToArray();
+            return files;
         }
 
         /// <summary>
@@ -186,8 +186,8 @@ namespace Judger.Managers
                 return new ProgramTestData
                 {
                     Name = Path.GetFileNameWithoutExtension(inputName),
-                    Input =  File.ReadAllText(Cmb(dirPath, DIR_INPUT, inputName)),
-                    Output =  File.ReadAllText(Cmb(dirPath, DIR_OUTPUT, outputName))
+                    Input = File.ReadAllText(Cmb(dirPath, DIR_INPUT, inputName)),
+                    Output = File.ReadAllText(Cmb(dirPath, DIR_OUTPUT, outputName))
                 };
             }
         }
@@ -202,9 +202,7 @@ namespace Judger.Managers
             string spjDir = Cmb(Config.TestDataDirectory, problemId, DIR_SPJ);
 
             lock (GetDataLock(problemId))
-            {
                 return Directory.Exists(spjDir) && Directory.GetFiles(spjDir).Length > 0;
-            }
         }
 
         /// <summary>
@@ -338,12 +336,12 @@ namespace Judger.Managers
         /// <returns>锁</returns>
         private static object GetDataLock(string problemId)
         {
-            lock (_dicLock)
+            lock (DicLock)
             {
-                if (!_dataLockDic.ContainsKey(problemId))
-                    _dataLockDic.Add(problemId, new object());
+                if (!DataLockDic.ContainsKey(problemId))
+                    DataLockDic.Add(problemId, new object());
 
-                return _dataLockDic[problemId];
+                return DataLockDic[problemId];
             }
         }
 
@@ -354,8 +352,8 @@ namespace Judger.Managers
         /// <returns>合并后的路径</returns>
         private static string Cmb(params object[] paths)
         {
-            var pathStrings = new string[paths.Length];
-            for (var i = 0; i < pathStrings.Length; i++)
+            string[] pathStrings = new string[paths.Length];
+            for (int i = 0; i < pathStrings.Length; i++)
                 pathStrings[i] = paths[i].ToString();
 
             return Path.Combine(pathStrings);

@@ -26,9 +26,9 @@ namespace Judger.Adapter.HUSTOJ
         private byte[] Fetch(string problemId)
         {
             string[] fileNames = GetTestDataList(problemId);
-            var files = new Tuple<string, byte[]>[fileNames.Length];
+            Tuple<string, byte[]>[] files = new Tuple<string, byte[]>[fileNames.Length];
 
-            for (var i = 0; i < files.Length; i++)
+            for (int i = 0; i < files.Length; i++)
             {
                 string fileName = fileNames[i];
                 files[i] = new Tuple<string, byte[]>(fileName, GetTestDataFile(problemId, fileName));
@@ -72,9 +72,9 @@ namespace Judger.Adapter.HUSTOJ
         private byte[] CreateZip(Tuple<string, byte[]>[] files, string dataVersion)
         {
             byte[] zipData;
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
-                using (var zip = new ZipArchive(ms, ZipArchiveMode.Create))
+                using (ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create))
                 {
                     foreach (Tuple<string, byte[]> file in files)
                     {
@@ -84,21 +84,26 @@ namespace Judger.Adapter.HUSTOJ
                         else if (file.Item1.EndsWith(".out"))
                             entry = zip.CreateEntry("output/" + file.Item1);
                         else if (CheckSpecialJudgeFile(file.Item1))
+                        {
                             entry = zip.CreateEntry("spj/" + SpjManager.SpjSourceFilename +
                                                     Path.GetExtension(file.Item1));
+                        }
 
                         if (entry != null)
+                        {
                             using (Stream stream = entry.Open())
                                 stream.Write(file.Item2);
+                        }
                     }
 
                     ZipArchiveEntry verEntry = zip.CreateEntry("version.txt");
-                    using (var sw = new StreamWriter(verEntry.Open())) sw.Write(dataVersion);
+                    using (StreamWriter writer = new StreamWriter(verEntry.Open()))
+                        writer.Write(dataVersion);
 
                     zip.UpdateBaseStream();
 
                     zipData = new byte[ms.Length];
-                    var nowPos = (int) ms.Position;
+                    int nowPos = (int) ms.Position;
                     ms.Position = 0;
                     ms.Read(zipData, 0, (int) ms.Length);
                     ms.Position = nowPos;
@@ -127,7 +132,7 @@ namespace Judger.Adapter.HUSTOJ
         /// <returns>是否为SPJ源代码</returns>
         private bool CheckSpecialJudgeFile(string fileName)
         {
-            var extensionSet = new HashSet<string>();
+            HashSet<string> extensionSet = new HashSet<string>();
 
             foreach (ProgramLangConfig lang in Config.Languages)
             {
@@ -143,8 +148,10 @@ namespace Judger.Adapter.HUSTOJ
             string extension = Path.GetExtension(fileName).TrimStart('.').ToLower();
 
             if (name == "spj")
+            {
                 if (extensionSet.Contains(extension))
                     return true;
+            }
 
             return false;
         }

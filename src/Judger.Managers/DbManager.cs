@@ -13,14 +13,14 @@ namespace Judger.Managers
         /// <summary>
         /// 数据库配置字典
         /// </summary>
-        private static readonly Dictionary<string, DbLangConfig> _dbDic = new Dictionary<string, DbLangConfig>();
+        private static readonly Dictionary<string, DbLangConfig> DbDic = new Dictionary<string, DbLangConfig>();
 
         static DbManager()
         {
             foreach (DbLangConfig dbConf in Config.Databases)
             {
-                if (!_dbDic.ContainsKey(dbConf.Name))
-                    _dbDic.Add(dbConf.Name, dbConf);
+                if (!DbDic.ContainsKey(dbConf.Name))
+                    DbDic.Add(dbConf.Name, dbConf);
             }
         }
 
@@ -33,7 +33,7 @@ namespace Judger.Managers
         /// <returns>数据库配置</returns>
         public static DbLangConfig GetDbConfiguration(string name)
         {
-            return _dbDic[name].Clone() as DbLangConfig;
+            return DbDic[name].Clone() as DbLangConfig;
         }
 
         /// <summary>

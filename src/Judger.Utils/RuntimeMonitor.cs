@@ -101,8 +101,7 @@ namespace Judger.Utils
                 CheckMemoryCost();
             }
             catch
-            {
-            }
+            { }
 
             _timer.Stop();
         }
@@ -121,8 +120,7 @@ namespace Judger.Utils
                     Process.Kill();
             }
             catch
-            {
-            }
+            { }
         }
 
         /// <summary>

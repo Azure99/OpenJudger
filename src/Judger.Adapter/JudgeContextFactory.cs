@@ -35,7 +35,7 @@ namespace Judger.Adapter
             int timeLimit = 1000, int memoryLimit = 262144, bool judgeAllCases = false,
             bool specialJudge = false, bool dbJudge = false)
         {
-            var judgeType = JudgeType.ProgramJudge;
+            JudgeType judgeType = JudgeType.ProgramJudge;
             if (dbJudge)
                 judgeType = JudgeType.DbJudge;
             else if (specialJudge)
@@ -82,7 +82,7 @@ namespace Judger.Adapter
 
             double timeCompensation = GetTimeCompensation(langConfig);
 
-            var task = new JudgeTask
+            JudgeTask task = new JudgeTask
             {
                 SubmitId = submitId,
                 ProblemId = problemId,
@@ -96,7 +96,7 @@ namespace Judger.Adapter
                 JudgeType = judgeType
             };
 
-            var result = new JudgeResult
+            JudgeResult result = new JudgeResult
             {
                 SubmitId = task.SubmitId,
                 ProblemId = task.ProblemId,
@@ -157,9 +157,7 @@ namespace Judger.Adapter
         private static double GetTimeCompensation(ILangConfig langConfig)
         {
             if (langConfig is ProgramLangConfig config)
-            {
                 return config.TimeCompensation;
-            }
 
             return 1;
         }

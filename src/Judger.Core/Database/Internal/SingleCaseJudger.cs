@@ -40,7 +40,7 @@ namespace Judger.Core.Database.Internal
         /// <returns></returns>
         public SingleJudgeResult Judge(string stdInput, DbData stdOutput, DbQueryData stdQuery)
         {
-            var watch = new Stopwatch();
+            Stopwatch watch = new Stopwatch();
             DbQueryData usrQuery;
             DbData usrOutput;
 
@@ -96,7 +96,7 @@ namespace Judger.Core.Database.Internal
                 return CompareResult.WrongAnswer;
 
             int tableCount = stdOutput.TablesData.Length;
-            for (var i = 0; i < tableCount; i++)
+            for (int i = 0; i < tableCount; i++)
             {
                 if (!CmpString(stdOutput.TablesData[i].Name, usrOutput.TablesData[i].Name))
                     return CompareResult.WrongAnswer;
@@ -116,15 +116,15 @@ namespace Judger.Core.Database.Internal
             int filedCount = stdQuery.FieldCount;
             int recordCount = stdQuery.Records.Count;
 
-            for (var i = 0; i < filedCount; i++)
+            for (int i = 0; i < filedCount; i++)
             {
                 if (!CmpString(stdQuery.FieldNames[i], usrQuery.FieldNames[i]))
                     return CompareResult.WrongAnswer;
             }
 
-            for (var i = 0; i < recordCount; i++)
+            for (int i = 0; i < recordCount; i++)
             {
-                for (var i2 = 0; i2 < filedCount; i2++)
+                for (int i2 = 0; i2 < filedCount; i2++)
                 {
                     if (stdQuery.Records[i][i2] != usrQuery.Records[i][i2])
                         return CompareResult.WrongAnswer;

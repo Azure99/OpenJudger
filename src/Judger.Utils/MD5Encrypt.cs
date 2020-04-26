@@ -19,13 +19,14 @@ namespace Judger.Utils
                 str = "";
 
             byte[] res;
-            using (MD5 md5 = MD5.Create()) res = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
+            using (MD5 md5 = MD5.Create())
+                res = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
 
-            var sb = new StringBuilder();
+            StringBuilder builder = new StringBuilder();
             foreach (byte b in res)
-                sb.Append(b.ToString("x2"));
+                builder.Append(b.ToString("x2"));
 
-            return sb.ToString();
+            return builder.ToString();
         }
     }
 }

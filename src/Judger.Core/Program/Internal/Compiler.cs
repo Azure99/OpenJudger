@@ -30,7 +30,7 @@ namespace Judger.Core.Program.Internal
                 if (LangConfig.UseUtf8)
                     runner.Encoding = Encoding.UTF8;
 
-                var monitor = new RuntimeMonitor(runner.Process, 50)
+                RuntimeMonitor monitor = new RuntimeMonitor(runner.Process, 50)
                 {
                     TimeLimit = LangConfig.MaxCompileTime,
                     TotalTimeLimit = LangConfig.MaxCompileTime

@@ -73,8 +73,8 @@ namespace Judger.Core.Database.Internal.DbOperator
         public override DbData ReadDbData()
         {
             string[] tablesName = GetAllTablesName();
-            var data = new DbQueryData[tablesName.Length];
-            for (var i = 0; i < tablesName.Length; i++)
+            DbQueryData[] data = new DbQueryData[tablesName.Length];
+            for (int i = 0; i < tablesName.Length; i++)
                 data[i] = GetTableData(tablesName[i]);
 
             Array.Sort(data, (a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
@@ -89,7 +89,7 @@ namespace Judger.Core.Database.Internal.DbOperator
         {
             DbDataReader reader = ExecuteReader("SHOW TABLES");
 
-            var tables = new List<string>();
+            List<string> tables = new List<string>();
             while (reader.Read())
                 tables.Add(reader.GetString(0));
 

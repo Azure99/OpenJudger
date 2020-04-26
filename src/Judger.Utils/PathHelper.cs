@@ -34,7 +34,8 @@ namespace Judger.Utils
             string[] files = Directory.GetFiles(directory);
 
             return files
-                .FirstOrDefault(file => string.Equals(Path.GetFileName(file), filename, StringComparison.CurrentCultureIgnoreCase));
+                .FirstOrDefault(file =>
+                    string.Equals(Path.GetFileName(file), filename, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

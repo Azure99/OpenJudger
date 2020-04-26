@@ -12,7 +12,7 @@ namespace MainUnitTest
                 if (a.Arr == null && b.Arr == null)
                     return true;
 
-                for (var i = 0; i < a.Arr.Length; i++)
+                for (int i = 0; i < a.Arr.Length; i++)
                 {
                     if (a.Arr[i] != b.Arr[i])
                         return false;
@@ -30,11 +30,11 @@ namespace MainUnitTest
             public string Name { get; set; }
             public int[] Arr { get; set; }
         }
-        
+
         [Fact]
         public void TestSerializer()
         {
-            var classA = new TempTestClass
+            TempTestClass classA = new TempTestClass
             {
                 Id = 1,
                 Name = "NNN",
@@ -47,14 +47,14 @@ namespace MainUnitTest
             // 序列化是否成功
             Assert.True(json == json2);
 
-            var classB = Json.DeSerialize(json2, typeof(TempTestClass)) as TempTestClass;
+            TempTestClass classB = Json.DeSerialize(json2, typeof(TempTestClass)) as TempTestClass;
 
             // 反序列化是否成功
             Assert.True(Compare(classA, classB) && Compare(classA, classB));
 
             json = json.Replace("NNN", "A");
             classB = Json.DeSerialize<TempTestClass>(json);
-            var classC = Json.DeSerialize<TempTestClass>(json2);
+            TempTestClass classC = Json.DeSerialize<TempTestClass>(json2);
 
             // 修改json的情况下是否正确
             Assert.False(Compare(classB, classC));

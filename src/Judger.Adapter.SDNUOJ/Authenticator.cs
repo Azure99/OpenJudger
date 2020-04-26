@@ -17,9 +17,7 @@ namespace Judger.Adapter.SDNUOJ
             _httpClient.CookieContainer = CookieContainer;
 
             if (Config.AdditionalConfigs.ContainsKey("LoginUrl"))
-            {
                 _loginUrl = Config.AdditionalConfigs["LoginUrl"];
-            }
             else
             {
                 Config.AdditionalConfigs.Add("LoginUrl", _loginUrl);
@@ -41,7 +39,7 @@ namespace Judger.Adapter.SDNUOJ
             {
                 string response = _httpClient.UploadString(_loginUrl, requestBody, 3);
 
-                var message = Json.DeSerialize<ServerMessageEntity>(response);
+                ServerMessageEntity message = Json.DeSerialize<ServerMessageEntity>(response);
                 return message.IsSuccess;
             }
             catch

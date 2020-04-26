@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Judger.Adapter.SDNUOJ.Entity
 {
     [Serializable]
-    public class SDNUOJTaskEntity
+    public class SdnuojTaskEntity
     {
         [JsonProperty(PropertyName = "sid")]
         public string SubmitId { get; set; }

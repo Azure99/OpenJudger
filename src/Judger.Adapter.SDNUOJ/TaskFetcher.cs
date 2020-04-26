@@ -29,11 +29,11 @@ namespace Judger.Adapter.SDNUOJ
         /// </summary>
         private string CreateRequestBody()
         {
-            var bodyBuilder = new StringBuilder();
+            StringBuilder bodyBuilder = new StringBuilder();
             bodyBuilder.Append("count=1&");
             bodyBuilder.Append("supported_languages=");
 
-            var langBuilder = new StringBuilder();
+            StringBuilder langBuilder = new StringBuilder();
             foreach (ProgramLangConfig lang in Config.Languages)
                 langBuilder.Append(lang.Name + "[],");
 
@@ -59,11 +59,11 @@ namespace Judger.Adapter.SDNUOJ
             if (jArray.Count == 0)
                 return new JudgeContext[0];
 
-            var jObject = jArray[0] as JObject;
+            JObject jObject = jArray[0] as JObject;
             if (!CheckTaskJObject(jObject))
                 return new JudgeContext[0];
 
-            var taskEntity = jObject.ToObject<SDNUOJTaskEntity>();
+            SdnuojTaskEntity taskEntity = jObject.ToObject<SdnuojTaskEntity>();
 
             JudgeContext task = JudgeContextFactory.Create(
                 taskEntity.SubmitId, taskEntity.ProblemId, taskEntity.DataVersion,
@@ -79,7 +79,7 @@ namespace Judger.Adapter.SDNUOJ
         /// </summary>
         private bool CheckTaskJObject(JObject obj)
         {
-            var keySet = new HashSet<string>();
+            HashSet<string> keySet = new HashSet<string>();
             foreach (JProperty key in obj.Properties())
                 keySet.Add(key.Name.ToLower());
 

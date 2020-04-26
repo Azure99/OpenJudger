@@ -17,7 +17,7 @@ namespace Judger.Core.Program.Internal
         /// <summary>
         /// 最大总时间为CPU总时间的倍数
         /// </summary>
-        private const int TOTAL_TIME_LIMIT_TUPLING = 5;
+        private const int TOTAL_TIME_LIMIT_RATIO = 5;
 
         /// <summary>
         /// 总时间限制x倍数的最小值
@@ -59,7 +59,7 @@ namespace Judger.Core.Program.Internal
                     runner.Encoding = Encoding.UTF8;
 
                 // 创建监视器
-                int totalTimeLimit = Math.Max(JudgeTask.TimeLimit * TOTAL_TIME_LIMIT_TUPLING, MIN_TOTAL_TIME_LIMIT);
+                int totalTimeLimit = Math.Max(JudgeTask.TimeLimit * TOTAL_TIME_LIMIT_RATIO, MIN_TOTAL_TIME_LIMIT);
                 monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval,
                     LangConfig.RunningInVm)
                 {
@@ -76,7 +76,7 @@ namespace Judger.Core.Program.Internal
                 monitor.Dispose();
             }
 
-            var result = new SingleJudgeResult
+            SingleJudgeResult result = new SingleJudgeResult
             {
                 TimeCost = monitor.TimeCost,
                 MemoryCost = monitor.MemoryCost,
@@ -136,13 +136,13 @@ namespace Judger.Core.Program.Internal
                 monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval)
                 {
                     TimeLimit = SpjTask.TimeLimit,
-                    TotalTimeLimit = SpjTask.TimeLimit * TOTAL_TIME_LIMIT_TUPLING,
+                    TotalTimeLimit = SpjTask.TimeLimit * TOTAL_TIME_LIMIT_RATIO,
                     MemoryLimit = SpjTask.MemoryLimit
                 };
                 monitor.Start();
 
                 runner.OutputLimit = SpjLangConfig.OutputLimit;
-                exitCode = runner.Run("", out string o, out string e, ProcessPriorityClass.RealTime);
+                exitCode = runner.Run("", out string _, out string _, ProcessPriorityClass.RealTime);
                 monitor.Dispose();
             }
 
@@ -161,9 +161,12 @@ namespace Judger.Core.Program.Internal
 
             switch (exitCode)
             {
-                case 0: return CompareResult.Accepted;
-                case 2: return CompareResult.PresentationError;
-                default: return CompareResult.WrongAnswer;
+                case 0:
+                    return CompareResult.Accepted;
+                case 2:
+                    return CompareResult.PresentationError;
+                default:
+                    return CompareResult.WrongAnswer;
             }
         }
 

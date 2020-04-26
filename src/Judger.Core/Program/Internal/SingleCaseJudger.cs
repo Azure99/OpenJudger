@@ -18,7 +18,7 @@ namespace Judger.Core.Program.Internal
         /// <summary>
         /// 最大总时间为CPU总时间的倍数
         /// </summary>
-        private const int TOTAL_TIME_LIMIT_TUPLING = 5;
+        private const int TOTAL_TIME_LIMIT_RATIO = 5;
 
         /// <summary>
         /// 总时间限制x倍数的最小值
@@ -36,9 +36,9 @@ namespace Judger.Core.Program.Internal
 
         public SingleJudgeResult Judge(string input, string output)
         {
-            var userOutput = "";
-            var userError = "";
-            var exitCode = 0;
+            string userOutput = "";
+            string userError = "";
+            int exitCode = 0;
             RuntimeMonitor monitor;
 
             using (ProcessRunner runner = CreateProcessRunner())
@@ -48,7 +48,7 @@ namespace Judger.Core.Program.Internal
                     runner.Encoding = Encoding.UTF8;
 
                 // 创建监视器
-                int totalTimeLimit = Math.Max(JudgeTask.TimeLimit * TOTAL_TIME_LIMIT_TUPLING, MIN_TOTAL_TIME_LIMIT);
+                int totalTimeLimit = Math.Max(JudgeTask.TimeLimit * TOTAL_TIME_LIMIT_RATIO, MIN_TOTAL_TIME_LIMIT);
                 monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval,
                     LangConfig.RunningInVm)
                 {
@@ -65,7 +65,7 @@ namespace Judger.Core.Program.Internal
                 monitor.Dispose();
             }
 
-            var result = new SingleJudgeResult
+            SingleJudgeResult result = new SingleJudgeResult
             {
                 TimeCost = monitor.TimeCost,
                 MemoryCost = monitor.MemoryCost,
@@ -132,8 +132,8 @@ namespace Judger.Core.Program.Internal
 
             if (crtLength == usrLength)
             {
-                var correct = true;
-                for (var i = 0; i < crtLength; i++)
+                bool correct = true;
+                for (int i = 0; i < crtLength; i++)
                 {
                     if (crtArr[i] != usrArr[i])
                     {
@@ -146,13 +146,13 @@ namespace Judger.Core.Program.Internal
                     return CompareResult.Accepted;
             }
 
-            var wrongAnswer = false;
+            bool wrongAnswer = false;
             //判断PE不再重新生成去空数组，减少时空开销
-            var crtPos = 0;
-            var usrPos = 0;
+            int crtPos = 0;
+            int usrPos = 0;
             while (crtPos < crtLength && usrPos < usrLength)
             {
-                var jump = false;
+                bool jump = false;
                 while (crtPos < crtLength && crtArr[crtPos] == "") // 跳过空白行
                 {
                     crtPos++;

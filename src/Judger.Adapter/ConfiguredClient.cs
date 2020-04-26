@@ -11,7 +11,7 @@ namespace Judger.Adapter
         /// <returns></returns>
         public static HttpWebClient Create()
         {
-            var client = new HttpWebClient
+            HttpWebClient client = new HttpWebClient
             {
                 Proxy = null,
                 Timeout = ConfigManager.Config.FetchTimeout,

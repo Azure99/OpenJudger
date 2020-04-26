@@ -45,7 +45,7 @@ namespace Judger.Managers
 
         private static Configuration CreateNewConfig()
         {
-            var config = new Configuration
+            Configuration config = new Configuration
             {
                 Languages = GetDefaultLangConfigs(),
                 Databases = GetDefaultDbConfigs(),
@@ -75,7 +75,7 @@ namespace Judger.Managers
             }
 
             DbLangConfig[] dbConfigs = Config.Databases;
-            foreach (var item in dbConfigs)
+            foreach (DbLangConfig item in dbConfigs)
             {
                 if (item.Name == languageName)
                     return item.Clone() as DbLangConfig;
@@ -88,9 +88,9 @@ namespace Judger.Managers
         {
             char sparChar = Path.DirectorySeparatorChar;
 
-            var langConfigs = new List<ProgramLangConfig>();
+            List<ProgramLangConfig> langConfigs = new List<ProgramLangConfig>();
 
-            var c = new ProgramLangConfig
+            ProgramLangConfig c = new ProgramLangConfig
             {
                 Name = "c",
                 IsDbConfig = false,
@@ -112,7 +112,7 @@ namespace Judger.Managers
                 TimeCompensation = 1.0
             };
 
-            var cpp = new ProgramLangConfig
+            ProgramLangConfig cpp = new ProgramLangConfig
             {
                 Name = "cpp",
                 IsDbConfig = false,
@@ -134,7 +134,7 @@ namespace Judger.Managers
                 TimeCompensation = 1.0
             };
 
-            var java = new ProgramLangConfig
+            ProgramLangConfig java = new ProgramLangConfig
             {
                 Name = "java",
                 IsDbConfig = false,
@@ -156,7 +156,7 @@ namespace Judger.Managers
                 TimeCompensation = 1.0
             };
 
-            var python = new ProgramLangConfig
+            ProgramLangConfig python = new ProgramLangConfig
             {
                 Name = "python",
                 IsDbConfig = false,
@@ -188,9 +188,9 @@ namespace Judger.Managers
 
         private static DbLangConfig[] GetDefaultDbConfigs()
         {
-            var langConfigs = new List<DbLangConfig>();
+            List<DbLangConfig> langConfigs = new List<DbLangConfig>();
 
-            var mysql = new DbLangConfig
+            DbLangConfig mysql = new DbLangConfig
             {
                 Name = "mysql",
                 IsDbConfig = true,

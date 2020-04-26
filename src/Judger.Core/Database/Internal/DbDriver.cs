@@ -46,7 +46,7 @@ namespace Judger.Core.Database.Internal
         public DbConnection CreateConnection(string connectionString, bool openConnection = true)
         {
             object[] args = {connectionString};
-            var conn = CreateInstance(DbConnectionType.FullName, args) as DbConnection;
+            DbConnection conn = CreateInstance(DbConnectionType.FullName, args) as DbConnection;
             if (conn != null && openConnection)
                 conn.Open();
 
@@ -62,7 +62,7 @@ namespace Judger.Core.Database.Internal
         public DbCommand CreateCommand(string cmdText, DbConnection connection)
         {
             object[] args = {cmdText, connection};
-            var command = CreateInstance(DbCommandType.FullName, args) as DbCommand;
+            DbCommand command = CreateInstance(DbCommandType.FullName, args) as DbCommand;
 
             return command;
         }

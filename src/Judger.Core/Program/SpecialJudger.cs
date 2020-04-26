@@ -57,7 +57,7 @@ namespace Judger.Core.Program
 
             if (LangConfig.NeedCompile)
             {
-                var compiler = new Compiler(Context);
+                Compiler compiler = new Compiler(Context);
                 string compileRes = compiler.Compile();
 
                 if (!string.IsNullOrEmpty(compileRes))
@@ -70,7 +70,7 @@ namespace Judger.Core.Program
                 }
             }
 
-            var judger = new SpecialSingleCaseJudger(Context, SpjContext);
+            SpecialSingleCaseJudger judger = new SpecialSingleCaseJudger(Context, SpjContext);
 
             ProgramTestDataFile[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemId);
             if (dataFiles.Length == 0)
@@ -80,8 +80,8 @@ namespace Judger.Core.Program
                 return;
             }
 
-            var acceptedCasesCount = 0;
-            for (var i = 0; i < dataFiles.Length; i++)
+            int acceptedCasesCount = 0;
+            for (int i = 0; i < dataFiles.Length; i++)
             {
                 try
                 {
@@ -91,16 +91,13 @@ namespace Judger.Core.Program
 
                     if (result.ResultCode == JudgeResultCode.Accepted)
                     {
-
                         result.TimeCost = Math.Max(result.TimeCost,
                             (int) (singleRes.TimeCost * LangConfig.TimeCompensation));
                         result.MemoryCost = Math.Max(result.MemoryCost, singleRes.MemoryCost);
                     }
 
                     if (singleRes.ResultCode == JudgeResultCode.Accepted)
-                    {
                         acceptedCasesCount++;
-                    }
                     else
                     {
                         if (result.ResultCode == JudgeResultCode.Accepted)
@@ -139,8 +136,10 @@ namespace Judger.Core.Program
 
             // 构建SPJ程序
             if (TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemId) == null)
+            {
                 if (!CompileSpecialJudgeProgram())
                     throw new CompileException("Can not build special judge program!");
+            }
 
             SpecialJudgeProgram spjProgram = TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemId);
             File.WriteAllBytes(
@@ -154,11 +153,13 @@ namespace Judger.Core.Program
         /// <returns>是否编译并写出成功</returns>
         private bool CompileSpecialJudgeProgram()
         {
-            var compiler = new Compiler(SpjContext);
+            Compiler compiler = new Compiler(SpjContext);
             string compileResult = compiler.Compile();
             if (compileResult != "")
+            {
                 throw new CompileException("Can not compile special judge program!" + Environment.NewLine +
                                            compileResult);
+            }
 
             string spjProgramPath =
                 Path.Combine(SpjContext.TempDirectory, LangConfig.ProgramFileName);
@@ -166,7 +167,7 @@ namespace Judger.Core.Program
             if (!File.Exists(spjProgramPath))
                 throw new CompileException("Special judge program not found!");
 
-            var spjProgram = new SpecialJudgeProgram
+            SpecialJudgeProgram spjProgram = new SpecialJudgeProgram
             {
                 LangConfiguration = LangConfig,
                 Program = File.ReadAllBytes(spjProgramPath)
@@ -187,7 +188,7 @@ namespace Judger.Core.Program
         {
             new Task(() =>
             {
-                var tryCount = 0;
+                int tryCount = 0;
                 while (true)
                 {
                     try

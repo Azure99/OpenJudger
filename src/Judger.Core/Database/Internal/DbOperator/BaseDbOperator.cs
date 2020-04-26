@@ -97,15 +97,15 @@ namespace Judger.Core.Database.Internal.DbOperator
         public static DbQueryData ReadQueryData(DbDataReader reader, string name = "")
         {
             int fieldCount = reader.FieldCount;
-            var fieldNames = new string[fieldCount];
-            for (var i = 0; i < fieldCount; i++)
+            string[] fieldNames = new string[fieldCount];
+            for (int i = 0; i < fieldCount; i++)
                 fieldNames[i] = reader.GetName(i);
 
-            var records = new List<string[]>();
+            List<string[]> records = new List<string[]>();
             while (reader.Read())
             {
-                var record = new string[fieldCount];
-                for (var i = 0; i < fieldCount; i++)
+                string[] record = new string[fieldCount];
+                for (int i = 0; i < fieldCount; i++)
                 {
                     if (reader.IsDBNull(i))
                         record[i] = null;

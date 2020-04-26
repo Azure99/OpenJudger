@@ -18,8 +18,7 @@ namespace Judger.Core
         protected JudgeResult JudgeResult { get; }
 
         public virtual void Dispose()
-        {
-        }
+        { }
 
         public abstract void Judge();
     }

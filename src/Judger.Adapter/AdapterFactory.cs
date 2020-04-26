@@ -13,25 +13,25 @@ namespace Judger.Adapter
     public static class AdapterFactory
     {
         // Adapter程序集
-        private static readonly Assembly _adapterAssembly;
+        private static readonly Assembly AdapterAssembly;
 
         static AdapterFactory()
         {
             LogManager.Info("Load adapter: " + Config.AdapterDllPath);
 
             string dllPath = Path.GetFullPath(Config.AdapterDllPath);
-            _adapterAssembly = Assembly.LoadFile(dllPath);
+            AdapterAssembly = Assembly.LoadFile(dllPath);
         }
 
         private static Configuration Config { get; } = ConfigManager.Config;
 
         public static ITaskFetcher CreateTaskFetcher()
         {
-            foreach (Type type in _adapterAssembly.ExportedTypes)
+            foreach (Type type in AdapterAssembly.ExportedTypes)
             {
                 if (type.BaseType == typeof(BaseTaskFetcher) ||
                     type.GetInterface(typeof(ITaskFetcher).FullName) != null)
-                    return _adapterAssembly.CreateInstance(type.FullName) as ITaskFetcher;
+                    return AdapterAssembly.CreateInstance(type.FullName) as ITaskFetcher;
             }
 
             throw new AdapterException("ITaskFetcher not implement!");
@@ -39,11 +39,11 @@ namespace Judger.Adapter
 
         public static ITaskSubmitter CreateTaskSubmitter()
         {
-            foreach (Type type in _adapterAssembly.ExportedTypes)
+            foreach (Type type in AdapterAssembly.ExportedTypes)
             {
                 if (type.BaseType == typeof(BaseTaskSubmitter) ||
                     type.GetInterface(typeof(ITaskSubmitter).FullName) != null)
-                    return _adapterAssembly.CreateInstance(type.FullName) as ITaskSubmitter;
+                    return AdapterAssembly.CreateInstance(type.FullName) as ITaskSubmitter;
             }
 
             throw new AdapterException("ITaskSubmitter not implement!");
@@ -51,11 +51,11 @@ namespace Judger.Adapter
 
         public static ITestDataFetcher CreateTestDataFetcher()
         {
-            foreach (Type type in _adapterAssembly.ExportedTypes)
+            foreach (Type type in AdapterAssembly.ExportedTypes)
             {
                 if (type.BaseType == typeof(BaseTestDataFetcher) ||
                     type.GetInterface(typeof(ITestDataFetcher).FullName) != null)
-                    return _adapterAssembly.CreateInstance(type.FullName) as ITestDataFetcher;
+                    return AdapterAssembly.CreateInstance(type.FullName) as ITestDataFetcher;
             }
 
             throw new AdapterException("ITestDataFetcher not implement!");

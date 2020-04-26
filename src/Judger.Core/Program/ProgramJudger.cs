@@ -43,7 +43,7 @@ namespace Judger.Core.Program
             // 编译代码
             if (LangConfig.NeedCompile)
             {
-                var compiler = new Compiler(Context);
+                Compiler compiler = new Compiler(Context);
                 string compileRes = compiler.Compile();
 
                 // 检查是否有编译错误(compileRes不为空则代表有错误)
@@ -58,7 +58,7 @@ namespace Judger.Core.Program
             }
 
             // 创建单例Judger
-            var judger = new SingleCaseJudger(Context);
+            SingleCaseJudger judger = new SingleCaseJudger(Context);
 
             // 获取所有测试点文件名
             ProgramTestDataFile[] dataFiles = TestDataManager.GetTestDataFilesName(JudgeTask.ProblemId);
@@ -69,8 +69,8 @@ namespace Judger.Core.Program
                 return;
             }
 
-            var acceptedCasesCount = 0; // 通过的测试点数
-            for (var i = 0; i < dataFiles.Length; i++)
+            int acceptedCasesCount = 0; // 通过的测试点数
+            for (int i = 0; i < dataFiles.Length; i++)
             {
                 try
                 {
@@ -89,9 +89,7 @@ namespace Judger.Core.Program
                     }
 
                     if (singleRes.ResultCode == JudgeResultCode.Accepted)
-                    {
                         acceptedCasesCount++;
-                    }
                     else
                     {
                         // 出错时记录第一组出错的信息
@@ -135,7 +133,7 @@ namespace Judger.Core.Program
             // 判题结束时文件可能仍然被占用，尝试删除
             new Task(() =>
             {
-                var tryCount = 0;
+                int tryCount = 0;
                 while (true)
                 {
                     try
