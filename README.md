@@ -6,18 +6,19 @@
 ## Introduction
 OpenJudger is a universal program judger designed to simplify Online Judge System development.
 
-Support [SDNUOJ](https://github.com/sdnuacmicpc/sdnuoj) and [HUSTOJ](https://github.com/zhblue/hustoj).
+Now support [SDNUOJ](https://github.com/sdnuacmicpc/sdnuoj), [HUSTOJ](https://github.com/zhblue/hustoj) and more!
 
-It is now used to judge solutions on the [SDNUOJ](http://www.acmicpc.sdnu.edu.cn/), [itoIDbOJ](http://db.itoi.sd.cn/) and [itoIOJ](http://oj.itoi.sd.cn/).
+It is now used to judge solutions on the [itoIDbOJ](http://db.itoi.sd.cn/), [itoIOJ](http://oj.itoi.sd.cn/) and [SDNUOJ](http://www.acmicpc.sdnu.edu.cn/).
 
 
 ## Overview
-* Based on .Net Core: cross platform.
-* Lightweight: easy to deploy.
-* Configurable: all settings are in the Config.json file.
-* Multiple languages support: `C`, `C++`, `Java`, `Python`, `Kotlin`, `C#`, `Go`, `NodeJS` and any language that support standard I/O.
-* Database judge: MySQL, support Create Read Update Delete
-* Adaptable: Implement `Fetcher` interface to adapt any Online Judge System.
+* Based on .Net Core: cross platform, easy to deploy.
+* Lightweight: minimum dependencies (Newtonsoft.Json only).
+* Configurable: provide custom options in Config.json file.
+* Multiple languages support: `C`, `C++`, `Java`, `Python`, `Kotlin`, `C#`, `Go`, `NodeJS`... Almost any programming language!
+* Special judge: Use your program to check user's answer.
+* Database judge: MySQL, support Create Read Update Delete.
+* Adaptable: provide`Judger.Adapter` interface to adapt your Online Judge System.
 * High performance: reliable concurrency control, auto distribute processor affinity.
 
 ## Documents
