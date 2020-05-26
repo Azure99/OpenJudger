@@ -9,7 +9,7 @@ using Judger.Utils;
 namespace Judger.Managers
 {
     /// <summary>
-    /// 配置信息管理器
+    /// 配置管理器
     /// </summary>
     public static class ConfigManager
     {

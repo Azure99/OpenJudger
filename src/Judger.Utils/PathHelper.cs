@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 
 namespace Judger.Utils
 {
@@ -10,7 +9,7 @@ namespace Judger.Utils
     public static class PathHelper
     {
         /// <summary>
-        /// 获取以程序所在目录(非工作目录)为准的绝对路径
+        /// 获取以程序所在目录(而非工作目录)为准的绝对路径
         /// </summary>
         /// <param name="path">相对路径(绝对路径不处理)</param>
         /// <returns>绝对路径</returns>
@@ -33,9 +32,13 @@ namespace Judger.Utils
         {
             string[] files = Directory.GetFiles(directory);
 
-            return files
-                .FirstOrDefault(file =>
-                    string.Equals(Path.GetFileName(file), filename, StringComparison.CurrentCultureIgnoreCase));
+            foreach (string file in files)
+            {
+                if (Path.GetFileName(file).EqualsIgnoreCase(filename))
+                    return file;
+            }
+
+            return null;
         }
     }
 }

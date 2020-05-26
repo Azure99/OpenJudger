@@ -7,7 +7,9 @@ using System.Timers;
 namespace Judger.Utils
 {
     /// <summary>
-    /// 运行时监控器, 可监控程序运行时间及峰值内存消耗, 可做出限制
+    /// 运行时监控器
+    /// 可监控程序运行时间及峰值内存消耗
+    /// 可做出限制, 超出限制即强制结束任务
     /// </summary>
     public class RuntimeMonitor : IDisposable
     {
@@ -26,7 +28,7 @@ namespace Judger.Utils
         /// 运行时监控器
         /// </summary>
         /// <param name="process">需要监控的Process</param>
-        /// <param name="interval">监控检查周期</param>
+        /// <param name="interval">监控检查周期(ms)</param>
         /// <param name="runningInVm">是否运行在虚拟机/解释器中</param>
         public RuntimeMonitor(Process process, int interval = 20, bool runningInVm = false)
         {
@@ -100,7 +102,7 @@ namespace Judger.Utils
                 CheckTimeCost();
                 CheckMemoryCost();
             }
-            catch
+            catch (InvalidOperationException)
             { }
 
             _timer.Stop();
@@ -108,7 +110,12 @@ namespace Judger.Utils
 
         private void OnMonitor(object sender, ElapsedEventArgs e)
         {
-            try // 防止无效操作异常
+            /*
+             * 进程已退出时再进行操作会抛出InvalidOperationException
+             * 使用HasExited并不能保证在检查时进程没有退出, 因为进程和监视器是并行的
+             * 因此需要catch掉此异常, 并且无需任何操作
+             */
+            try
             {
                 if (Process.HasExited)
                 {
@@ -119,14 +126,10 @@ namespace Judger.Utils
                 if (!CheckTimeCost() || !CheckMemoryCost())
                     Process.Kill();
             }
-            catch
+            catch (InvalidOperationException)
             { }
         }
 
-        /// <summary>
-        /// 检查时间消耗
-        /// </summary>
-        /// <returns>是否通过检查</returns>
         private bool CheckTimeCost()
         {
             TimeCost = (int) Process.TotalProcessorTime.TotalMilliseconds;
@@ -144,10 +147,6 @@ namespace Judger.Utils
             return true;
         }
 
-        /// <summary>
-        /// 检查内存消耗
-        /// </summary>
-        /// <returns>是否通过检查(在限制内)</returns>
         private bool CheckMemoryCost()
         {
             int nowMemoryCost = PeakMemory();
@@ -169,7 +168,6 @@ namespace Judger.Utils
         /// <summary>
         /// 获取进程内存使用的峰值
         /// </summary>
-        /// <returns>进程内存使用的峰值</returns>
         private int PeakMemory()
         {
             // 分平台实现
@@ -185,7 +183,6 @@ namespace Judger.Utils
         /// <summary>
         /// Windows下获取进程内存使用的峰值
         /// </summary>
-        /// <returns>进程内存使用的峰值</returns>
         private int PeakMemoryOnWindows()
         {
             if (_runningInVm)
@@ -197,7 +194,6 @@ namespace Judger.Utils
         /// <summary>
         /// Linux下获取进程内存使用的峰值
         /// </summary>
-        /// <returns>进程内存使用的峰值</returns>
         /// 方法从/proc/ProcessId/status中解析峰值内存使用
         /// VmPeak为内存使用峰值, 适合大多数情况
         /// VmHWM为物理内存使用峰值, 适合运行在虚拟机中的语言
@@ -212,9 +208,9 @@ namespace Judger.Utils
                     continue;
 
                 string[] splits = line.Split(' ');
-                string vmPeakStr = splits[^2];
+                string vmPeak = splits[splits.Length - 2];
 
-                return int.Parse(vmPeakStr);
+                return int.Parse(vmPeak);
             }
 
             return 0;
@@ -223,7 +219,6 @@ namespace Judger.Utils
         /// <summary>
         /// 未知平台下获取进程的内存使用量
         /// </summary>
-        /// <returns>进程的内存使用量</returns>
         /// .Net Core确保所有平台下都实现了WorkingSet64属性, 但此值是不可靠的
         private int PeakMemoryOnUnknown()
         {

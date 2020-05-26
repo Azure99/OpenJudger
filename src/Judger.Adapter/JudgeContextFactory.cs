@@ -9,17 +9,18 @@ using Judger.Utils;
 namespace Judger.Adapter
 {
     /// <summary>
-    /// 评测任务工厂
+    /// JudgeContext工厂
     /// </summary>
+    /// 根据指定参数创建评测上下文
     public static class JudgeContextFactory
     {
         private static Configuration Config { get; } = ConfigManager.Config;
 
         /// <summary>
-        /// 创建JudgeTask实例
+        /// 创建评测上下文
         /// </summary>
-        /// <param name="submitId">提交ID</param>
-        /// <param name="problemId">问题ID</param>
+        /// <param name="submitId">提交Id</param>
+        /// <param name="problemId">问题Id</param>
         /// <param name="dataVersion">测试数据版本</param>
         /// <param name="language">语言</param>
         /// <param name="sourceCode">源代码</param>
@@ -29,7 +30,7 @@ namespace Judger.Adapter
         /// <param name="judgeAllCases">是否评测全部样例(即使遇到错误答案)</param>
         /// <param name="specialJudge">是否为SpecialJudge</param>
         /// <param name="dbJudge">是否为数据库评测</param>
-        /// <returns>JudgeTask实例</returns>
+        /// <returns>评测上下文</returns>
         public static JudgeContext Create(string submitId, string problemId, string dataVersion,
             string language, string sourceCode, string author = "",
             int timeLimit = 1000, int memoryLimit = 262144, bool judgeAllCases = false,
@@ -49,10 +50,10 @@ namespace Judger.Adapter
         }
 
         /// <summary>
-        /// 创建JudgeTask实例
+        /// 创建评测上下文
         /// </summary>
-        /// <param name="submitId">提交ID</param>
-        /// <param name="problemId">问题ID</param>
+        /// <param name="submitId">提交Id</param>
+        /// <param name="problemId">问题Id</param>
         /// <param name="dataVersion">测试数据版本</param>
         /// <param name="language">语言</param>
         /// <param name="sourceCode">源代码</param>
@@ -61,7 +62,7 @@ namespace Judger.Adapter
         /// <param name="memoryLimit">内存限制</param>
         /// <param name="judgeAllCases">是否评测全部样例(即使遇到错误答案)</param>
         /// <param name="judgeType">评测类型</param>
-        /// <returns>JudgeTask实例</returns>
+        /// <returns>评测上下文</returns>
         public static JudgeContext Create(string submitId, string problemId, string dataVersion,
             string language, string sourceCode, string author = "",
             int timeLimit = 1000, int memoryLimit = 262144, bool judgeAllCases = false,
@@ -72,7 +73,6 @@ namespace Judger.Adapter
             if (langConfig == null)
                 throw new JudgeException("Unsupported language: " + language);
 
-            // 分配评测临时目录
             string tempDirectory = RandomString.Next(16);
             if (langConfig is ProgramLangConfig langCfg)
             {
@@ -139,8 +139,8 @@ namespace Judger.Adapter
         private static string GetTempDirectory(string judgeDir)
         {
             return Path.Combine(
-                       PathHelper.GetBaseAbsolutePath(judgeDir),
-                       RandomString.Next(32)) + Path.DirectorySeparatorChar;
+                PathHelper.GetBaseAbsolutePath(judgeDir),
+                RandomString.Next(32)) + Path.DirectorySeparatorChar;
         }
 
         /// <summary>

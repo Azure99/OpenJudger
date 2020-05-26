@@ -24,24 +24,10 @@ namespace Judger.Managers
         private const string LOG_FILE_INFO_POSTFIX = "Info.txt";
         private const string LOG_FILE_DEBUG_POSTFIX = "Debug.txt";
 
-        /// <summary>
-        /// 信息缓冲区
-        /// </summary>
         private static readonly StringBuilder InfoBuffer = new StringBuilder();
-
-        /// <summary>
-        /// 缓冲区锁
-        /// </summary>
         private static readonly object BufferLock = new object();
-
-        /// <summary>
-        /// 写操作锁
-        /// </summary>
         private static readonly object WriteLock = new object();
 
-        /// <summary>
-        /// 自动刷新缓冲区任务
-        /// </summary>
         private static readonly Task AutoFlushTask = new Task(AutoFlush, TaskCreationOptions.LongRunning);
 
         static LogManager()
@@ -52,43 +38,28 @@ namespace Judger.Managers
             AutoFlushTask.Start();
         }
 
-        /// <summary>
-        /// 输出Debug级日志
-        /// </summary>
         public static void Debug(string message)
         {
             System.Diagnostics.Debug.WriteLine(message);
             Log(LOG_LEVEL_DEBUG, message);
         }
 
-        /// <summary>
-        /// 输出Info级日志
-        /// </summary>
         public static void Info(string message)
         {
             Log(LOG_LEVEL_INFO, message);
         }
 
-        /// <summary>
-        /// 输出Waring级日志
-        /// </summary>
         public static void Warning(string message)
         {
             Log(LOG_LEVEL_WARNING, message);
         }
 
-        /// <summary>
-        /// 输出Error级日志
-        /// </summary>
         public static void Error(string message)
         {
             Console.Error.WriteLine(message);
             Log(LOG_LEVEL_ERROR, message);
         }
 
-        /// <summary>
-        /// 输出Exception(Error)级
-        /// </summary>
         public static void Exception(Exception ex, bool showDetails = true)
         {
             string originalType = ex.GetType().FullName;
@@ -162,9 +133,6 @@ namespace Judger.Managers
             }
         }
 
-        /// <summary>
-        /// 捕获全局未处理的异常
-        /// </summary>
         public static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Exception(e.ExceptionObject as Exception);

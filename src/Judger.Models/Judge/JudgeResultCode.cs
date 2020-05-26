@@ -41,13 +41,15 @@
         MemoryLimitExceed = 5,
 
         /// <summary>
-        /// 输出超限(输出了过多的内容)
+        /// 输出超限
         /// </summary>
+        /// 输出了过多的内容
         OutputLimitExceed = 6,
 
         /// <summary>
-        /// 格式错误(输出了多余的空格或换行符)
+        /// 格式错误
         /// </summary>
+        /// 输出了多余的空格或换行符
         PresentationError = 7
     }
 }

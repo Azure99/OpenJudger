@@ -12,6 +12,10 @@ using Judger.Models.Program;
 
 namespace Judger.Core.Program
 {
+    /// <summary>
+    /// 程序评测器
+    /// </summary>
+    /// 对普通编程题目实现的评测器
     public class ProgramJudger : BaseJudger
     {
         public ProgramJudger(JudgeContext context) : base(context)
@@ -26,7 +30,7 @@ namespace Judger.Core.Program
         {
             JudgeResult result = Context.Result;
 
-            if (!CodeChecker.Instance.CheckCode(JudgeTask.SourceCode, JudgeTask.Language, out string unsafeCode,
+            if (!CodeChecker.Instance.Check(JudgeTask.SourceCode, JudgeTask.Language, out string unsafeCode,
                 out int line))
             {
                 result.ResultCode = JudgeResultCode.CompileError;
@@ -130,7 +134,7 @@ namespace Judger.Core.Program
         /// </summary>
         private void DeleteTempDirectory()
         {
-            // 判题结束时文件可能仍然被占用，尝试删除
+            // 判题结束时文件可能仍然被占用, 尝试删除
             new Task(() =>
             {
                 int tryCount = 0;

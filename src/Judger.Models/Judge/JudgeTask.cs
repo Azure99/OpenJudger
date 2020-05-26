@@ -9,12 +9,12 @@ namespace Judger.Models.Judge
     public class JudgeTask : ICloneable
     {
         /// <summary>
-        /// 提交ID
+        /// 提交Id
         /// </summary>
         public string SubmitId { get; set; }
 
         /// <summary>
-        /// 题目ID
+        /// 题目Id
         /// </summary>
         public string ProblemId { get; set; }
 
@@ -44,8 +44,10 @@ namespace Judger.Models.Judge
         public int MemoryLimit { get; set; } = 262144;
 
         /// <summary>
-        /// 是否评测所有测试点(错误答案依旧评测)
+        /// 是否评测所有测试用例
         /// </summary>
+        /// 出现错误的用例时继续评测
+        /// OI赛制及编程考试需要
         public bool JudgeAllCases { get; set; }
 
         /// <summary>
@@ -59,8 +61,10 @@ namespace Judger.Models.Judge
         public string SourceCode { get; set; } = "";
 
         /// <summary>
-        /// 处理器亲和性(二进制表示)
+        /// 处理器亲和性
         /// </summary>
+        /// 使用二进制表示
+        /// 低位到高位, 每一位标志一个核心是否可用
         public IntPtr ProcessorAffinity { get; set; } = new IntPtr(1);
 
         public object Clone()

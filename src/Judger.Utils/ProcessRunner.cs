@@ -8,10 +8,14 @@ using System.Threading.Tasks;
 namespace Judger.Utils
 {
     /// <summary>
-    /// 运行指定程序并重定向输入输出流, 支持输出限制
+    /// 进程运行器
+    /// 运行指定程序并重定向标准I/O流, 支持输出限制
     /// </summary>
     public class ProcessRunner : IDisposable
     {
+        // 读流时的休眠周期
+        private const int READ_SLEEP_INTERVAL = 10;
+
         /// <summary>
         /// 程序运行器
         /// </summary>
@@ -23,6 +27,7 @@ namespace Judger.Utils
             Process = new Process();
 
             Process.StartInfo.FileName = fileName;
+
             if (!string.IsNullOrEmpty(workDirectory))
                 Process.StartInfo.WorkingDirectory = workDirectory;
 
@@ -42,7 +47,7 @@ namespace Judger.Utils
         public Process Process { get; }
 
         /// <summary>
-        /// Process的处理器亲和性
+        /// 进程的处理器亲和性
         /// </summary>
         public IntPtr ProcessorAffinity { get; set; } = new IntPtr(0);
 
@@ -108,8 +113,6 @@ namespace Judger.Utils
         /// <summary>
         /// 尝试调用StreamWriter写入数据
         /// </summary>
-        /// <param name="writer">StreamWriter</param>
-        /// <param name="data">数据</param>
         private void TryWriteToStream(StreamWriter writer, string data)
         {
             try
@@ -125,8 +128,6 @@ namespace Judger.Utils
         /// <summary>
         /// 尝试调用StreamReader读取到流尾
         /// </summary>
-        /// <param name="readerObject">StreamReader对象</param>
-        /// <returns>结果</returns>
         private string TryReadStreamToEnd(object readerObject)
         {
             StreamReader reader = readerObject as StreamReader;
@@ -142,15 +143,13 @@ namespace Judger.Utils
                 catch
                 { }
 
-                Thread.Sleep(10);
+                Thread.Sleep(READ_SLEEP_INTERVAL);
             }
         }
 
         /// <summary>
         /// 调用StreamReader读取到流尾
         /// </summary>
-        /// <param name="reader">StreamReader</param>
-        /// <returns>结果</returns>
         private string ReadStreamToEnd(StreamReader reader)
         {
             StringBuilder builder = new StringBuilder();
@@ -165,7 +164,7 @@ namespace Judger.Utils
                 builder.Append(buffer, 0, len);
 
                 sumLength += len;
-                if (sumLength > OutputLimit) // 检查输出超限
+                if (sumLength > OutputLimit)
                 {
                     reader.Close();
                     return builder.ToString();

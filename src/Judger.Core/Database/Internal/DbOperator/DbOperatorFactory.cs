@@ -7,24 +7,22 @@ namespace Judger.Core.Database.Internal.DbOperator
     public static class DbOperatorFactory
     {
         /// <summary>
-        /// 根据数据库名创建主操作器
-        /// 主操作器权限为root，负责新建库、创建新用户、分配权限等操作
+        /// 根据数据库管理系统(DBMS)的名称创建主操作器
         /// </summary>
-        /// <param name="dbName">数据库名</param>
-        public static BaseDbOperator CreateMainOperatorByName(string dbName)
+        /// 主操作器权限为root, 负责新建库、创建新用户、分配权限等操作
+        public static BaseDbOperator CreateMainOperatorByName(string dbmsName)
         {
-            if (dbName != DatabaseType.mysql.ToString())
-                throw new NotImplementedException("Db operator not implemented: " + dbName);
+            if (dbmsName != DatabaseType.mysql.ToString())
+                throw new NotImplementedException("Db operator not implemented: " + dbmsName);
 
-            DbLangConfig config = DbManager.GetDbConfiguration(dbName);
+            DbLangConfig config = DbManager.GetDbConfiguration(dbmsName);
             return Create(config);
         }
 
         /// <summary>
         /// 创建数据库操作器
-        /// 注意：执行用户代码时使用的是由主操作器分配的无特权用户
         /// </summary>
-        /// <param name="dbConfig">数据库配置</param>
+        /// 执行用户代码时应该使用由主操作器分配的无特权用户
         public static BaseDbOperator Create(DbLangConfig dbConfig)
         {
             string connString = dbConfig.ConnectionString;

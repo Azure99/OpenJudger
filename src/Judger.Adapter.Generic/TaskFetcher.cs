@@ -10,6 +10,7 @@ namespace Judger.Adapter.Generic
     /// <summary>
     /// JudgeTask取回器
     /// </summary>
+    /// 用于取得评测任务
     public class TaskFetcher : BaseTaskFetcher
     {
         public TaskFetcher()
@@ -20,9 +21,9 @@ namespace Judger.Adapter.Generic
         /// <summary>
         /// 尝试取回评测任务
         /// 此方法由JudgeService定期调用以实现任务轮询
-        /// 如果没有评测任务，返回空JudgeContext数组
+        /// 如果没有评测任务, 返回空JudgeContext数组
         /// </summary>
-        /// <returns>评测任务</returns>
+        /// <returns>评测任务(上下文)</returns>
         public override JudgeContext[] Fetch()
         {
             string url = Config.TaskFetchUrl;
@@ -45,11 +46,6 @@ namespace Judger.Adapter.Generic
             return Token.CreateJObject().ToString();
         }
 
-        /// <summary>
-        /// 从Response中解析Task
-        /// </summary>
-        /// <param name="data">来自服务器的JObject任务数组</param>
-        /// <returns>JudgeContexts</returns>
         private JudgeContext[] CreateTaskContexts(JToken data)
         {
             InnerJudgeTask[] innerJudgeTasks = data.ToObject<InnerJudgeTask[]>();

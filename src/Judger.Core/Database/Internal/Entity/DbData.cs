@@ -6,7 +6,7 @@
     public class DbData
     {
         /// <summary>
-        /// 表信息
+        /// 全部表的数据
         /// </summary>
         public DbQueryData[] TablesData { get; set; }
     }

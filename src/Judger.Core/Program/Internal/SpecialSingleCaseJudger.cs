@@ -125,7 +125,6 @@ namespace Judger.Core.Program.Internal
             File.WriteAllText(outputPath, output);
             File.WriteAllText(userOutputPath, userOutput);
 
-
             int exitCode;
             RuntimeMonitor monitor;
             using (ProcessRunner runner = CreateSpecialJudgeProcessRunner())

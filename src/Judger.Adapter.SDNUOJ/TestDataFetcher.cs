@@ -27,23 +27,22 @@ namespace Judger.Adapter.SDNUOJ
             return result;
         }
 
-        //创建请求Body
         private string CreateRequestBody(string problemId)
         {
             return "pid=" + problemId;
         }
 
         /// <summary>
-        /// 修改ZIP中的last_modified更名为version.txt
+        /// 将Zip中的last_modified文件更名为version.txt
         /// </summary>
         private byte[] ChangeVersionFileName(byte[] data)
         {
             byte[] res;
-            using (MemoryStream ms = new MemoryStream())
+            using (MemoryStream stream = new MemoryStream())
             {
-                ms.Write(data);
-                ms.Position = 0;
-                using (ZipArchive zipArchive = new ZipArchive(ms, ZipArchiveMode.Update))
+                stream.Write(data);
+                stream.Position = 0;
+                using (ZipArchive zipArchive = new ZipArchive(stream, ZipArchiveMode.Update))
                 {
                     string version = "";
                     ZipArchiveEntry oldEntry = zipArchive.GetEntry("last_modified");
@@ -59,11 +58,11 @@ namespace Judger.Adapter.SDNUOJ
 
                     zipArchive.UpdateBaseStream();
 
-                    int nowPos = (int) ms.Position;
-                    res = new byte[ms.Length];
-                    ms.Position = 0;
-                    ms.Read(res, 0, (int) ms.Length);
-                    ms.Position = nowPos;
+                    int nowPos = (int) stream.Position;
+                    res = new byte[stream.Length];
+                    stream.Position = 0;
+                    stream.Read(res, 0, (int) stream.Length);
+                    stream.Position = nowPos;
                 }
             }
 

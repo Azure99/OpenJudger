@@ -3,8 +3,9 @@
 namespace Judger.Managers
 {
     /// <summary>
-    /// 处理器亲和性管理器, 用于向判题任务分配独立处理器核心
+    /// 处理器亲和性管理器
     /// </summary>
+    /// 用于向判题任务分配独立处理器核心
     public static class ProcessorAffinityManager
     {
         private static readonly object Lock = new object();

@@ -12,9 +12,6 @@ namespace Judger.Adapter.SDNUOJ.Entity
         [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
 
-        /// <summary>
-        /// 操作是否成功
-        /// </summary>
         public bool IsSuccess => Status == "success";
     }
 }

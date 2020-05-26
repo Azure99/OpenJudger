@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using Judger.Core.Database.Internal.Entity;
+using Judger.Utils;
 
 namespace Judger.Core.Database.Internal.DbOperator
 {
@@ -41,7 +42,7 @@ namespace Judger.Core.Database.Internal.DbOperator
             ExecuteNonQuery(cmd);
         }
 
-        public override void GeneratePrivileges(string database, string username)
+        public override void GrantPrivileges(string database, string username)
         {
             string cmd = $"GRANT ALL ON {database}.* to '{username}'@'localhost'";
             ExecuteNonQuery(cmd);
@@ -77,7 +78,7 @@ namespace Judger.Core.Database.Internal.DbOperator
             for (int i = 0; i < tablesName.Length; i++)
                 data[i] = GetTableData(tablesName[i]);
 
-            Array.Sort(data, (a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+            Array.Sort(data, (a, b) => a.Name.CompareToOrdinal(b.Name));
 
             return new DbData
             {
@@ -96,16 +97,11 @@ namespace Judger.Core.Database.Internal.DbOperator
             return tables.ToArray();
         }
 
-        /// <summary>
-        /// 查询表的所有记录
-        /// </summary>
-        /// <param name="tableName">表名</param>
-        /// <returns>表数据</returns>
         private DbQueryData GetTableData(string tableName)
         {
             string cmd = $"SELECT * FROM {tableName}";
-            DbDataReader reader = ExecuteReader(cmd);
 
+            DbDataReader reader = ExecuteReader(cmd);
             DbQueryData queryData = ReadQueryData(reader, tableName);
 
             return queryData;

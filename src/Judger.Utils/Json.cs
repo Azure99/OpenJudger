@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace Judger.Utils
 {
     /// <summary>
-    /// 简单的JSON序列化, 反序列化辅助类
+    /// 简单的JSON序列化/反序列化辅助类
     /// </summary>
     public static class Json
     {

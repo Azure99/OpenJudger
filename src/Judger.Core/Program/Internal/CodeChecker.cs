@@ -7,30 +7,30 @@ using Judger.Models;
 namespace Judger.Core.Program.Internal
 {
     /// <summary>
-    /// 基于正则的恶意代码检查
+    /// 基于正则的恶意代码检查器
     /// </summary>
     public class CodeChecker
     {
         private const string LANG_START = "[Language=";
 
+        private readonly Configuration _config = ConfigManager.Config;
+
         private readonly Dictionary<string, List<string>> _langRulesDic = new Dictionary<string, List<string>>();
 
         private CodeChecker()
         {
-            if (Config.InterceptUnsafeCode)
+            if (_config.InterceptUnsafeCode)
                 InitRulesDictionary();
         }
 
         public static CodeChecker Instance { get; } = new CodeChecker();
 
-        private Configuration Config { get; } = ConfigManager.Config;
-
         private void InitRulesDictionary()
         {
-            if (!File.Exists(Config.InterceptionRules))
-                File.WriteAllText(Config.InterceptionRules, "");
+            if (!File.Exists(_config.InterceptionRules))
+                File.WriteAllText(_config.InterceptionRules, "");
 
-            string rulesData = File.ReadAllText(Config.InterceptionRules);
+            string rulesData = File.ReadAllText(_config.InterceptionRules);
             string[] rules = Regex.Split(rulesData, "\r\n|\r|\n");
 
             string nowLang = "";
@@ -49,7 +49,7 @@ namespace Judger.Core.Program.Internal
                     }
                     catch
                     {
-                        // 若此语言的拦截规则不规范, 直接忽略当前语言所有规则
+                        // 若此语言的拦截规则编写不规范, 直接忽略当前语言所有规则
                         nowLang = "";
                         LogManager.Error("Can not parse interception rules!");
                     }
@@ -68,18 +68,18 @@ namespace Judger.Core.Program.Internal
         }
 
         /// <summary>
-        /// 检查代码
+        /// 检查恶意代码
         /// </summary>
         /// <param name="sourceCode">源代码</param>
         /// <param name="language">语言</param>
         /// <param name="unsafeCode">检查出的不安全代码</param>
         /// <param name="lineIndex">不安全代码行号</param>
-        /// <returns>是否安全</returns>
-        public bool CheckCode(string sourceCode, string language, out string unsafeCode, out int lineIndex)
+        /// <returns>是否通过检查</returns>
+        public bool Check(string sourceCode, string language, out string unsafeCode, out int lineIndex)
         {
             unsafeCode = "";
             lineIndex = -1;
-            if (!Config.InterceptUnsafeCode)
+            if (!_config.InterceptUnsafeCode)
                 return true;
 
             if (!_langRulesDic.ContainsKey(language))

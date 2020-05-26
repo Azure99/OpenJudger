@@ -14,18 +14,18 @@ namespace Judger.Utils
 
         static RandomString()
         {
-            List<char> charsList = new List<char>();
+            List<char> charList = new List<char>();
 
             for (int i = 0; i <= 9; i++)
-                charsList.Add((char) ('0' + i));
+                charList.Add((char) ('0' + i));
 
             for (int i = 0; i < 26; i++)
             {
-                charsList.Add((char) ('a' + i));
-                charsList.Add((char) ('A' + i));
+                charList.Add((char) ('a' + i));
+                charList.Add((char) ('A' + i));
             }
 
-            Chars = charsList.ToArray();
+            Chars = charList.ToArray();
         }
 
         /// <summary>

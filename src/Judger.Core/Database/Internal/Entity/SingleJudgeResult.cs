@@ -13,7 +13,7 @@ namespace Judger.Core.Database.Internal.Entity
         public JudgeResultCode ResultCode { get; set; }
 
         /// <summary>
-        /// 详细信息(用于返回错误信息)
+        /// 详细信息 (用于返回错误信息)
         /// </summary>
         public string JudgeDetail { get; set; }
 

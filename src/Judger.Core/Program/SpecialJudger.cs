@@ -12,6 +12,10 @@ using Judger.Models.Program;
 
 namespace Judger.Core.Program
 {
+    /// <summary>
+    /// 特殊程序评测器
+    /// </summary>
+    /// 适应答案不唯一的情况, 将用户输出交由SPJ程序评测
     public class SpecialJudger : BaseJudger
     {
         public SpecialJudger(JudgeContext context) : base(context)
@@ -26,7 +30,7 @@ namespace Judger.Core.Program
         private JudgeContext SpjContext { get; }
 
         /// <summary>
-        /// 注意:未编写:SPJTasks中的语言应对应SPJ程序，而不是JudgeTask
+        /// 注意:未编写:SPJTasks中的语言应对应SPJ程序, 而不是JudgeTask
         /// </summary>
         private JudgeTask SpjTask { get; }
 
@@ -38,7 +42,7 @@ namespace Judger.Core.Program
         {
             JudgeResult result = Context.Result;
 
-            if (!CodeChecker.Instance.CheckCode(
+            if (!CodeChecker.Instance.Check(
                 JudgeTask.SourceCode, JudgeTask.Language,
                 out string unsafeCode, out int line))
             {

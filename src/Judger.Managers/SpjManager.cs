@@ -13,7 +13,10 @@ namespace Judger.Managers
     /// </summary>
     public static class SpjManager
     {
-        //program.cpp.exe
+        /*
+         * 文件名示例
+         * program.cpp.exe
+         */
         private const string SPJ_PROGRAM_FILENAME = "program";
         private const string SPJ_SOURCE_FILENAME = "source";
         private const string SPJ_TEST_DATA_DIR = "spj";
@@ -71,7 +74,7 @@ namespace Judger.Managers
         /// <summary>
         /// 获取测试数据目录下的SPJ目录
         /// </summary>
-        /// <param name="problemId">题目ID</param>
+        /// <param name="problemId">题目Id</param>
         /// <returns>SPJ目录</returns>
         public static string GetSpjDirectoryInTestData(string problemId)
         {
@@ -81,7 +84,6 @@ namespace Judger.Managers
         /// <summary>
         /// 获取评测目录下的SPJ程序的源文件路径
         /// </summary>
-        /// <param name="context">评测上下文</param>
         /// <returns>SPJ源文件名</returns>
         public static string GetSpjSourceFileInJudger(JudgeContext context)
         {
@@ -93,8 +95,6 @@ namespace Judger.Managers
         /// <summary>
         /// 寻找测试数据目录下的SPJ源文件
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <param name="index">索引</param>
         /// <returns>SPJ源文件路径</returns>
         public static string FindSpjSourceFileInTestData(string problemId, int index = 0)
         {
@@ -120,7 +120,6 @@ namespace Judger.Managers
         /// <summary>
         /// 寻找评测目录下的SPJ程序
         /// </summary>
-        /// <param name="context">评测上下文</param>
         /// <returns>SPJ程序路径</returns>
         public static string FindSpjProgramInJudger(JudgeContext context)
         {
@@ -145,8 +144,6 @@ namespace Judger.Managers
         /// <summary>
         /// 寻找测试数据目录下的SPJ程序
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <param name="index">索引</param>
         /// <returns>SPJ程序</returns>
         public static string FindSpjProgramInTestData(string problemId, int index = 0)
         {
@@ -174,7 +171,6 @@ namespace Judger.Managers
         /// <summary>
         /// 获取评测目录下的SPJ程序路径
         /// </summary>
-        /// <param name="context">评测上下文</param>
         /// <returns>SPJ程序路径</returns>
         public static string GetSpjProgramPathInJudger(JudgeContext context)
         {
@@ -187,8 +183,6 @@ namespace Judger.Managers
         /// <summary>
         /// 获取测试数据目录下的SPJ程序路径
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <param name="lang">语言</param>
         /// <returns>SPJ程序路径</returns>
         public static string GetSpjProgramPathInTestData(string problemId, ProgramLangConfig lang)
         {
@@ -201,10 +195,11 @@ namespace Judger.Managers
         }
 
         /// <summary>
-        /// 创建SPJ的JudgeContext, 用于编译运行SPJ程序
+        /// 创建SPJ的JudgeContext
         /// </summary>
         /// <param name="originContext">源评测任务</param>
         /// <returns>SPJ的JudgeTask</returns>
+        /// 用于编译运行SPJ程序
         public static JudgeContext CreateSpjJudgeContext(JudgeContext originContext)
         {
             JudgeContext newContext = originContext.Clone() as JudgeContext;
@@ -243,7 +238,6 @@ namespace Judger.Managers
         /// <summary>
         /// 根据程序路径获取其关联的语言配置
         /// </summary>
-        /// <param name="path">SPJ程序路径</param>
         /// <returns>语言配置</returns>
         public static ProgramLangConfig GetLangConfigByProgramPath(string path)
         {
@@ -261,7 +255,6 @@ namespace Judger.Managers
         /// <summary>
         /// 根据SPJ源文件路径获取其关联的语言配置
         /// </summary>
-        /// <param name="path">SPJ源文件路径</param>
         /// <returns>语言配置</returns>
         public static ProgramLangConfig GetLangConfigBySourceFilePath(string path)
         {

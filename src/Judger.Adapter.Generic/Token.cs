@@ -32,13 +32,13 @@ namespace Judger.Adapter.Generic
         /// <param name="obj">待添加校验字段的JObject</param>
         public static void AddTokenToJObject(JObject obj)
         {
-            string token = CreateToken();
+            string token = ComputeToken();
 
             obj.Add(JOBJECT_JUDGER_NAME, Config.JudgerName);
             obj.Add(JOBJECT_TOKEN, token);
         }
 
-        private static string CreateToken()
+        private static string ComputeToken()
         {
             // Token = MD5 ( MD5( JudgerName + Password ) + UtcDate )
 

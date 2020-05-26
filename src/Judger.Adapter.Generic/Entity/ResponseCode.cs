@@ -5,16 +5,24 @@ namespace Judger.Adapter.Generic.Entity
     /// </summary>
     public enum ResponseCode
     {
-        // 成功
+        /// <summary>
+        /// 成功
+        /// </summary>
         Success = 0,
 
-        // 失败
+        /// <summary>
+        /// 失败
+        /// </summary>
         Fail = 1,
 
-        // Token错误
+        /// <summary>
+        /// Token错误
+        /// </summary>
         WrongToken = 10,
 
-        // 当前没有任务
+        /// <summary>
+        /// 当前没有任务
+        /// </summary>
         NoTask = 11
     }
 }

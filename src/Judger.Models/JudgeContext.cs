@@ -4,6 +4,9 @@ using Judger.Models.Judge;
 
 namespace Judger.Models
 {
+    /// <summary>
+    /// 评测上下文
+    /// </summary>
     public class JudgeContext : ICloneable
     {
         public JudgeContext(JudgeTask task, JudgeResult result, string tempDirectory, ILangConfig langConfig)

@@ -3,15 +3,15 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
-    <FileVersion>0.0.1.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
     <Authors>Azure99</Authors>
     <Company>Rainng</Company>
-    <Version>0.1</Version>
+    <Version>1.0</Version>
     <Product>OpenJudger</Product>
-    <Description>Open source, lightweight, cross platform Program Judger.</Description>
+    <Description>Open source, lightweight, universal program judger.</Description>
     <Copyright>Copyright © Azue99 Rainng 2020</Copyright>
-    <PackageVersion>0.03</PackageVersion>
+    <PackageVersion>1.0</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>

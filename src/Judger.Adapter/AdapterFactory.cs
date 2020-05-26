@@ -8,11 +8,11 @@ using Judger.Models.Exception;
 namespace Judger.Adapter
 {
     /// <summary>
-    /// 通过反射加载Adapter
+    /// 后端适配器工厂
     /// </summary>
+    /// 通过反射加载Adapter
     public static class AdapterFactory
     {
-        // Adapter程序集
         private static readonly Assembly AdapterAssembly;
 
         static AdapterFactory()

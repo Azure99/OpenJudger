@@ -14,7 +14,7 @@ namespace Judger.Core.Database.Internal
         /// </summary>
         /// <param name="dbConnection">DbConnection类</param>
         /// <param name="dbCommand">DbCommand类</param>
-        /// <param name="assembly">数据库驱动程序集</param>
+        /// <param name="assembly">数据库驱动的Assembly</param>
         public DbDriver(Type dbConnection, Type dbCommand, Assembly assembly = null)
         {
             DbConnectionType = dbConnection;
@@ -33,7 +33,7 @@ namespace Judger.Core.Database.Internal
         private Type DbCommandType { get; }
 
         /// <summary>
-        /// DbDriver程序集
+        /// 数据库驱动的Assembly
         /// </summary>
         private Assembly DriverAssembly { get; }
 
@@ -41,8 +41,7 @@ namespace Judger.Core.Database.Internal
         /// 创建数据库连接
         /// </summary>
         /// <param name="connectionString">连接字符串</param>
-        /// <param name="openConnection">创建后是否打开连接</param>
-        /// <returns></returns>
+        /// <param name="openConnection">创建后是否立即打开连接</param>
         public DbConnection CreateConnection(string connectionString, bool openConnection = true)
         {
             object[] args = {connectionString};
@@ -56,9 +55,8 @@ namespace Judger.Core.Database.Internal
         /// <summary>
         /// 创建数据库命令
         /// </summary>
-        /// <param name="cmdText">命令</param>
+        /// <param name="cmdText">命令(文本)</param>
         /// <param name="connection">数据库连接</param>
-        /// <returns></returns>
         public DbCommand CreateCommand(string cmdText, DbConnection connection)
         {
             object[] args = {cmdText, connection};

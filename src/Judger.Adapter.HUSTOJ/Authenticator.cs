@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using Judger.Managers;
 using Judger.Models;
 using Judger.Utils;
@@ -7,7 +8,8 @@ namespace Judger.Adapter.HUSTOJ
 {
     public class Authenticator
     {
-        private readonly HttpWebClient _httpClient = ConfiguredClient.Create();
+        private readonly Configuration _config = ConfigManager.Config;
+        private readonly HttpWebClient _httpClient = WebClientFactory.Create();
         private readonly string _loginUrl = "http://localhost/login.php";
         private int _delayCheckCount;
 
@@ -21,11 +23,11 @@ namespace Judger.Adapter.HUSTOJ
             CookieContainer = new CookieContainer();
             _httpClient.CookieContainer = CookieContainer;
 
-            if (Config.AdditionalConfigs.ContainsKey("LoginUrl"))
-                _loginUrl = Config.AdditionalConfigs["LoginUrl"];
+            if (_config.AdditionalConfigs.ContainsKey("LoginUrl"))
+                _loginUrl = _config.AdditionalConfigs["LoginUrl"];
             else
             {
-                Config.AdditionalConfigs["LoginUrl"] = _loginUrl;
+                _config.AdditionalConfigs["LoginUrl"] = _loginUrl;
                 ConfigManager.SaveConfig();
             }
 
@@ -33,36 +35,32 @@ namespace Judger.Adapter.HUSTOJ
         }
 
         public static Authenticator Instance { get; }
-
         public CookieContainer CookieContainer { get; }
-
-        private Configuration Config { get; } = ConfigManager.Config;
 
         private bool Login()
         {
             if (CheckLogin())
                 return true;
 
-            string requestBody = $"user_id={Config.JudgerName}&password={Config.Password}";
+            string requestBody = $"user_id={_config.JudgerName}&password={_config.Password}";
             try
             {
                 _httpClient.UploadString(_loginUrl, requestBody, 3);
             }
-            catch
-            { }
+            catch (Exception ex)
+            {
+                LogManager.Exception(ex);
+            }
 
             return CheckLogin();
         }
 
-        /// <summary>
-        /// 检查是否已登录
-        /// </summary>
         public bool CheckLogin()
         {
             string requestBody = "checklogin=1";
             try
             {
-                return _httpClient.UploadString(Config.TaskFetchUrl, requestBody) == "1";
+                return _httpClient.UploadString(_config.TaskFetchUrl, requestBody) == "1";
             }
             catch
             {
@@ -81,14 +79,6 @@ namespace Judger.Adapter.HUSTOJ
             Login();
         }
 
-        /// <summary>
-        /// 更新判题状态
-        /// </summary>
-        /// <param name="sid">Solution ID</param>
-        /// <param name="result">结果</param>
-        /// <param name="time">时间</param>
-        /// <param name="memory">内存消耗</param>
-        /// <param name="passRate">通过率</param>
         public void UpdateSolution(string sid, int result, int time, int memory, double passRate)
         {
             string requestBody =
@@ -97,10 +87,12 @@ namespace Judger.Adapter.HUSTOJ
 
             try
             {
-                _httpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
+                _httpClient.UploadString(_config.TaskFetchUrl, requestBody, 3);
             }
-            catch
-            { }
+            catch (Exception ex)
+            {
+                LogManager.Exception(ex);
+            }
         }
     }
 }

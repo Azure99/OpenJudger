@@ -12,6 +12,10 @@ using Judger.Models.Judge;
 
 namespace Judger.Core.Database
 {
+    /// <summary>
+    /// 数据库评测器
+    /// </summary>
+    /// 对SQL题目实现的评测器
     public class DbJudger : BaseJudger
     {
         private readonly string _dbName;
@@ -42,13 +46,14 @@ namespace Judger.Core.Database
                 return;
             }
 
-            int acceptedCasesCount = 0;
+            int acceptedCount = 0;
             foreach (string dataName in dataNames)
             {
                 SingleJudgeResult singleResult = JudgeOneCase(dataName);
                 result.TimeCost = Math.Max(result.TimeCost, singleResult.TimeCost);
+
                 if (singleResult.ResultCode == JudgeResultCode.Accepted)
-                    acceptedCasesCount++;
+                    acceptedCount++;
                 else
                 {
                     result.ResultCode = singleResult.ResultCode;
@@ -59,7 +64,7 @@ namespace Judger.Core.Database
                 }
             }
 
-            result.PassRate = (double) acceptedCasesCount / dataNames.Length;
+            result.PassRate = (double) acceptedCount / dataNames.Length;
         }
 
         private SingleJudgeResult JudgeOneCase(string dataName)
@@ -67,31 +72,31 @@ namespace Judger.Core.Database
             DbTestData testData = TestDataManager.GetDbTestData(JudgeTask.ProblemId, _dbType, dataName);
             BuildStandardData(testData, out string inputData, out DbData outputData, out DbQueryData queryData);
 
-            BaseDbOperator userOper = CreateJudgeEnv(inputData);
+            BaseDbOperator userOperator = CreateJudgeEnvironment(inputData);
 
-            SingleCaseJudger singleCaseJudger = new SingleCaseJudger(Context, userOper);
+            SingleCaseJudger singleCaseJudger = new SingleCaseJudger(Context, userOperator);
             SingleJudgeResult result = singleCaseJudger.Judge(inputData, outputData, queryData);
 
-            ClearJudgeEnv(userOper);
+            ClearJudgeEnvironment(userOperator);
 
             return result;
         }
 
-        private void BuildStandardData(DbTestData testData, out string inputData, out DbData outputData,
-            out DbQueryData queryData)
+        private void BuildStandardData(DbTestData testData,
+            out string inputData, out DbData outputData, out DbQueryData queryData)
         {
             inputData = testData.Input;
             outputData = null;
             queryData = null;
-            string stdOperCmd = testData.Operation;
+            string stdOperateCmd = testData.Operation;
             string stdQueryCmd = testData.Query;
 
-            BaseDbOperator stdOperator = CreateJudgeEnv(inputData);
+            BaseDbOperator stdOperator = CreateJudgeEnvironment(inputData);
 
             try
             {
-                DbDataReader reader = stdOperator.ExecuteReader(stdOperCmd ?? stdQueryCmd);
-                if (stdOperCmd != null)
+                DbDataReader reader = stdOperator.ExecuteReader(stdOperateCmd ?? stdQueryCmd);
+                if (stdOperateCmd != null)
                     outputData = stdOperator.ReadDbData();
 
                 if (stdQueryCmd != null)
@@ -103,30 +108,30 @@ namespace Judger.Core.Database
             }
             finally
             {
-                ClearJudgeEnv(stdOperator);
+                ClearJudgeEnvironment(stdOperator);
             }
         }
 
-        private BaseDbOperator CreateJudgeEnv(string input)
+        private BaseDbOperator CreateJudgeEnvironment(string input)
         {
             MainOperator.CreateDatabase(_dbName);
             MainOperator.CreateUser(_dbUser, _dbPassword);
-            MainOperator.GeneratePrivileges(_dbName, _dbUser);
+            MainOperator.GrantPrivileges(_dbName, _dbUser);
 
             DbLangConfig dbConfig = DbManager.GetDbConfiguration(JudgeTask.Language);
             dbConfig.Database = _dbName;
             dbConfig.User = _dbUser;
             dbConfig.Password = _dbPassword;
 
-            BaseDbOperator userOper = DbOperatorFactory.Create(dbConfig);
-            userOper.InitDatabase(input);
+            BaseDbOperator userOperator = DbOperatorFactory.Create(dbConfig);
+            userOperator.InitDatabase(input);
 
-            return userOper;
+            return userOperator;
         }
 
-        private void ClearJudgeEnv(BaseDbOperator userOper)
+        private void ClearJudgeEnvironment(BaseDbOperator userOperator)
         {
-            userOper.Dispose();
+            userOperator.Dispose();
             MainOperator.DropDatabase(_dbName);
             MainOperator.DropUser(_dbUser);
         }

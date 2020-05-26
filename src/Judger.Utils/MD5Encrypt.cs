@@ -11,8 +11,6 @@ namespace Judger.Utils
         /// <summary>
         /// 计算String的MD5(小写32位)
         /// </summary>
-        /// <param name="str">欲计算的string</param>
-        /// <returns>计算结果</returns>
         public static string EncryptToHexString(string str)
         {
             if (str == null)

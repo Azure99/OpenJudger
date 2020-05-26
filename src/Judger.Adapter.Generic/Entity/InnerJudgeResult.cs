@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Judger.Adapter.Generic.Entity
 {
     /// <summary>
-    /// 内部判题结果
+    /// 内部临时判题结果
     /// </summary>
     public class InnerJudgeResult
     {
@@ -21,14 +21,16 @@ namespace Judger.Adapter.Generic.Entity
         public JudgeResultCode ResultCode { get; set; }
 
         /// <summary>
-        /// 判题详情(包含错误详情)
+        /// 判题详情
         /// </summary>
+        /// 传递错误信息
         [JsonProperty(PropertyName = "judgeDetail")]
         public string JudgeDetail { get; set; }
 
         /// <summary>
-        /// 通过率, 标识通过了几组数据
+        /// 通过率
         /// </summary>
+        /// 标识通过的数据占总数据的百分比
         [JsonProperty(PropertyName = "passRate")]
         public double PassRate { get; set; }
 

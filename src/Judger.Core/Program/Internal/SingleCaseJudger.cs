@@ -11,7 +11,7 @@ using Judger.Utils;
 namespace Judger.Core.Program.Internal
 {
     /// <summary>
-    /// 单例Judger
+    /// 单组用例评测器
     /// </summary>
     public class SingleCaseJudger
     {
@@ -147,7 +147,7 @@ namespace Judger.Core.Program.Internal
             }
 
             bool wrongAnswer = false;
-            //判断PE不再重新生成去空数组，减少时空开销
+            // 判断PE不再重新生成去空数组, 避免创建大量小字符串对象, 减少时空开销
             int crtPos = 0;
             int usrPos = 0;
             while (crtPos < crtLength && usrPos < usrLength)

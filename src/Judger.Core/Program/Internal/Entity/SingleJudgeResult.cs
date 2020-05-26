@@ -3,7 +3,7 @@
 namespace Judger.Core.Program.Internal.Entity
 {
     /// <summary>
-    /// 单例Judge结果
+    /// 单组用例的评测结果
     /// </summary>
     public class SingleJudgeResult
     {

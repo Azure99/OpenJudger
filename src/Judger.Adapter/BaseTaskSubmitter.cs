@@ -4,22 +4,20 @@ using Judger.Utils;
 
 namespace Judger.Adapter
 {
+    /// <summary>
+    /// TaskSubmitter基类
+    /// </summary>
+    /// 用于向后端提交评测结果
     public abstract class BaseTaskSubmitter : ITaskSubmitter
     {
-        /// <summary>
-        /// 配置信息
-        /// </summary>
         protected Configuration Config { get; } = ConfigManager.Config;
 
-        /// <summary>
-        /// Http客户端
-        /// </summary>
-        protected HttpWebClient HttpClient { get; } = ConfiguredClient.Create();
+        protected HttpWebClient HttpClient { get; } = WebClientFactory.Create();
 
         /// <summary>
-        /// 提交评测结果
+        /// 向后端提交评测结果
         /// </summary>
-        /// <param name="context">JudgeContext</param>
+        /// <param name="context">评测上下文</param>
         /// <returns>是否成功</returns>
         public abstract bool Submit(JudgeContext context);
 

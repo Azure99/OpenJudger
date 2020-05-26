@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -16,53 +17,48 @@ namespace Judger.Managers
     public static class TestDataManager
     {
         /// <summary>
-        /// 版本号文件名
+        /// 存储测试数据版本号的文件名
         /// </summary>
         private const string VERSION_FILENAME = "version.txt";
 
         /// <summary>
-        /// 测试输入文件夹名
+        /// 测试输入文件夹的名称
         /// </summary>
         private const string DIR_INPUT = "input";
 
         /// <summary>
-        /// 测试输出文件夹名
+        /// 测试输出文件夹的名称
         /// </summary>
         private const string DIR_OUTPUT = "output";
 
         /// <summary>
-        /// 测试查询文件夹名
+        /// 测试查询文件夹的名称
         /// </summary>
         private const string DIR_QUERY = "query";
 
         /// <summary>
-        /// 测试操作文件夹名
+        /// 测试操作文件夹的名称
         /// </summary>
         private const string DIR_OPERATION = "oper";
 
         /// <summary>
-        /// Special Judge数据文件夹名
+        /// Special Judge数据文件夹的名称
         /// </summary>
         private const string DIR_SPJ = "spj";
 
         /// <summary>
-        /// Database Judge数据文件夹名
+        /// Database Judge数据文件夹的名称
         /// </summary>
         private const string DIR_DB = "db";
 
         /// <summary>
         /// 数据锁字典, 防止统一题目测试数据争用
         /// </summary>
-        private static readonly Dictionary<string, object> DataLockDic;
-
-        /// <summary>
-        /// 数据锁字典的锁
-        /// </summary>
-        private static readonly object DicLock = new object();
+        private static readonly ConcurrentDictionary<string, object> DataLockDic;
 
         static TestDataManager()
         {
-            DataLockDic = new Dictionary<string, object>();
+            DataLockDic = new ConcurrentDictionary<string, object>();
 
             if (!Directory.Exists(Config.TestDataDirectory))
                 Directory.CreateDirectory(Config.TestDataDirectory);
@@ -71,10 +67,11 @@ namespace Judger.Managers
         private static Configuration Config { get; } = ConfigManager.Config;
 
         /// <summary>
-        /// 检查本地测试数据版本是否与最新版本一致, 如果不是就需要重新获取数据
+        /// 检查本地测试数据版本是否与最新版本一致
         /// </summary>
-        /// <param name="problemId">问题ID</param>
+        /// <param name="problemId">问题Id</param>
         /// <param name="version">最新版本</param>
+        /// 如果不是最新数据则需要重新获取数据
         public static bool CheckData(string problemId, string version)
         {
             string dirPath = Cmb(Config.TestDataDirectory, problemId);
@@ -93,8 +90,6 @@ namespace Judger.Managers
         /// <summary>
         /// 写出测试数据
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <param name="zipData">ZIP数据</param>
         public static void WriteTestData(string problemId, byte[] zipData)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -108,8 +103,6 @@ namespace Judger.Managers
         /// <summary>
         /// 写出测试数据
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <param name="zipStream">保存ZIP的Stream</param>
         public static void WriteTestData(string problemId, Stream zipStream)
         {
             using (ZipArchive zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Read))
@@ -119,8 +112,6 @@ namespace Judger.Managers
         /// <summary>
         /// 写出测试数据
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <param name="zipArchive">ZipArchive</param>
         public static void WriteTestData(string problemId, ZipArchive zipArchive)
         {
             string dirPath = Cmb(Config.TestDataDirectory, problemId);
@@ -134,10 +125,9 @@ namespace Judger.Managers
         }
 
         /// <summary>
-        /// 获取测试数据文件名列表, 使用GetTestData方法获取具体数据
+        /// 获取测试数据文件名列表
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <returns>测试数据(输入/输出)文件名</returns>
+        /// 请使用GetTestData方法获取具体数据
         public static ProgramTestDataFile[] GetTestDataFilesName(string problemId)
         {
             string dirPath = Cmb(Config.TestDataDirectory, problemId);
@@ -172,9 +162,6 @@ namespace Judger.Managers
         /// <summary>
         /// 获取指定的测试数据
         /// </summary>
-        /// <param name="problemId">题目ID</param>
-        /// <param name="dataFile">程序测试数据文件</param>
-        /// <returns>测试数据</returns>
         public static ProgramTestData GetTestData(string problemId, ProgramTestDataFile dataFile)
         {
             string inputName = dataFile.InputFile;
@@ -195,8 +182,6 @@ namespace Judger.Managers
         /// <summary>
         /// 检查题目是否需要SPJ
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <returns>是否需要SPJ</returns>
         public static bool IsSpecialJudge(string problemId)
         {
             string spjDir = Cmb(Config.TestDataDirectory, problemId, DIR_SPJ);
@@ -208,8 +193,6 @@ namespace Judger.Managers
         /// <summary>
         /// 写出SPJ可执行程序
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <param name="programFile">SPJ程序</param>
         public static void WriteSpecialJudgeProgramFile(string problemId, SpecialJudgeProgram programFile)
         {
             lock (GetDataLock(problemId))
@@ -225,9 +208,6 @@ namespace Judger.Managers
         /// <summary>
         /// 获取SPJ可执行程序
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <param name="index">索引</param>
-        /// <returns>SPJ程序</returns>
         public static SpecialJudgeProgram GetSpecialJudgeProgramFile(string problemId, int index = 0)
         {
             lock (GetDataLock(problemId))
@@ -249,11 +229,8 @@ namespace Judger.Managers
         }
 
         /// <summary>
-        /// 根据题目ID获取全部数据库测试数据的名称
+        /// 根据题目Id获取全部数据库测试数据的名称
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <param name="dbType">数据库名称</param>
-        /// <returns>全部测试数据的名称</returns>
         public static string[] GetDbTestDataNames(string problemId, DatabaseType dbType)
         {
             lock (GetDataLock(problemId))
@@ -270,12 +247,8 @@ namespace Judger.Managers
         }
 
         /// <summary>
-        /// 根据问题ID和数据名称获取数据库测试数据
+        /// 根据问题Id和数据名称获取数据库测试数据
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <param name="dbType">数据库类型</param>
-        /// <param name="dataName">测试数据名称</param>
-        /// <returns>测试数据</returns>
         public static DbTestData GetDbTestData(string problemId, DatabaseType dbType, string dataName)
         {
             lock (GetDataLock(problemId))
@@ -284,11 +257,13 @@ namespace Judger.Managers
 
                 string inputFile = Cmb(dirPath, DIR_INPUT, dataName + '.' + dbType);
 
-                IEnumerable<string> operFileQuery = from x in Directory.GetFiles(Cmb(dirPath, DIR_OPERATION))
+                IEnumerable<string> operFileQuery =
+                    from x in Directory.GetFiles(Cmb(dirPath, DIR_OPERATION))
                     where Path.GetFileNameWithoutExtension(x).ToLower() == dbType.ToString().ToLower()
                     select x;
 
-                IEnumerable<string> queryFileQuery = from x in Directory.GetFiles(Cmb(dirPath, DIR_QUERY))
+                IEnumerable<string> queryFileQuery =
+                    from x in Directory.GetFiles(Cmb(dirPath, DIR_QUERY))
                     where Path.GetFileNameWithoutExtension(x).ToLower() == dbType.ToString().ToLower()
                     select x;
 
@@ -314,8 +289,6 @@ namespace Judger.Managers
         /// <summary>
         /// 检查题目是否为数据库题目
         /// </summary>
-        /// <param name="problemId">问题ID</param>
-        /// <returns>是否为数据库题目</returns>
         public static bool IsDatabaseJudge(string problemId)
         {
             string dbDir = Cmb(Config.TestDataDirectory, problemId, DIR_DB);
@@ -330,26 +303,21 @@ namespace Judger.Managers
         }
 
         /// <summary>
-        /// 获取测试数据锁, 保证每个题目的数据只能同时由一个JudgeTask访问
+        /// 获取测试数据锁
         /// </summary>
-        /// <param name="problemId">题目ID</param>
-        /// <returns>锁</returns>
+        /// 保证每个题目的数据只能同时由一个JudgeTask访问
         private static object GetDataLock(string problemId)
         {
-            lock (DicLock)
-            {
-                if (!DataLockDic.ContainsKey(problemId))
-                    DataLockDic.Add(problemId, new object());
+            if (!DataLockDic.ContainsKey(problemId))
+                DataLockDic.TryAdd(problemId, new object());
 
-                return DataLockDic[problemId];
-            }
+            return DataLockDic[problemId];
         }
 
         /// <summary>
-        /// 合并路径, Path.Combine方法缩写
+        /// 合并路径
         /// </summary>
-        /// <param name="paths">欲合并路径</param>
-        /// <returns>合并后的路径</returns>
+        /// Path.Combine方法缩写
         private static string Cmb(params object[] paths)
         {
             string[] pathStrings = new string[paths.Length];

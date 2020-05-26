@@ -4,22 +4,20 @@ using Judger.Utils;
 
 namespace Judger.Adapter
 {
+    /// <summary>
+    /// TaskFetcher基类
+    /// </summary>
+    /// 用于从后端取回评测任务
     public abstract class BaseTaskFetcher : ITaskFetcher
     {
-        /// <summary>
-        /// 配置信息
-        /// </summary>
         protected Configuration Config { get; } = ConfigManager.Config;
 
-        /// <summary>
-        /// Http客户端
-        /// </summary>
-        protected HttpWebClient HttpClient { get; } = ConfiguredClient.Create();
+        protected HttpWebClient HttpClient { get; } = WebClientFactory.Create();
 
         /// <summary>
-        /// 从服务器取回JudgeTask
+        /// 从后端取回任务并创建评测上下文
+        /// 可返回多个任务的上下文, 如果没有任务, 返回空数组
         /// </summary>
-        /// <returns>JudgeContext数组</returns>
         public abstract JudgeContext[] Fetch();
 
         public virtual void Dispose()

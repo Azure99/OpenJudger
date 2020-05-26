@@ -10,7 +10,7 @@ using Judger.Models.Judge;
 namespace Judger.Core.Database.Internal
 {
     /// <summary>
-    /// 数据库单组用例测试器
+    /// 数据库单组用例评测器
     /// </summary>
     public class SingleCaseJudger
     {
@@ -24,7 +24,7 @@ namespace Judger.Core.Database.Internal
             JudgeContext = context;
             JudgeTask = context.Task;
             UserOperator = dbOperator;
-            _caseSensitive = (context.LangConfig as DbLangConfig).CaseSensitive;
+            _caseSensitive = ((DbLangConfig) context.LangConfig).CaseSensitive;
         }
 
         private JudgeContext JudgeContext { get; }
@@ -37,7 +37,7 @@ namespace Judger.Core.Database.Internal
         /// <param name="stdInput">标准输入</param>
         /// <param name="stdOutput">标准输出</param>
         /// <param name="stdQuery">标准查询</param>
-        /// <returns></returns>
+        /// <returns>单组评测结果</returns>
         public SingleJudgeResult Judge(string stdInput, DbData stdOutput, DbQueryData stdQuery)
         {
             Stopwatch watch = new Stopwatch();
@@ -66,10 +66,9 @@ namespace Judger.Core.Database.Internal
             }
 
             CompareResult result = CompareAnswer(stdOutput, stdQuery, usrOutput, usrQuery);
+
             JudgeResultCode resultCode =
-                result == CompareResult.Accepted
-                    ? JudgeResultCode.Accepted
-                    : JudgeResultCode.WrongAnswer;
+                result == CompareResult.Accepted ? JudgeResultCode.Accepted : JudgeResultCode.WrongAnswer;
 
             return new SingleJudgeResult
             {
@@ -124,9 +123,9 @@ namespace Judger.Core.Database.Internal
 
             for (int i = 0; i < recordCount; i++)
             {
-                for (int i2 = 0; i2 < filedCount; i2++)
+                for (int j = 0; j < filedCount; j++)
                 {
-                    if (stdQuery.Records[i][i2] != usrQuery.Records[i][i2])
+                    if (stdQuery.Records[i][j] != usrQuery.Records[i][j])
                         return CompareResult.WrongAnswer;
                 }
             }
@@ -137,9 +136,6 @@ namespace Judger.Core.Database.Internal
         /// <summary>
         /// 对比文本是否相同(大小写敏感根据_caseSensitive)
         /// </summary>
-        /// <param name="a">string a</param>
-        /// <param name="b">string b</param>
-        /// <returns>是否相同</returns>
         private bool CmpString(string a, string b)
         {
             if (_caseSensitive)

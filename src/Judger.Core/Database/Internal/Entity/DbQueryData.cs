@@ -25,7 +25,7 @@ namespace Judger.Core.Database.Internal.Entity
         public int FieldCount => FieldNames.Length;
 
         /// <summary>
-        /// 记录
+        /// 全部记录
         /// </summary>
         public List<string[]> Records { get; set; }
     }

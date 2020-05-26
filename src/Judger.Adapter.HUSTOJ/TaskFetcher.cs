@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using Judger.Managers;
 using Judger.Models;
 using Judger.Models.Program;
 using Judger.Utils;
@@ -24,16 +26,15 @@ namespace Judger.Adapter.HUSTOJ
                 {
                     taskList.Add(GetJudgeTask(sid));
                 }
-                catch
-                { }
+                catch (Exception ex)
+                {
+                    LogManager.Exception(ex);
+                }
             }
 
             return taskList.ToArray();
         }
 
-        /// <summary>
-        /// 获取正在Pending的Solution ID
-        /// </summary>
         private string[] GetPending()
         {
             Authenticator.Instance.CheckLogin();
@@ -52,9 +53,6 @@ namespace Judger.Adapter.HUSTOJ
             return Regex.Split(response, "\r\n|\r|\n");
         }
 
-        /// <summary>
-        /// 创建用于获取Pending提交的Http请求Body
-        /// </summary>
         private string CreateGetPendingRequestBody()
         {
             StringBuilder bodyBuilder = new StringBuilder();
@@ -71,14 +69,11 @@ namespace Judger.Adapter.HUSTOJ
             return bodyBuilder.ToString();
         }
 
-        /// <summary>
-        /// 根据SubmitID获取JudgeTask
-        /// </summary>
         private JudgeContext GetJudgeTask(string submitId)
         {
             GetSolutionInfo(submitId, out string problemId, out string author, out string lang);
-            string sourceCode = GetSolution(submitId);
             GetProblemInfo(problemId, out int timeLimit, out int memoryLimit, out bool spj);
+            string sourceCode = GetSolution(submitId);
             string dateMd5 = GetTestDataMd5(problemId);
 
             JudgeContext task = JudgeContextFactory.Create(
@@ -90,13 +85,6 @@ namespace Judger.Adapter.HUSTOJ
             return task;
         }
 
-        /// <summary>
-        /// 根据提交ID获取提交信息
-        /// </summary>
-        /// <param name="sid">提交ID</param>
-        /// <param name="problemId">问题ID</param>
-        /// <param name="username">用户名</param>
-        /// <param name="lang">编程语言</param>
         private void GetSolutionInfo(string sid, out string problemId, out string username, out string lang)
         {
             string requestBody = "getsolutioninfo=1&sid=" + sid;
@@ -109,26 +97,16 @@ namespace Judger.Adapter.HUSTOJ
             lang = split[2];
         }
 
-        /// <summary>
-        /// 根据提交ID获取源代码
-        /// </summary>
         private string GetSolution(string sid)
         {
-            string requestBody = "getsolution=1&sid=" + sid;
+            string requestBody = $"getsolution=1&sid={sid}";
 
             return HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
         }
 
-        /// <summary>
-        /// 根据问题ID获取问题信息
-        /// </summary>
-        /// <param name="pid">问题信息</param>
-        /// <param name="timeLimit">时间限制</param>
-        /// <param name="memoryLimit">内存限制</param>
-        /// <param name="spj">是否为Special Judge</param>
         private void GetProblemInfo(string pid, out int timeLimit, out int memoryLimit, out bool spj)
         {
-            string requestBody = "getprobleminfo=1&pid=" + pid;
+            string requestBody = $"getprobleminfo=1&pid={pid}";
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
 
             string[] split = Regex.Split(response, "\r\n|\r|\n");
@@ -138,9 +116,6 @@ namespace Judger.Adapter.HUSTOJ
             spj = int.Parse(split[2]) == 1;
         }
 
-        /// <summary>
-        /// 根据问题ID获取测试数据的MD5
-        /// </summary>
         private string GetTestDataMd5(string pid)
         {
             string requestBody = $"gettestdatalist=1&pid={pid}&time=1";

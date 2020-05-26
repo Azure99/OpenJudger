@@ -32,7 +32,7 @@ namespace Judger
         private static void Status()
         {
             Console.WriteLine("Service working:\t" + Startup.Service.Working);
-            Console.WriteLine("In queue:\t" + Startup.Service.Controller.InQueueCount);
+            Console.WriteLine("In queue:\t" + Startup.Service.Controller.PendingCount);
             Console.WriteLine("Running:\t" + Startup.Service.Controller.RunningCount);
         }
 

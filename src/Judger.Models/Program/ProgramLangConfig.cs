@@ -11,13 +11,18 @@ namespace Judger.Models.Program
     public class ProgramLangConfig : ILangConfig
     {
         /// <summary>
+        /// 语言名称
+        /// </summary>
+        public string Name { get; set; } = "";
+
+        /// <summary>
         /// 判题时使用的目录
         /// </summary>
         public string JudgeDirectory { get; set; }
             = "JudgeTemp" + Path.DirectorySeparatorChar + "Judge";
 
         /// <summary>
-        /// 是否需要编译(脚本语言(如Python)不需要)
+        /// 是否需要编译(脚本语言, 如Python不需要)
         /// </summary>
         public bool NeedCompile { get; set; } = true;
 
@@ -72,29 +77,27 @@ namespace Judger.Models.Program
         public string RunnerArgs { get; set; } = "";
 
         /// <summary>
-        /// I/O使用UTF8编码
+        /// I/O流是否使用UTF8编码
         /// </summary>
         public bool UseUtf8 { get; set; } = true;
 
         /// <summary>
-        /// 是否运行在VM中 (Java等语言是)
+        /// 是否运行在VM中
         /// </summary>
+        /// Java等语言是
         public bool RunningInVm { get; set; }
 
         /// <summary>
-        /// 被测试程序允许的最大输出内容长度, 用于防止死循环输出
+        /// 被测试程序允许的最大输出内容长度
         /// </summary>
+        /// 用于防止死循环输出
         public int OutputLimit { get; set; } = 67108864;
 
         /// <summary>
-        /// 时间消耗=真实时间*补偿系数，用于保证分布式判题机性能不同时减小误差
+        /// 时间消耗
         /// </summary>
+        /// 时间消耗=真实时间*补偿系数, 用于保证分布式判题机性能不同时减小误差
         public double TimeCompensation { get; set; } = 1.0;
-
-        /// <summary>
-        /// 语言名称
-        /// </summary>
-        public string Name { get; set; } = "";
 
         /// <summary>
         /// 是否为数据库配置

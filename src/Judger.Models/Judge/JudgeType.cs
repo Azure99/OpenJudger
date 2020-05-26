@@ -11,8 +11,9 @@ namespace Judger.Models.Judge
         ProgramJudge = 0,
 
         /// <summary>
-        /// 特殊程序评测(交由SPJ程序评测)
+        /// 特殊程序评测
         /// </summary>
+        /// 输出交由SPJ程序评测
         SpecialJudge = 1,
 
         /// <summary>

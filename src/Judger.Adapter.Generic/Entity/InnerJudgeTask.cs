@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Judger.Adapter.Generic.Entity
 {
     /// <summary>
-    /// 内部评测任务
+    /// 内部临时评测任务
     /// </summary>
     public class InnerJudgeTask
     {
@@ -51,7 +51,7 @@ namespace Judger.Adapter.Generic.Entity
         public int MemoryLimit { get; set; } = 262144;
 
         /// <summary>
-        /// 是否评测所有样例(即使遇到错误答案)
+        /// 是否评测所有测试用例
         /// </summary>
         [JsonProperty(PropertyName = "judgeAllCases")]
         public bool JudgeAllCases { get; set; }

@@ -13,8 +13,7 @@ namespace Judger.Core.Database.Internal
         /// <summary>
         /// 加载数据库驱动
         /// </summary>
-        /// <param name="assemblyPath">数据库驱动程序集的路径</param>
-        /// <returns>数据库驱动</returns>
+        /// <param name="assemblyPath">数据库驱动Assembly的路径</param>
         public static DbDriver Load(string assemblyPath)
         {
             assemblyPath = Path.GetFullPath(assemblyPath);

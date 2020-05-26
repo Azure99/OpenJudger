@@ -5,7 +5,8 @@ using System.Text;
 namespace Judger.Utils
 {
     /// <summary>
-    /// 扩展的 WebClient, 支持自动重试, 限制读写时间, 定义ContentType, Cookie
+    /// 扩展的WebClient
+    /// 支持自动重试, 限制读写时间, 定义ContentType, Cookie等操作
     /// </summary>
     public class HttpWebClient : WebClient
     {
@@ -30,16 +31,12 @@ namespace Judger.Utils
         public CookieContainer CookieContainer { get; set; } = new CookieContainer();
 
         /// <summary>
-        /// 将字符串上传到指定的位置，使用POST方法
+        /// 将字符串上传到指定的位置, 使用POST方法
         /// </summary>
-        /// <param name="address">地址</param>
-        /// <param name="data">Post发送的数据</param>
-        /// <param name="maxTry">最大尝试次数</param>
-        /// <returns>请求结果</returns>
         public string UploadString(string address, string data, int maxTry)
         {
             int tryCount = 0;
-            Exception lastEx = new Exception();
+            Exception lastException = new Exception();
 
             while (tryCount++ < maxTry)
             {
@@ -49,23 +46,20 @@ namespace Judger.Utils
                 }
                 catch (Exception ex)
                 {
-                    lastEx = ex;
+                    lastException = ex;
                 }
             }
 
-            throw lastEx;
+            throw lastException;
         }
 
         /// <summary>
         /// 下载请求的资源
         /// </summary>
-        /// <param name="address">地址</param>
-        /// <param name="maxTry">最大尝试次数</param>
-        /// <returns>请求结果</returns>
         public string DownloadString(string address, int maxTry)
         {
             int tryCount = 0;
-            Exception lastEx = new Exception();
+            Exception lastException = new Exception();
 
             while (tryCount++ < maxTry)
             {
@@ -75,20 +69,16 @@ namespace Judger.Utils
                 }
                 catch (Exception ex)
                 {
-                    lastEx = ex;
+                    lastException = ex;
                 }
             }
 
-            throw lastEx;
+            throw lastException;
         }
 
         /// <summary>
-        /// 尝试将字符串上传到指定的位置，使用POST方法
+        /// 尝试将字符串上传到指定的位置, 使用POST方法
         /// </summary>
-        /// <param name="address">地址</param>
-        /// <param name="data">Post发送的数据</param>
-        /// <param name="result">响应结果</param>
-        /// <returns>是否成功</returns>
         public bool TryUploadString(string address, string data, out string result)
         {
             try
@@ -106,11 +96,6 @@ namespace Judger.Utils
         /// <summary>
         /// 尝试POST请求String
         /// </summary>
-        /// <param name="address">地址</param>
-        /// <param name="data">Post发送的数据</param>
-        /// <param name="maxTry">最大尝试次数</param>
-        /// <param name="result">响应结果</param>
-        /// <returns>是否成功</returns>
         public bool TryUploadString(string address, string data, int maxTry, out string result)
         {
             try
@@ -128,9 +113,6 @@ namespace Judger.Utils
         /// <summary>
         /// 尝试下载String
         /// </summary>
-        /// <param name="address">地址</param>
-        /// <param name="result">请求结果</param>
-        /// <returns>是否成功</returns>
         public bool TryDownloadString(string address, out string result)
         {
             try
@@ -148,10 +130,6 @@ namespace Judger.Utils
         /// <summary>
         /// 尝试下载String
         /// </summary>
-        /// <param name="address">地址</param>
-        /// <param name="result">请求结果</param>
-        /// <param name="maxTray">最大尝试次数</param>
-        /// <returns>是否成功</returns>
         public bool TryDownloadString(string address, out string result, int maxTray)
         {
             try
@@ -169,9 +147,6 @@ namespace Judger.Utils
         /// <summary>
         /// POST请求数据
         /// </summary>
-        /// <param name="address">地址</param>
-        /// <param name="data">Post发送的数据</param>
-        /// <returns>请求结果</returns>
         public byte[] UploadData(string address, string data)
         {
             return UploadData(address, Encoding.UTF8.GetBytes(data));
@@ -180,14 +155,10 @@ namespace Judger.Utils
         /// <summary>
         /// POST请求数据
         /// </summary>
-        /// <param name="address">地址</param>
-        /// <param name="data">Post发送的数据</param>
-        /// <param name="maxTry">最大尝试次数</param>
-        /// <returns>请求结果</returns>
         public byte[] UploadData(string address, string data, int maxTry)
         {
             int tryCount = 0;
-            Exception lastEx = new Exception();
+            Exception lastException = new Exception();
 
             while (tryCount++ < maxTry)
             {
@@ -197,11 +168,11 @@ namespace Judger.Utils
                 }
                 catch (Exception ex)
                 {
-                    lastEx = ex;
+                    lastException = ex;
                 }
             }
 
-            throw lastEx;
+            throw lastException;
         }
 
         protected override WebRequest GetWebRequest(Uri address)

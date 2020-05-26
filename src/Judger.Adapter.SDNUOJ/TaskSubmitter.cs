@@ -13,9 +13,6 @@ namespace Judger.Adapter.SDNUOJ
             return true;
         }
 
-        /// <summary>
-        /// 根据JudgeResult生成用于提交的数据
-        /// </summary>
         private string CreateResultBody(JudgeResult result)
         {
             int resultCode;
@@ -58,11 +55,9 @@ namespace Judger.Adapter.SDNUOJ
             int memCost = result.MemoryCost;
             string pid = result.ProblemId;
             string username = result.Author;
-            string body =
-                $"sid={sid}&resultcode={resultCode}&detail={detail}" +
-                $"&timecost={timeCost}&memorycost={memCost}&pid={pid}&username={username}";
 
-            return body;
+            return $"sid={sid}&resultcode={resultCode}&detail={detail}" +
+                   $"&timecost={timeCost}&memorycost={memCost}&pid={pid}&username={username}";
         }
     }
 }

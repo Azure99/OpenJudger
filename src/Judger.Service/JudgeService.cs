@@ -13,6 +13,7 @@ namespace Judger.Service
     /// </summary>
     public class JudgeService : IDisposable
     {
+        private readonly Configuration _config = ConfigManager.Config;
         private readonly object _innerWorkLock = new object();
         private readonly ITaskFetcher _taskFetcher;
 
@@ -21,17 +22,12 @@ namespace Judger.Service
         // 指示当前OnWork代码段是否正在执行
         private bool _innerWorking;
 
-        /// <summary>
-        /// 评测服务
-        /// </summary>
         public JudgeService()
         {
             _taskFetcher = AdapterFactory.CreateTaskFetcher();
-            _workTimer = new Timer(Config.TaskFetchInterval);
+            _workTimer = new Timer(_config.TaskFetchInterval);
             _workTimer.Elapsed += OnWork;
         }
-
-        private Configuration Config { get; } = ConfigManager.Config;
 
         /// <summary>
         /// 服务是否在运行
@@ -39,7 +35,7 @@ namespace Judger.Service
         public bool Working => _workTimer.Enabled;
 
         /// <summary>
-        /// 并发判题管理器
+        /// 评测控制器
         /// </summary>
         public JudgeController Controller { get; } = new JudgeController();
 
@@ -74,7 +70,7 @@ namespace Judger.Service
         {
             LogManager.Info("Clear temp directory");
 
-            foreach (ProgramLangConfig lang in Config.Languages)
+            foreach (ProgramLangConfig lang in _config.Languages)
             {
                 try
                 {
@@ -116,19 +112,16 @@ namespace Judger.Service
             }
         }
 
-        /// <summary>
-        /// 从服务器取回评测任务
-        /// </summary>
         private void FetchJudgeTask()
         {
-            if (Controller.InQueueCount >= Config.MaxQueueSize)
+            if (Controller.PendingCount >= _config.MaxQueueSize)
                 return;
 
             JudgeContext[] tasks = _taskFetcher.Fetch();
             foreach (JudgeContext task in tasks)
                 Controller.AddTask(task);
 
-            // 若当前成功取到任务, 不等待继续尝试取回任务
+            // 若当前成功取到任务, 不等待继续尝试取回任务以提高响应率
             if (tasks.Length > 0)
                 FetchJudgeTask();
         }

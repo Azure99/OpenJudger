@@ -14,18 +14,24 @@ namespace Judger.Service
     /// </summary>
     public class JudgeController
     {
+        private readonly Configuration _config = ConfigManager.Config;
         private readonly ConcurrentQueue<JudgeContext> _judgeQueue = new ConcurrentQueue<JudgeContext>();
         private readonly object _queueLock = new object();
-        private Configuration Config { get; } = ConfigManager.Config;
-
-        public int RunningCount { get; private set; }
-
-        public int InQueueCount => _judgeQueue.Count;
 
         /// <summary>
-        /// 添加JudgeTask
+        /// 正在运行的任务
         /// </summary>
-        /// <param name="context">JudgeContext</param>
+        public int RunningCount { get; private set; }
+
+        /// <summary>
+        /// 正在等待的任务
+        /// </summary>
+        public int PendingCount => _judgeQueue.Count;
+
+        /// <summary>
+        /// 添加评测任务(上下文)
+        /// </summary>
+        /// 请使用Judger.Adapter.JudgeContextFactory创建评测上下文
         public void AddTask(JudgeContext context)
         {
             LogAddTask(context);
@@ -41,7 +47,7 @@ namespace Judger.Service
             lock (_queueLock)
             {
                 // 同时运行数达到限制或等待队列为空
-                if (RunningCount >= Config.MaxRunning || _judgeQueue.IsEmpty)
+                if (RunningCount >= _config.MaxRunning || _judgeQueue.IsEmpty)
                 {
                     CheckExecuteGc();
                     return;
@@ -50,7 +56,7 @@ namespace Judger.Service
                 RunningCount++;
             }
 
-            //开始评测任务
+            // 开始评测任务
             if (_judgeQueue.TryDequeue(out JudgeContext context))
                 new Task(RunJudgeTask, context).Start();
         }
@@ -59,9 +65,9 @@ namespace Judger.Service
         /// 开始评测JudgeTask
         /// </summary>
         /// <param name="judgeTaskObject">JudgeTask对象</param>
-        private void RunJudgeTask(object judgeTaskObject)
+        private void RunJudgeTask(object contextObject)
         {
-            JudgeContext context = judgeTaskObject as JudgeContext;
+            JudgeContext context = contextObject as JudgeContext;
 
             try
             {
@@ -82,7 +88,6 @@ namespace Judger.Service
         private void Judge(JudgeContext context)
         {
             JudgeTask task = context.Task;
-
             ITaskSubmitter submitter = AdapterFactory.CreateTaskSubmitter();
 
             try
@@ -97,7 +102,7 @@ namespace Judger.Service
 
                 LogJudgeResult(context.Result);
             }
-            catch (Exception ex) //判题失败
+            catch (Exception ex) // 判题失败
             {
                 LogJudgeFailed(ex, task.SubmitId);
                 context.Result = CreateFailedJudgeResult(context, ex.ToString());
@@ -113,7 +118,7 @@ namespace Judger.Service
         {
             JudgeTask task = context.Task;
 
-            // 检查测试数据是否为最新
+            // 检查本地测试数据是否为最新
             if (!TestDataManager.CheckData(task.ProblemId, task.DataVersion))
             {
                 LogInvalidTestData(task.ProblemId);
@@ -125,12 +130,6 @@ namespace Judger.Service
             }
         }
 
-        /// <summary>
-        /// 创建评测失败的JudgeResult
-        /// </summary>
-        /// <param name="context">JudgeContext</param>
-        /// <param name="message">错误信息</param>
-        /// <returns>结果为失败的JudgeResult</returns>
         private JudgeResult CreateFailedJudgeResult(JudgeContext context, string message = "")
         {
             JudgeResult result = new JudgeResult
@@ -148,9 +147,6 @@ namespace Judger.Service
             return result;
         }
 
-        /// <summary>
-        /// 若当前无运行中的任务则执行垃圾回收
-        /// </summary>
         private void CheckExecuteGc()
         {
             if (RunningCount == 0)
@@ -198,7 +194,7 @@ namespace Judger.Service
 
         private void LogGc()
         {
-            LogManager.Info("Run Gc");
+            LogManager.Info("Run GC");
         }
 
         private void LogException(Exception ex)

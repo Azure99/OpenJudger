@@ -7,6 +7,9 @@ using Judger.Utils;
 
 namespace Judger.Core.Program.Internal
 {
+    /// <summary>
+    /// 程序编译器
+    /// </summary>
     public class Compiler
     {
         public Compiler(JudgeContext context)

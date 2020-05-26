@@ -6,13 +6,15 @@ using Judger.Models.Judge;
 
 namespace Judger.Core
 {
+    /// <summary>
+    /// Judger工厂
+    /// </summary>
+    /// 根据评测上下文创建对应Judger实现类的实例
     public static class JudgerFactory
     {
         /// <summary>
         /// 根据上下文创建Judger实例
         /// </summary>
-        /// <param name="context">JudgeContext</param>
-        /// <returns>Judger实例</returns>
         public static BaseJudger Create(JudgeContext context)
         {
             switch (context.Task.JudgeType)

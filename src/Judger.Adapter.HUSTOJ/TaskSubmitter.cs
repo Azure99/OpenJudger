@@ -12,9 +12,6 @@ namespace Judger.Adapter.HUSTOJ
             return true;
         }
 
-        /// <summary>
-        /// 根据JudgeResult生成用于提交的Body
-        /// </summary>
         private string CreateResultBody(JudgeResult result)
         {
             int resultCode;
@@ -52,11 +49,8 @@ namespace Judger.Adapter.HUSTOJ
                     break;
             }
 
-            string body =
-                $"update_solution=1&sid={result.SubmitId}&result={resultCode}&time={result.TimeCost}" +
-                $"&memory={result.MemoryCost}&sim=0&simid=0&pass_rate={result.PassRate}";
-
-            return body;
+            return $"update_solution=1&sid={result.SubmitId}&result={resultCode}&time={result.TimeCost}" +
+                   $"&memory={result.MemoryCost}&sim=0&simid=0&pass_rate={result.PassRate}";
         }
     }
 }

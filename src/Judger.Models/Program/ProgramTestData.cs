@@ -1,8 +1,9 @@
 ﻿namespace Judger.Models.Program
 {
     /// <summary>
-    /// 程序测试数据，包含一组测试数据的完整输入输出
+    /// 程序测试数据
     /// </summary>
+    /// 包含一组测试数据的完整输入输出
     public class ProgramTestData
     {
         /// <summary>

@@ -24,9 +24,6 @@ namespace Judger.Adapter.SDNUOJ
             return tasks;
         }
 
-        /// <summary>
-        /// 创建请求Body
-        /// </summary>
         private string CreateRequestBody()
         {
             StringBuilder bodyBuilder = new StringBuilder();
@@ -34,6 +31,7 @@ namespace Judger.Adapter.SDNUOJ
             bodyBuilder.Append("supported_languages=");
 
             StringBuilder langBuilder = new StringBuilder();
+
             foreach (ProgramLangConfig lang in Config.Languages)
                 langBuilder.Append(lang.Name + "[],");
 
@@ -43,15 +41,9 @@ namespace Judger.Adapter.SDNUOJ
             langBuilder.Remove(langBuilder.Length - 1, 1);
 
             bodyBuilder.Append(HttpUtility.UrlEncode(langBuilder.ToString()));
-
             return bodyBuilder.ToString();
         }
 
-        /// <summary>
-        /// 从Response中解析JudgeTask
-        /// </summary>
-        /// <param name="jsonStr"></param>
-        /// <returns></returns>
         private JudgeContext[] ParseTask(string jsonStr)
         {
             JArray jArray = JArray.Parse(jsonStr);
@@ -63,20 +55,17 @@ namespace Judger.Adapter.SDNUOJ
             if (!CheckTaskJObject(jObject))
                 return new JudgeContext[0];
 
-            SdnuojTaskEntity taskEntity = jObject.ToObject<SdnuojTaskEntity>();
+            SdnuojTaskEntity entity = jObject.ToObject<SdnuojTaskEntity>();
 
             JudgeContext task = JudgeContextFactory.Create(
-                taskEntity.SubmitId, taskEntity.ProblemId, taskEntity.DataVersion,
-                taskEntity.Language.Substring(0, taskEntity.Language.Length - 2), taskEntity.SourceCode,
-                taskEntity.Author, int.Parse(taskEntity.TimeLimit), int.Parse(taskEntity.MemoryLimit),
-                false, false, bool.Parse(taskEntity.DbJudge));
+                entity.SubmitId, entity.ProblemId, entity.DataVersion,
+                entity.Language.Substring(0, entity.Language.Length - 2), entity.SourceCode,
+                entity.Author, int.Parse(entity.TimeLimit), int.Parse(entity.MemoryLimit),
+                false, false, bool.Parse(entity.DbJudge));
 
             return new[] {task};
         }
 
-        /// <summary>
-        /// 检查JsonObject是否符合JudgeTask规范
-        /// </summary>
         private bool CheckTaskJObject(JObject obj)
         {
             HashSet<string> keySet = new HashSet<string>();

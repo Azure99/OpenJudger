@@ -4,6 +4,9 @@ using Judger.Models.Judge;
 
 namespace Judger.Core
 {
+    /// <summary>
+    /// Judger基类
+    /// </summary>
     public abstract class BaseJudger : IDisposable
     {
         protected BaseJudger(JudgeContext context)
