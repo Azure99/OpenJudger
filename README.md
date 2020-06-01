@@ -21,8 +21,8 @@ It is now used to judge solutions on the [itoIDbOJ](http://db.itoi.sd.cn/), [ito
 * Adaptable: provide`Judger.Adapter` interface to adapt your Online Judge System.
 * High performance: reliable concurrency control, auto distribute processor affinity.
 
-## Documents
-无可奉告(coming soon)
+## Documents (CN)
+* [Configuration](https://github.com/Azure99/OpenJudger/wiki/Config_zh)
 
 ## License
 [MIT](http://opensource.org/licenses/MIT)
