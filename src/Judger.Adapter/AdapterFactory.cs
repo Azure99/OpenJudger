@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Judger.Managers;
 using Judger.Models;
@@ -59,6 +61,34 @@ namespace Judger.Adapter
             }
 
             throw new AdapterException("ITestDataFetcher not implement!");
+        }
+
+        public static IConfigInitializer[] GetConfigInitializers()
+        {
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string[] assemblyFiles =
+                Directory.GetFiles(baseDir)
+                    .Where(s => Path.GetFileName(s).StartsWith("Judger.Adapter"))
+                    .Where(s => s.EndsWith(".dll"))
+                    .ToArray();
+
+            List<IConfigInitializer> initializers = new List<IConfigInitializer>();
+            foreach (string assemblyFile in assemblyFiles)
+            {
+                try
+                {
+                    Assembly assembly = Assembly.LoadFile(assemblyFile);
+                    foreach (Type type in assembly.ExportedTypes)
+                    {
+                        if (type.GetInterface(typeof(IConfigInitializer).FullName) != null)
+                            initializers.Add(assembly.CreateInstance(type.FullName) as IConfigInitializer);
+                    }
+                }
+                catch (BadImageFormatException)
+                { }
+            }
+
+            return initializers.ToArray();
         }
     }
 }

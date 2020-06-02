@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using Judger.Managers;
@@ -43,14 +44,14 @@ namespace Judger.Adapter.HUSTOJ
             try
             {
                 string requestBody = CreateGetPendingRequestBody();
-                response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody);
+                response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody).Trim();
             }
             catch
             {
                 return new string[0];
             }
-
-            return Regex.Split(response, "\r\n|\r|\n");
+            
+            return response == "" ? new string[0] : Regex.Split(response, "\r\n|\r|\n");
         }
 
         private string CreateGetPendingRequestBody()
@@ -111,7 +112,7 @@ namespace Judger.Adapter.HUSTOJ
 
             string[] split = Regex.Split(response, "\r\n|\r|\n");
 
-            timeLimit = int.Parse(split[0]) * 1000;
+            timeLimit = (int) (double.Parse(split[0]) * 1000);
             memoryLimit = int.Parse(split[1]) * 1024;
             spj = int.Parse(split[2]) == 1;
         }

@@ -52,7 +52,14 @@ namespace Judger.Adapter.HUSTOJ
                 LogManager.Exception(ex);
             }
 
-            return CheckLogin();
+            if (CheckLogin())
+                return true;
+            else
+            {
+                Console.WriteLine("No http_judge privilege!");
+                Console.WriteLine("Please check your judge username, password and privilege!");
+                return false;
+            }
         }
 
         public bool CheckLogin()
