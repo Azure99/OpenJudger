@@ -4,22 +4,25 @@
 ![Build Status](https://travis-ci.com/Azure99/OpenJudger.svg?branch=master)
 
 ## Introduction
-OpenJudger is a lightweight, high performance and universal program judger designed to simplify Online Judge System development.
+OpenJudger is a lightweight, high performance, universal program judger designed to simplify Online Judge System development. It's extensible, can extend programing language, database middle layer, server adapter, event handler even new judge type.
 
-Support [SDNUOJ](https://github.com/sdnuacmicpc/sdnuoj), [HUSTOJ](https://github.com/zhblue/hustoj) and more!
-
-It is now used to judge solutions on the [itoIDbOJ](http://db.itoi.sd.cn/), [itoIOJ](http://oj.itoi.sd.cn/) and [SDNUOJ](http://www.acmicpc.sdnu.edu.cn/).
-
+Official adapter: [SDNUOJ](https://github.com/sdnuacmicpc/sdnuoj) and [HUSTOJ](https://github.com/zhblue/hustoj)
 
 ## Overview
 * Based on .Net Core: cross platform, easy to deploy.
 * Lightweight: minimum dependencies (Newtonsoft.Json only).
-* Configurable: provide custom options in Config.json file.
+* Configurable: provide many custom options in Config.json file.
 * Multiple languages support: `C`, `C++`, `Java`, `Python`, `Kotlin`, `C#`, `Go`, `NodeJS`... Almost any programming language!
 * Special judge: Use your program to check user's answer.
-* Database judge: MySQL, support Create Read Update Delete.
+* SQL judge: MySQL, support Create Read Update Delete.
 * Adaptable: provide`Judger.Adapter` interface to adapt your Online Judge System.
-* High performance: reliable concurrency control, auto distribute processor affinity.
+* High performance: reliable concurrency control, excellent task scheduling, auto manage processor affinity.
+
+## Who's using?
+* [山东师范大学OnlineJudge](http://www.acmicpc.sdnu.edu.cn/)
+* [HUSTOJ By zhblue](https://github.com/zhblue/hustoj/)
+* [山东师范大学数据库实训平台](http://db.itoi.sd.cn/)
+* 山东师范大学编程考试系统
 
 ## Documents (CN)
 * [Configuration](https://github.com/Azure99/OpenJudger/wiki/config_zh)
