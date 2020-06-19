@@ -19,12 +19,10 @@ namespace Judger.Adapter.SDNUOJ
 
         private byte[] Fetch(string problemId)
         {
-            string body = CreateRequestBody(problemId);
+            string requestBody = CreateRequestBody(problemId);
+            byte[] testDataZip = HttpClient.UploadData(Config.TestDataFetchUrl, requestBody, 3);
 
-            byte[] result = HttpClient.UploadData(Config.TestDataFetchUrl, body, 3);
-            result = ChangeVersionFileName(result);
-
-            return result;
+            return ChangeVersionFileName(testDataZip);
         }
 
         private string CreateRequestBody(string problemId)
@@ -37,7 +35,7 @@ namespace Judger.Adapter.SDNUOJ
         /// </summary>
         private byte[] ChangeVersionFileName(byte[] data)
         {
-            byte[] res;
+            byte[] newData;
             using (MemoryStream stream = new MemoryStream())
             {
                 stream.Write(data);
@@ -49,24 +47,28 @@ namespace Judger.Adapter.SDNUOJ
                     if (oldEntry != null)
                     {
                         using (StreamReader reader = new StreamReader(oldEntry.Open()))
+                        {
                             version = reader.ReadToEnd();
+                        }
                     }
 
                     ZipArchiveEntry newEntry = zipArchive.CreateEntry("version.txt");
                     using (StreamWriter writer = new StreamWriter(newEntry.Open()))
+                    {
                         writer.Write(version);
+                    }
 
                     zipArchive.UpdateBaseStream();
 
                     int nowPos = (int) stream.Position;
-                    res = new byte[stream.Length];
+                    newData = new byte[stream.Length];
                     stream.Position = 0;
-                    stream.Read(res, 0, (int) stream.Length);
+                    stream.Read(newData, 0, (int) stream.Length);
                     stream.Position = nowPos;
                 }
             }
 
-            return res;
+            return newData;
         }
     }
 }

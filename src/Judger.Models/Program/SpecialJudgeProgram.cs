@@ -8,7 +8,7 @@
         /// <summary>
         /// SPJ程序的语言信息
         /// </summary>
-        public ProgramLangConfig LangConfiguration { get; set; }
+        public ProgramLangConfig LangConfig { get; set; }
 
         /// <summary>
         /// 二进制SPJ程序

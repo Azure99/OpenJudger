@@ -13,13 +13,13 @@ namespace Judger.Utils
     /// </summary>
     public class RuntimeMonitor : IDisposable
     {
-        // 指示当前平台是否为Linux
+        // 当前平台是否为Linux
         private readonly bool _platformIsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
-        // 指示当前平台是否为Windows
+        // 当前平台是否为Windows
         private readonly bool _platformIsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
-        // 指示子进程是否运行在虚拟机/解释器中(如Java, Python)
+        // 子进程是否运行在虚拟机/解释器中(如Java, Python)
         private readonly bool _runningInVm;
 
         private readonly Timer _timer = new Timer();
@@ -199,6 +199,10 @@ namespace Judger.Utils
         /// VmHWM为物理内存使用峰值, 适合运行在虚拟机中的语言
         private int PeakMemoryOnLinux()
         {
+            /*
+             VmPeak:   ??? kB
+             VmHWM:    ??? kB
+             */
             string queryKey = _runningInVm ? "VmHWM" : "VmPeak";
 
             string[] lines = File.ReadAllLines($"/proc/{Process.Id}/status");
@@ -207,10 +211,10 @@ namespace Judger.Utils
                 if (!line.StartsWith(queryKey))
                     continue;
 
-                string[] splits = line.Split(' ');
-                string vmPeak = splits[splits.Length - 2];
+                // 按空格切割后的倒数第二个值
+                string memoryPeak = line.Split(' ')[^2];
 
-                return int.Parse(vmPeak);
+                return int.Parse(memoryPeak);
             }
 
             return 0;

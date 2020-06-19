@@ -45,28 +45,20 @@ namespace Judger.Service
             _workTimer.Dispose();
         }
 
-        /// <summary>
-        /// 启动服务
-        /// </summary>
         public void Start()
         {
             LogManager.Info("Start service");
-
             ClearTempDirectory();
             _workTimer.Start();
         }
 
-        /// <summary>
-        /// 停止服务
-        /// </summary>
         public void Stop()
         {
             LogManager.Info("Stop service");
-
             _workTimer.Stop();
         }
 
-        private void ClearTempDirectory() //清空临时目录
+        private void ClearTempDirectory()
         {
             LogManager.Info("Clear temp directory");
 

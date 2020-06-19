@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Judger.Adapter.SDNUOJ.Entity
 {
     [Serializable]
-    public class SdnuojTaskEntity
+    public class SdnuojJudgeTask
     {
         [JsonProperty(PropertyName = "sid")]
         public string SubmitId { get; set; }
@@ -18,7 +18,7 @@ namespace Judger.Adapter.SDNUOJ.Entity
         [JsonProperty(PropertyName = "dataversion")]
         public string DataVersion { get; set; }
 
-        [JsonProperty(PropertyName = "timelimit")]
+        [JsonProperty(PropertyName = "timeliest")]
         public string TimeLimit { get; set; }
 
         [JsonProperty(PropertyName = "memorylimit")]

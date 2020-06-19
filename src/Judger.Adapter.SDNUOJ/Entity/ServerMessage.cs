@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Judger.Adapter.SDNUOJ.Entity
 {
     [Serializable]
-    public class ServerMessageEntity
+    public class ServerMessage
     {
         [JsonProperty(PropertyName = "status")]
         public string Status { get; set; }

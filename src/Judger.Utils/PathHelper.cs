@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace Judger.Utils
 {
@@ -19,7 +20,7 @@ namespace Judger.Utils
             if (path.IndexOf(':') != -1 || path.StartsWith('/') || path.StartsWith('\\'))
                 return path;
 
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, path);
         }
 
         /// <summary>
@@ -30,15 +31,8 @@ namespace Judger.Utils
         /// <returns>文件路径</returns>
         public static string FindFileIgnoreCase(string directory, string filename)
         {
-            string[] files = Directory.GetFiles(directory);
-
-            foreach (string file in files)
-            {
-                if (Path.GetFileName(file).EqualsIgnoreCase(filename))
-                    return file;
-            }
-
-            return null;
+            return Directory.GetFiles(directory).FirstOrDefault(
+                file => Path.GetFileName(file).EqualsIgnoreCase(filename));
         }
     }
 }

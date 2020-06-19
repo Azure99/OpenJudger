@@ -26,9 +26,11 @@ namespace Judger.Core.Database
         public DbJudger(JudgeContext context) : base(context)
         {
             MainOperator = DbOperatorFactory.CreateMainOperatorByName(context.Task.Language);
-            _dbName = Path.GetFileName(context.TempDirectory).ToLower() + "db";
-            _dbUser = Path.GetFileName(context.TempDirectory).ToLower() + "user";
-            _dbPassword = Path.GetFileName(context.TempDirectory).ToLower() + "pwd";
+            string prefix = Path.GetFileName(context.TempDirectory)?.ToLower();
+
+            _dbName = prefix + "db";
+            _dbUser = prefix + "user";
+            _dbPassword = prefix + "pwd";
             _dbType = DbManager.GetDatabaseType(context.Task.Language);
         }
 
@@ -70,12 +72,12 @@ namespace Judger.Core.Database
         private SingleJudgeResult JudgeOneCase(string dataName)
         {
             DbTestData testData = TestDataManager.GetDbTestData(JudgeTask.ProblemId, _dbType, dataName);
-            BuildStandardData(testData, out string inputData, out DbData outputData, out DbQueryData queryData);
+            BuildStandardData(testData, out string inputData, out DbData dbData, out DbQueryData queryData);
 
             BaseDbOperator userOperator = CreateJudgeEnvironment(inputData);
 
             SingleCaseJudger singleCaseJudger = new SingleCaseJudger(Context, userOperator);
-            SingleJudgeResult result = singleCaseJudger.Judge(inputData, outputData, queryData);
+            SingleJudgeResult result = singleCaseJudger.Judge(dbData, queryData);
 
             ClearJudgeEnvironment(userOperator);
 
@@ -95,7 +97,7 @@ namespace Judger.Core.Database
 
             try
             {
-                DbDataReader reader = stdOperator.ExecuteReader(stdOperateCmd ?? stdQueryCmd);
+                DbDataReader reader = stdOperator.ExecuteQuery(stdOperateCmd ?? stdQueryCmd);
                 if (stdOperateCmd != null)
                     outputData = stdOperator.ReadDbData();
 
@@ -118,7 +120,7 @@ namespace Judger.Core.Database
             MainOperator.CreateUser(_dbUser, _dbPassword);
             MainOperator.GrantPrivileges(_dbName, _dbUser);
 
-            DbLangConfig dbConfig = DbManager.GetDbConfiguration(JudgeTask.Language);
+            DbLangConfig dbConfig = DbManager.GetDbConfig(JudgeTask.Language);
             dbConfig.Database = _dbName;
             dbConfig.User = _dbUser;
             dbConfig.Password = _dbPassword;

@@ -15,10 +15,11 @@ namespace Judger
         {
             CheckInit();
 
-            Console.WriteLine("--- Open Judger ---");
-            Console.WriteLine("Starting judge service...");
+            LogManager.Message("--- Open Judger ---");
+            LogManager.Message("Starting judge service...");
+            long startTime = DateTime.Now.Millisecond;
             StartUp();
-            Console.WriteLine("All done!");
+            LogManager.Message($"Started in {DateTime.Now.Millisecond - startTime}ms!");
 
             CommandLine.Loop();
         }
@@ -26,12 +27,8 @@ namespace Judger
         private static void StartUp()
         {
             SetAppHandle();
-            LogManager.Info("Starting judger");
-
             Service = new JudgeService();
             Service.Start();
-
-            LogManager.Info("Judger started");
         }
 
         private static void SetAppHandle()
@@ -40,7 +37,7 @@ namespace Judger
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
                 LogManager.Info("Judger stopped");
-                LogManager.Flush();
+                LogManager.FlushBuffer();
             };
         }
 
@@ -52,17 +49,17 @@ namespace Judger
             IConfigInitializer[] initializers = AdapterFactory.GetConfigInitializers();
             if (initializers.Length <= 0)
                 return;
-            
+
             Console.WriteLine("Welcome to use OpenJudger!");
             Console.WriteLine("Run config initializer? (y/n)");
             string input = Console.ReadLine();
-            if (input.ToLower() != "y")
+            if (input == null || input.ToLower() != "y")
             {
                 Console.WriteLine("If you want to run initializer again, " +
                                   "please delete the Config.json file and restart OpenJudger.");
                 return;
             }
-            
+
             Console.WriteLine("Select initializer (number):");
             for (int i = 0; i < initializers.Length; i++)
             {
@@ -77,7 +74,7 @@ namespace Judger
                     File.Delete("Config.json");
                 Environment.Exit(0);
             }
-            
+
             initializers[id].Init();
             Console.WriteLine("OK, Please restart OpenJudger!");
             Console.ReadKey();

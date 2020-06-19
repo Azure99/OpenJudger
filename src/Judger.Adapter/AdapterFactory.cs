@@ -10,7 +10,7 @@ using Judger.Models.Exception;
 namespace Judger.Adapter
 {
     /// <summary>
-    /// 后端适配器工厂
+    /// 服务端适配器工厂
     /// </summary>
     /// 通过反射加载Adapter
     public static class AdapterFactory
@@ -32,8 +32,8 @@ namespace Judger.Adapter
             foreach (Type type in AdapterAssembly.ExportedTypes)
             {
                 if (type.BaseType == typeof(BaseTaskFetcher) ||
-                    type.GetInterface(typeof(ITaskFetcher).FullName) != null)
-                    return AdapterAssembly.CreateInstance(type.FullName) as ITaskFetcher;
+                    type.GetInterface(typeof(ITaskFetcher).FullName!) != null)
+                    return AdapterAssembly.CreateInstance(type.FullName!) as ITaskFetcher;
             }
 
             throw new AdapterException("ITaskFetcher not implement!");
@@ -44,8 +44,8 @@ namespace Judger.Adapter
             foreach (Type type in AdapterAssembly.ExportedTypes)
             {
                 if (type.BaseType == typeof(BaseTaskSubmitter) ||
-                    type.GetInterface(typeof(ITaskSubmitter).FullName) != null)
-                    return AdapterAssembly.CreateInstance(type.FullName) as ITaskSubmitter;
+                    type.GetInterface(typeof(ITaskSubmitter).FullName!) != null)
+                    return AdapterAssembly.CreateInstance(type.FullName!) as ITaskSubmitter;
             }
 
             throw new AdapterException("ITaskSubmitter not implement!");
@@ -56,8 +56,8 @@ namespace Judger.Adapter
             foreach (Type type in AdapterAssembly.ExportedTypes)
             {
                 if (type.BaseType == typeof(BaseTestDataFetcher) ||
-                    type.GetInterface(typeof(ITestDataFetcher).FullName) != null)
-                    return AdapterAssembly.CreateInstance(type.FullName) as ITestDataFetcher;
+                    type.GetInterface(typeof(ITestDataFetcher).FullName!) != null)
+                    return AdapterAssembly.CreateInstance(type.FullName!) as ITestDataFetcher;
             }
 
             throw new AdapterException("ITestDataFetcher not implement!");
@@ -80,8 +80,8 @@ namespace Judger.Adapter
                     Assembly assembly = Assembly.LoadFile(assemblyFile);
                     foreach (Type type in assembly.ExportedTypes)
                     {
-                        if (type.GetInterface(typeof(IConfigInitializer).FullName) != null)
-                            initializers.Add(assembly.CreateInstance(type.FullName) as IConfigInitializer);
+                        if (type.GetInterface(typeof(IConfigInitializer).FullName!) != null)
+                            initializers.Add(assembly.CreateInstance(type.FullName!) as IConfigInitializer);
                     }
                 }
                 catch (BadImageFormatException)

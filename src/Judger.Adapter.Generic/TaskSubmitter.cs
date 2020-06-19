@@ -7,10 +7,6 @@ using Newtonsoft.Json.Linq;
 
 namespace Judger.Adapter.Generic
 {
-    /// <summary>
-    /// JudgeResult提交器
-    /// </summary>
-    /// 用于提交评测结果
     public class TaskSubmitter : BaseTaskSubmitter
     {
         public TaskSubmitter()
@@ -18,30 +14,19 @@ namespace Judger.Adapter.Generic
             HttpClient.DefaultContentType = "application/json";
         }
 
-        /// <summary>
-        /// 提交评测任务
-        /// 此方法在评测完成后回调, 以向Web后端提交结果
-        /// 评测结果可从JudgeContext.Result中获取
-        /// </summary>
-        /// <param name="context">评测任务</param>
-        /// <returns>提交是否成功</returns>
-        public override bool Submit(JudgeContext context)
+        public override void Submit(JudgeContext context)
         {
-            string url = Config.ResultSubmitUrl;
             string requestBody = CreateRequestBody(context.Result);
+            string jsonResp = HttpClient.UploadString(Config.ResultSubmitUrl, requestBody, 3);
 
-            string responseData = HttpClient.UploadString(url, requestBody, 3);
-            ServerResponse response = Json.DeSerialize<ServerResponse>(responseData);
-
+            ServerResponse response = Json.DeSerialize<ServerResponse>(jsonResp);
             if (response.Code == ResponseCode.Fail || response.Code == ResponseCode.WrongToken)
                 throw new AdapterException(context.Result.SubmitId + " submit failed: " + response.Message);
-
-            return true;
         }
 
         private string CreateRequestBody(JudgeResult result)
         {
-            InnerJudgeResult judgeResult = new InnerJudgeResult
+            InnerJudgeResult innerResult = new InnerJudgeResult
             {
                 SubmitId = result.SubmitId,
                 JudgeDetail = result.JudgeDetail,
@@ -51,14 +36,10 @@ namespace Judger.Adapter.Generic
                 TimeCost = result.TimeCost
             };
 
-            JObject requestBody = JObject.FromObject(new
-            {
-                result = judgeResult
-            });
+            JObject requestJObject = TokenUtil.CreateJObject();
+            requestJObject.Add("result", Json.Serialize(innerResult));
 
-            Token.AddTokenToJObject(requestBody);
-
-            return requestBody.ToString();
+            return requestJObject.ToString();
         }
     }
 }

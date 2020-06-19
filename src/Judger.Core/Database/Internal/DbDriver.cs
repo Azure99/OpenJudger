@@ -14,28 +14,15 @@ namespace Judger.Core.Database.Internal
         /// </summary>
         /// <param name="dbConnection">DbConnection类</param>
         /// <param name="dbCommand">DbCommand类</param>
-        /// <param name="assembly">数据库驱动的Assembly</param>
-        public DbDriver(Type dbConnection, Type dbCommand, Assembly assembly = null)
+        public DbDriver(Type dbConnection, Type dbCommand)
         {
             DbConnectionType = dbConnection;
             DbCommandType = dbCommand;
-            DriverAssembly = assembly ?? DbConnectionType.Assembly;
         }
 
-        /// <summary>
-        /// DbConnection类
-        /// </summary>
         private Type DbConnectionType { get; }
 
-        /// <summary>
-        /// DbCommand类
-        /// </summary>
         private Type DbCommandType { get; }
-
-        /// <summary>
-        /// 数据库驱动的Assembly
-        /// </summary>
-        private Assembly DriverAssembly { get; }
 
         /// <summary>
         /// 创建数据库连接
@@ -60,14 +47,13 @@ namespace Judger.Core.Database.Internal
         public DbCommand CreateCommand(string cmdText, DbConnection connection)
         {
             object[] args = {cmdText, connection};
-            DbCommand command = CreateInstance(DbCommandType.FullName, args) as DbCommand;
-
-            return command;
+            return CreateInstance(DbCommandType.FullName, args) as DbCommand;
         }
 
         private object CreateInstance(string fullName, object[] args)
         {
-            return DbCommandType.Assembly.CreateInstance(fullName, true, BindingFlags.Default, null, args, null, null);
+            return DbCommandType.Assembly.CreateInstance(
+                fullName, true, BindingFlags.Default, null, args, null, null);
         }
     }
 }

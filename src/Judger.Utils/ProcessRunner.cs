@@ -13,8 +13,8 @@ namespace Judger.Utils
     /// </summary>
     public class ProcessRunner : IDisposable
     {
-        // 读流时的休眠周期
-        private const int READ_SLEEP_INTERVAL = 10;
+        // 读输出/错误流时的休眠周期
+        private const int ConstReadSleepInterval = 10;
 
         /// <summary>
         /// 程序运行器
@@ -24,21 +24,24 @@ namespace Judger.Utils
         /// <param name="args">运行参数</param>
         public ProcessRunner(string fileName, string workDirectory = "", string args = "")
         {
-            Process = new Process();
-
-            Process.StartInfo.FileName = fileName;
+            Process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = fileName,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
 
             if (!string.IsNullOrEmpty(workDirectory))
                 Process.StartInfo.WorkingDirectory = workDirectory;
 
             if (!string.IsNullOrEmpty(args))
                 Process.StartInfo.Arguments = args;
-
-            Process.StartInfo.RedirectStandardInput = true;
-            Process.StartInfo.RedirectStandardOutput = true;
-            Process.StartInfo.RedirectStandardError = true;
-            Process.StartInfo.UseShellExecute = false;
-            Process.StartInfo.CreateNoWindow = true;
         }
 
         /// <summary>
@@ -130,7 +133,7 @@ namespace Judger.Utils
         /// </summary>
         private string TryReadStreamToEnd(object readerObject)
         {
-            StreamReader reader = readerObject as StreamReader;
+            StreamReader reader = (StreamReader) readerObject;
             if (Encoding != null)
                 reader = new StreamReader(reader.BaseStream, Encoding);
 
@@ -143,7 +146,7 @@ namespace Judger.Utils
                 catch
                 { }
 
-                Thread.Sleep(READ_SLEEP_INTERVAL);
+                Thread.Sleep(ConstReadSleepInterval);
             }
         }
 

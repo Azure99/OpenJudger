@@ -8,7 +8,7 @@
         /// <summary>
         /// 编程语言配置
         /// </summary>
-        public ProgramLangConfig LangConfiguration { get; set; }
+        public ProgramLangConfig LangConfig { get; set; }
 
         /// <summary>
         /// 源代码

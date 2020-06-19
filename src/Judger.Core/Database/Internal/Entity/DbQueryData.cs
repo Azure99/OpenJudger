@@ -8,25 +8,13 @@ namespace Judger.Core.Database.Internal.Entity
     /// </summary>
     public class DbQueryData
     {
-        /// <summary>
-        /// 名称
-        /// </summary>
         public string Name { get; set; }
 
-        /// <summary>
-        /// 字段名
-        /// </summary>
         public string[] FieldNames { get; set; }
 
-        /// <summary>
-        /// 字段数
-        /// </summary>
         [JsonIgnore]
         public int FieldCount => FieldNames.Length;
 
-        /// <summary>
-        /// 全部记录
-        /// </summary>
         public List<string[]> Records { get; set; }
     }
 }

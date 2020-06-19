@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using Judger.Adapter.Generic.Entity;
 using Judger.Models;
 using Judger.Models.Exception;
@@ -7,10 +7,6 @@ using Newtonsoft.Json.Linq;
 
 namespace Judger.Adapter.Generic
 {
-    /// <summary>
-    /// JudgeTask取回器
-    /// </summary>
-    /// 用于取得评测任务
     public class TaskFetcher : BaseTaskFetcher
     {
         public TaskFetcher()
@@ -18,54 +14,37 @@ namespace Judger.Adapter.Generic
             HttpClient.DefaultContentType = "application/json";
         }
 
-        /// <summary>
-        /// 尝试取回评测任务
-        /// 此方法由JudgeService定期调用以实现任务轮询
-        /// 如果没有评测任务, 返回空JudgeContext数组
-        /// </summary>
-        /// <returns>评测任务(上下文)</returns>
         public override JudgeContext[] Fetch()
         {
-            string url = Config.TaskFetchUrl;
-            string requestBody = CreateRequestBody();
+            string jsonResp = HttpClient.UploadString(Config.TaskFetchUrl, CreateRequestBody());
+            ServerResponse response = Json.DeSerialize<ServerResponse>(jsonResp);
 
-            string responseData = HttpClient.UploadString(url, requestBody);
-            ServerResponse response = Json.DeSerialize<ServerResponse>(responseData);
-
-            if (response.Code == ResponseCode.NoTask)
-                return new JudgeContext[0];
-
-            if (response.Code == ResponseCode.Fail || response.Code == ResponseCode.WrongToken)
-                throw new AdapterException(response.Message);
-
-            return CreateTaskContexts(response.Data);
+            return response.Code switch
+            {
+                ResponseCode.NoTask => new JudgeContext[0],
+                ResponseCode.Success => CreateJudgeContexts(response.Data),
+                _ => throw new AdapterException(response.Message)
+            };
         }
 
         private string CreateRequestBody()
         {
-            return Token.CreateJObject().ToString();
+            return TokenUtil.CreateJObject().ToString();
         }
 
-        private JudgeContext[] CreateTaskContexts(JToken data)
+        private JudgeContext[] CreateJudgeContexts(JToken jsonResp)
         {
-            InnerJudgeTask[] innerJudgeTasks = data.ToObject<InnerJudgeTask[]>();
+            InnerJudgeTask[] tasks = jsonResp.ToObject<InnerJudgeTask[]>();
 
-            if (innerJudgeTasks == null || innerJudgeTasks.Length == 0)
+            if (tasks == null || tasks.Length == 0)
                 return new JudgeContext[0];
 
-            List<JudgeContext> judgeTasks = new List<JudgeContext>();
-            foreach (InnerJudgeTask item in innerJudgeTasks)
-            {
-                JudgeContext task = JudgeContextFactory.Create(
-                    item.SubmitId, item.ProblemId, item.DataVersion,
-                    item.Language, item.SourceCode, item.Author,
-                    item.TimeLimit, item.MemoryLimit,
-                    item.JudgeAllCases, item.JudgeType);
-
-                judgeTasks.Add(task);
-            }
-
-            return judgeTasks.ToArray();
+            return tasks
+                .Select(task => JudgeContextFactory.Create(
+                    task.SubmitId, task.ProblemId, task.DataVersion, task.Language,
+                    task.SourceCode, task.Author, task.TimeLimit, task.MemoryLimit,
+                    task.JudgeAllCases, task.JudgeType))
+                .ToArray();
         }
     }
 }

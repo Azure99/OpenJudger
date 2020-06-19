@@ -11,7 +11,7 @@ namespace Judger.Core.Program.Internal
     /// </summary>
     public class CodeChecker
     {
-        private const string LANG_START = "[Language=";
+        private const string ConstLangPrefix = "[Language=";
 
         private readonly Configuration _config = ConfigManager.Config;
 
@@ -41,11 +41,11 @@ namespace Judger.Core.Program.Internal
                     continue;
 
                 // 语言开始标识
-                if (rule.StartsWith(LANG_START))
+                if (rule.StartsWith(ConstLangPrefix))
                 {
                     try
                     {
-                        nowLang = rule.Substring(LANG_START.Length).TrimEnd(']');
+                        nowLang = rule.Substring(ConstLangPrefix.Length).TrimEnd(']');
                     }
                     catch
                     {

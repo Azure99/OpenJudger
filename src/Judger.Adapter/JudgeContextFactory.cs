@@ -77,7 +77,7 @@ namespace Judger.Adapter
             if (langConfig is ProgramLangConfig langCfg)
             {
                 tempDirectory = GetTempDirectory(langCfg.JudgeDirectory);
-                UpdatePathInfo(langCfg, tempDirectory);
+                UpdatePathFields(langCfg, tempDirectory);
             }
 
             double timeCompensation = GetTimeCompensation(langConfig);
@@ -111,10 +111,7 @@ namespace Judger.Adapter
             return new JudgeContext(task, result, tempDirectory, langConfig);
         }
 
-        /// <summary>
-        /// 更新语言配置中的路径信息
-        /// </summary>
-        private static void UpdatePathInfo(ProgramLangConfig langConfig, string tempDirectory)
+        private static void UpdatePathFields(ProgramLangConfig langConfig, string tempDirectory)
         {
             string appDirectory = PathHelper.GetBaseAbsolutePath("");
 
@@ -122,20 +119,16 @@ namespace Judger.Adapter
                 Directory.CreateDirectory(tempDirectory);
 
             // 替换<tempdir>字段
-            langConfig.CompilerPath = ReplacePathInfo(langConfig.CompilerPath, tempDirectory, appDirectory);
+            langConfig.CompilerPath = ReplacePathFields(langConfig.CompilerPath, tempDirectory, appDirectory);
             langConfig.CompilerWorkDirectory =
-                ReplacePathInfo(langConfig.CompilerWorkDirectory, tempDirectory, appDirectory);
-            langConfig.CompilerArgs = ReplacePathInfo(langConfig.CompilerArgs, tempDirectory, appDirectory);
-            langConfig.RunnerPath = ReplacePathInfo(langConfig.RunnerPath, tempDirectory, appDirectory);
+                ReplacePathFields(langConfig.CompilerWorkDirectory, tempDirectory, appDirectory);
+            langConfig.CompilerArgs = ReplacePathFields(langConfig.CompilerArgs, tempDirectory, appDirectory);
+            langConfig.RunnerPath = ReplacePathFields(langConfig.RunnerPath, tempDirectory, appDirectory);
             langConfig.RunnerWorkDirectory =
-                ReplacePathInfo(langConfig.RunnerWorkDirectory, tempDirectory, appDirectory);
-            langConfig.RunnerArgs = ReplacePathInfo(langConfig.RunnerArgs, tempDirectory, appDirectory);
+                ReplacePathFields(langConfig.RunnerWorkDirectory, tempDirectory, appDirectory);
+            langConfig.RunnerArgs = ReplacePathFields(langConfig.RunnerArgs, tempDirectory, appDirectory);
         }
 
-        /// <summary>
-        /// 在语言的评测目录下分配临时评测目录
-        /// </summary>
-        /// <param name="judgeDir">语言的评测目录</param>
         private static string GetTempDirectory(string judgeDir)
         {
             return Path.Combine(
@@ -143,17 +136,11 @@ namespace Judger.Adapter
                 RandomString.Next(32)) + Path.DirectorySeparatorChar;
         }
 
-        /// <summary>
-        /// 替换路径信息
-        /// </summary>
-        private static string ReplacePathInfo(string path, string tempDir, string appDir)
+        private static string ReplacePathFields(string path, string tempDir, string appDir)
         {
             return path.Replace("<tempdir>", tempDir).Replace("<appdir>", appDir);
         }
 
-        /// <summary>
-        /// 获取时间补偿系数
-        /// </summary>
         private static double GetTimeCompensation(ILangConfig langConfig)
         {
             if (langConfig is ProgramLangConfig config)

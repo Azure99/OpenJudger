@@ -20,37 +20,37 @@ namespace Judger
         private static void Execute(string cmd)
         {
             if (cmd == "status")
-                Status();
+                ShowStatus();
             else if (cmd == "clear")
-                Clear();
+                ClearConsole();
             else if (cmd == "help")
-                Help();
+                ShowHelp();
             else
                 WrongCommand();
         }
 
-        private static void Status()
+        private static void ShowStatus()
         {
             Console.WriteLine("Service working:\t" + Startup.Service.Working);
             Console.WriteLine("In queue:\t" + Startup.Service.Controller.PendingCount);
             Console.WriteLine("Running:\t" + Startup.Service.Controller.RunningCount);
         }
 
-        private static void Clear()
+        private static void ClearConsole()
         {
             Console.Clear();
+        }
+
+        private static void ShowHelp()
+        {
+            Console.WriteLine("Status\tShow judge status");
+            Console.WriteLine("Clear\tClear console");
+            Console.WriteLine("Exit\tShutdown judger");
         }
 
         private static void WrongCommand()
         {
             Console.WriteLine("Wrong command! Use help to show command list.");
-        }
-
-        private static void Help()
-        {
-            Console.WriteLine("Status\tShow judge status");
-            Console.WriteLine("Clear\tClear console");
-            Console.WriteLine("Exit\tShutdown judger");
         }
     }
 }

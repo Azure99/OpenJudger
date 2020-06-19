@@ -3,37 +3,25 @@ using Newtonsoft.Json.Linq;
 
 namespace Judger.Adapter.Generic
 {
-    /// <summary>
-    /// TestData获取器
-    /// </summary>
-    /// 用于拉取题目测试数据
     public class TestDataFetcher : BaseTestDataFetcher
     {
-        private const string JOBJECT_PROBLEM_ID = "problemId";
+        private const string ConstFieldProblemId = "problemId";
 
         public TestDataFetcher()
         {
             HttpClient.DefaultContentType = "application/json";
         }
 
-        /// <summary>
-        /// 取回测试数据
-        /// 当Judger获得新任务, 且本地不存在测试数据或数据过期时, 会自动调用此方法拉取测试数据
-        /// 测试数据应当打包在zip文件中并以二进制保存
-        /// </summary>
-        /// <param name="context">评测任务</param>
-        /// <returns>测试数据</returns>
         public override byte[] Fetch(JudgeContext context)
         {
-            string url = Config.TestDataFetchUrl;
             string requestBody = CreateRequestBody(context.Task.ProblemId);
-            return HttpClient.UploadData(url, requestBody, 3);
+            return HttpClient.UploadData(Config.TestDataFetchUrl, requestBody, 3);
         }
 
         private string CreateRequestBody(string problemId)
         {
-            JObject requestBody = Token.CreateJObject();
-            requestBody.Add(JOBJECT_PROBLEM_ID, problemId);
+            JObject requestBody = TokenUtil.CreateJObject();
+            requestBody.Add(ConstFieldProblemId, problemId);
 
             return requestBody.ToString();
         }

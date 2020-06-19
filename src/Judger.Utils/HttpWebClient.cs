@@ -178,6 +178,8 @@ namespace Judger.Utils
         protected override WebRequest GetWebRequest(Uri address)
         {
             HttpWebRequest request = (HttpWebRequest) base.GetWebRequest(address);
+            if (request == null)
+                throw new WebException("WebRequest not found");
 
             request.Timeout = Timeout;
             request.ReadWriteTimeout = ReadWriteTimeout;
@@ -185,8 +187,8 @@ namespace Judger.Utils
 
             // 请求无ContentType
             if (string.IsNullOrEmpty(request.ContentType))
-                // 设置了默认ContentType
             {
+                // 设置了默认ContentType
                 if (!string.IsNullOrEmpty(DefaultContentType))
                     request.ContentType = DefaultContentType;
             }

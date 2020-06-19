@@ -22,7 +22,7 @@ namespace Judger.Models
         public string JudgerName { get; set; } = "OpenJudger";
 
         /// <summary>
-        /// 通信校验密码
+        /// 评测机密码
         /// </summary>
         public string Password { get; set; } = "RainngAzure99";
 

@@ -18,15 +18,9 @@ namespace Judger.Core.Database.Internal.DbOperator
             DbDriver = driver;
         }
 
-        /// <summary>
-        /// 数据库连接字符串
-        /// </summary>
-        public string ConnectionString { get; }
+        protected string ConnectionString { get; }
 
-        /// <summary>
-        /// 数据库驱动
-        /// </summary>
-        public DbDriver DbDriver { get; }
+        protected DbDriver DbDriver { get; }
 
         public abstract void Dispose();
 
@@ -70,7 +64,7 @@ namespace Judger.Core.Database.Internal.DbOperator
         /// <summary>
         /// 执行命令并查询, 返回DataReader
         /// </summary>
-        public abstract DbDataReader ExecuteReader(string cmd, int timeout = 0);
+        public abstract DbDataReader ExecuteQuery(string cmd, int timeout = 0);
 
         /// <summary>
         /// 读取库中所有表的所有数据

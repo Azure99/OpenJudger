@@ -6,34 +6,28 @@ using Judger.Models.Database;
 namespace Judger.Managers
 {
     /// <summary>
-    /// Database Judge管理器
+    /// 数据库评测管理器
     /// </summary>
     public static class DbManager
     {
-        private static readonly Dictionary<string, DbLangConfig> DbDic = new Dictionary<string, DbLangConfig>();
+        private static readonly Dictionary<string, DbLangConfig> DbConfigDic = new Dictionary<string, DbLangConfig>();
 
         static DbManager()
         {
-            foreach (DbLangConfig dbConf in Config.Databases)
+            foreach (DbLangConfig config in Config.Databases)
             {
-                if (!DbDic.ContainsKey(dbConf.Name))
-                    DbDic.Add(dbConf.Name, dbConf);
+                if (!DbConfigDic.ContainsKey(config.Name))
+                    DbConfigDic.Add(config.Name, config);
             }
         }
 
         private static Configuration Config { get; } = ConfigManager.Config;
 
-        /// <summary>
-        /// 获取数据库配置
-        /// </summary>
-        public static DbLangConfig GetDbConfiguration(string name)
+        public static DbLangConfig GetDbConfig(string name)
         {
-            return DbDic[name].Clone() as DbLangConfig;
+            return DbConfigDic[name].Clone() as DbLangConfig;
         }
 
-        /// <summary>
-        /// 获取数据库类型
-        /// </summary>
         public static DatabaseType GetDatabaseType(string name)
         {
             return Enum.Parse<DatabaseType>(name);

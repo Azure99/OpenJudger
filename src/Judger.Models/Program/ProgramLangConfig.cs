@@ -11,18 +11,18 @@ namespace Judger.Models.Program
     public class ProgramLangConfig : ILangConfig
     {
         /// <summary>
-        /// 语言名称
+        /// 编程语言名称
         /// </summary>
         public string Name { get; set; } = "";
 
         /// <summary>
-        /// 判题时使用的目录
+        /// 判题时使用的临时目录
         /// </summary>
         public string JudgeDirectory { get; set; }
             = "JudgeTemp" + Path.DirectorySeparatorChar + "Judge";
 
         /// <summary>
-        /// 是否需要编译(脚本语言, 如Python不需要)
+        /// 是否需要编译(Python等脚本语言不需要)
         /// </summary>
         public bool NeedCompile { get; set; } = true;
 
@@ -32,7 +32,7 @@ namespace Judger.Models.Program
         public string SourceCodeFileName { get; set; } = "";
 
         /// <summary>
-        /// 源代码文件扩展名(使用|分隔),用于Special Judge,必须唯一
+        /// 源代码文件扩展名(使用|分隔), 用于Special Judge, 必须唯一
         /// </summary>
         public string SourceCodeFileExtension { get; set; } = "";
 

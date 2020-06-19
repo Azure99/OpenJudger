@@ -8,16 +8,16 @@ namespace Judger.Utils
     /// </summary>
     public static class ZipArchiveExtends
     {
-        private const string METHOD_WRITE_FILE = "WriteFile";
+        private const string ConstMethodWriteFile = "WriteFile";
 
         /// <summary>
-        /// 通过反射强制更新基础流
+        /// 通过反射强制将更改更新基础流
         /// </summary>
         public static void UpdateBaseStream(this ZipArchive zipArchive)
         {
             foreach (MethodInfo method in zipArchive.GetType().GetRuntimeMethods())
             {
-                if (method.Name == METHOD_WRITE_FILE)
+                if (method.Name == ConstMethodWriteFile)
                 {
                     method.Invoke(zipArchive, new object[0]);
                     break;

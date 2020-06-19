@@ -21,24 +21,21 @@ namespace Judger.Core.Database.Internal
 
         public SingleCaseJudger(JudgeContext context, BaseDbOperator dbOperator)
         {
-            JudgeContext = context;
             JudgeTask = context.Task;
             UserOperator = dbOperator;
             _caseSensitive = ((DbLangConfig) context.LangConfig).CaseSensitive;
         }
 
-        private JudgeContext JudgeContext { get; }
         private JudgeTask JudgeTask { get; }
         private BaseDbOperator UserOperator { get; }
 
         /// <summary>
         /// 评测一组用例
         /// </summary>
-        /// <param name="stdInput">标准输入</param>
-        /// <param name="stdOutput">标准输出</param>
-        /// <param name="stdQuery">标准查询</param>
+        /// <param name="stdDbData">标准输出</param>
+        /// <param name="stdQueryData">标准查询</param>
         /// <returns>单组评测结果</returns>
-        public SingleJudgeResult Judge(string stdInput, DbData stdOutput, DbQueryData stdQuery)
+        public SingleJudgeResult Judge(DbData stdDbData, DbQueryData stdQueryData)
         {
             Stopwatch watch = new Stopwatch();
             DbQueryData usrQuery;
@@ -47,7 +44,7 @@ namespace Judger.Core.Database.Internal
             try
             {
                 watch.Start();
-                DbDataReader reader = UserOperator.ExecuteReader(JudgeTask.SourceCode, JudgeTask.TimeLimit);
+                DbDataReader reader = UserOperator.ExecuteQuery(JudgeTask.SourceCode, JudgeTask.TimeLimit);
                 usrQuery = BaseDbOperator.ReadQueryData(reader);
                 usrOutput = UserOperator.ReadDbData();
             }
@@ -65,7 +62,7 @@ namespace Judger.Core.Database.Internal
                 watch.Stop();
             }
 
-            CompareResult result = CompareAnswer(stdOutput, stdQuery, usrOutput, usrQuery);
+            CompareResult result = CompareAnswer(stdDbData, stdQueryData, usrOutput, usrQuery);
 
             JudgeResultCode resultCode =
                 result == CompareResult.Accepted ? JudgeResultCode.Accepted : JudgeResultCode.WrongAnswer;
@@ -80,7 +77,7 @@ namespace Judger.Core.Database.Internal
         private CompareResult CompareAnswer(DbData stdOutput, DbQueryData stdQuery, DbData usrOutput,
             DbQueryData usrQuery)
         {
-            if (stdOutput != null && CompareOutput(stdOutput, usrOutput) == CompareResult.WrongAnswer)
+            if (stdOutput != null && CompareDbData(stdOutput, usrOutput) == CompareResult.WrongAnswer)
                 return CompareResult.WrongAnswer;
 
             if (stdQuery != null && CompareQuery(stdQuery, usrQuery) == CompareResult.WrongAnswer)
@@ -89,7 +86,7 @@ namespace Judger.Core.Database.Internal
             return CompareResult.Accepted;
         }
 
-        private CompareResult CompareOutput(DbData stdOutput, DbData usrOutput)
+        private CompareResult CompareDbData(DbData stdOutput, DbData usrOutput)
         {
             if (stdOutput.TablesData.Length != usrOutput.TablesData.Length)
                 return CompareResult.WrongAnswer;

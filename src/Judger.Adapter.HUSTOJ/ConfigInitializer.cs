@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Judger.Managers;
 using Judger.Models;
 using Judger.Models.Program;
@@ -12,8 +11,9 @@ namespace Judger.Adapter.HUSTOJ
         public void Init()
         {
             Console.Write("Input HUSTOJ url (http://localhost:8080/): ");
+
             string baseUrl = Console.ReadLine();
-            if (!baseUrl.EndsWith("/"))
+            if (baseUrl != null && !baseUrl.EndsWith("/"))
                 baseUrl += "/";
 
             string judgeUrl = baseUrl + "admin/problem_judge.php";

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Web;
 using Judger.Adapter.SDNUOJ.Entity;
 using Judger.Models;
@@ -18,65 +17,47 @@ namespace Judger.Adapter.SDNUOJ
 
         public override JudgeContext[] Fetch()
         {
-            string resultString = HttpClient.UploadString(Config.TaskFetchUrl, CreateRequestBody(), 3);
-
-            JudgeContext[] tasks = ParseTask(resultString);
-            return tasks;
+            string jsonResp = HttpClient.UploadString(Config.TaskFetchUrl, CreateRequestBody(), 3);
+            return CreateJudgeContexts(jsonResp);
         }
 
         private string CreateRequestBody()
         {
-            StringBuilder bodyBuilder = new StringBuilder();
-            bodyBuilder.Append("count=1&");
-            bodyBuilder.Append("supported_languages=");
+            StringBuilder builder = new StringBuilder();
+            builder.Append("count=1&");
+            builder.Append("supported_languages=");
 
             StringBuilder langBuilder = new StringBuilder();
 
             foreach (ProgramLangConfig lang in Config.Languages)
                 langBuilder.Append(lang.Name + "[],");
-
             foreach (DbLangConfig lang in Config.Databases)
                 langBuilder.Append(lang.Name + "[],");
 
             langBuilder.Remove(langBuilder.Length - 1, 1);
 
-            bodyBuilder.Append(HttpUtility.UrlEncode(langBuilder.ToString()));
-            return bodyBuilder.ToString();
+            builder.Append(HttpUtility.UrlEncode(langBuilder.ToString()));
+            return builder.ToString();
         }
 
-        private JudgeContext[] ParseTask(string jsonStr)
+        private JudgeContext[] CreateJudgeContexts(string jsonResp)
         {
-            JArray jArray = JArray.Parse(jsonStr);
+            JArray taskJArray = JArray.Parse(jsonResp);
 
-            if (jArray.Count == 0)
+            if (taskJArray.Count == 0 || !(taskJArray[0] is JObject))
                 return new JudgeContext[0];
 
-            JObject jObject = jArray[0] as JObject;
-            if (!CheckTaskJObject(jObject))
+            SdnuojJudgeTask task = taskJArray[0].ToObject<SdnuojJudgeTask>();
+            if (task == null)
                 return new JudgeContext[0];
 
-            SdnuojTaskEntity entity = jObject.ToObject<SdnuojTaskEntity>();
+            JudgeContext context = JudgeContextFactory.Create(
+                task.SubmitId, task.ProblemId, task.DataVersion,
+                task.Language.Substring(0, task.Language.Length - 2), task.SourceCode,
+                task.Author, int.Parse(task.TimeLimit), int.Parse(task.MemoryLimit),
+                false, false, bool.Parse(task.DbJudge));
 
-            JudgeContext task = JudgeContextFactory.Create(
-                entity.SubmitId, entity.ProblemId, entity.DataVersion,
-                entity.Language.Substring(0, entity.Language.Length - 2), entity.SourceCode,
-                entity.Author, int.Parse(entity.TimeLimit), int.Parse(entity.MemoryLimit),
-                false, false, bool.Parse(entity.DbJudge));
-
-            return new[] {task};
-        }
-
-        private bool CheckTaskJObject(JObject obj)
-        {
-            HashSet<string> keySet = new HashSet<string>();
-            foreach (JProperty key in obj.Properties())
-                keySet.Add(key.Name.ToLower());
-
-            return keySet.Contains("sid") &&
-                   keySet.Contains("pid") &&
-                   keySet.Contains("dataversion") &&
-                   keySet.Contains("language") &&
-                   keySet.Contains("sourcecode");
+            return new[] {context};
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Judger.Core.Database.Internal.DbOperator
             if (dbmsName != DatabaseType.mysql.ToString())
                 throw new NotImplementedException("Db operator not implemented: " + dbmsName);
 
-            DbLangConfig config = DbManager.GetDbConfiguration(dbmsName);
+            DbLangConfig config = DbManager.GetDbConfig(dbmsName);
             return Create(config);
         }
 

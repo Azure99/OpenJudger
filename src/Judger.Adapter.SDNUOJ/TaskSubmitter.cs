@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Judger.Models;
 using Judger.Models.Judge;
 
@@ -6,58 +6,32 @@ namespace Judger.Adapter.SDNUOJ
 {
     public class TaskSubmitter : BaseTaskSubmitter
     {
-        public override bool Submit(JudgeContext context)
+        private readonly Dictionary<JudgeResultCode, int> _resultCodeDic = new Dictionary<JudgeResultCode, int>
+        {
+            {JudgeResultCode.Accepted, 10},
+            {JudgeResultCode.CompileError, 3},
+            {JudgeResultCode.JudgeFailed, 255},
+            {JudgeResultCode.MemoryLimitExceed, 6},
+            {JudgeResultCode.OutputLimitExceed, 7},
+            {JudgeResultCode.PresentationError, 9},
+            {JudgeResultCode.RuntimeError, 4},
+            {JudgeResultCode.TimeLimitExceed, 5},
+            {JudgeResultCode.WrongAnswer, 8}
+        };
+
+        public override void Submit(JudgeContext context)
         {
             HttpClient.CookieContainer = Authenticator.Instance.CookieContainer;
             HttpClient.UploadString(Config.ResultSubmitUrl, CreateResultBody(context.Result), 3);
-            return true;
         }
 
         private string CreateResultBody(JudgeResult result)
         {
-            int resultCode;
-            switch (result.ResultCode)
-            {
-                case JudgeResultCode.Accepted:
-                    resultCode = 10;
-                    break;
-                case JudgeResultCode.CompileError:
-                    resultCode = 3;
-                    break;
-                case JudgeResultCode.JudgeFailed:
-                    resultCode = 255;
-                    break;
-                case JudgeResultCode.MemoryLimitExceed:
-                    resultCode = 6;
-                    break;
-                case JudgeResultCode.OutputLimitExceed:
-                    resultCode = 7;
-                    break;
-                case JudgeResultCode.PresentationError:
-                    resultCode = 9;
-                    break;
-                case JudgeResultCode.RuntimeError:
-                    resultCode = 4;
-                    break;
-                case JudgeResultCode.TimeLimitExceed:
-                    resultCode = 5;
-                    break;
-                case JudgeResultCode.WrongAnswer:
-                    resultCode = 8;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            int resultCode = _resultCodeDic[result.ResultCode];
 
-            string sid = result.SubmitId;
-            string detail = result.JudgeDetail;
-            int timeCost = result.TimeCost;
-            int memCost = result.MemoryCost;
-            string pid = result.ProblemId;
-            string username = result.Author;
-
-            return $"sid={sid}&resultcode={resultCode}&detail={detail}" +
-                   $"&timecost={timeCost}&memorycost={memCost}&pid={pid}&username={username}";
+            return $"sid={result.SubmitId}&resultcode={resultCode}&detail={result.JudgeDetail}" +
+                   $"&timecost={result.TimeCost}&memorycost={result.MemoryCost}" +
+                   $"&pid={result.ProblemId}&username={result.Author}";
         }
     }
 }

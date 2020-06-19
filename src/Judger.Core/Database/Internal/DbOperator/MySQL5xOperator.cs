@@ -62,7 +62,7 @@ namespace Judger.Core.Database.Internal.DbOperator
             return command.ExecuteNonQuery();
         }
 
-        public override DbDataReader ExecuteReader(string cmd, int timeout = 0)
+        public override DbDataReader ExecuteQuery(string cmd, int timeout = 0)
         {
             DbCommand command = DbDriver.CreateCommand(cmd, _connection);
             if (timeout > 0)
@@ -88,7 +88,7 @@ namespace Judger.Core.Database.Internal.DbOperator
 
         private string[] GetAllTablesName()
         {
-            DbDataReader reader = ExecuteReader("SHOW TABLES");
+            DbDataReader reader = ExecuteQuery("SHOW TABLES");
 
             List<string> tables = new List<string>();
             while (reader.Read())
@@ -101,7 +101,7 @@ namespace Judger.Core.Database.Internal.DbOperator
         {
             string cmd = $"SELECT * FROM {tableName}";
 
-            DbDataReader reader = ExecuteReader(cmd);
+            DbDataReader reader = ExecuteQuery(cmd);
             DbQueryData queryData = ReadQueryData(reader, tableName);
 
             return queryData;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using Judger.Managers;
@@ -19,13 +18,13 @@ namespace Judger.Adapter.HUSTOJ
 
         public override JudgeContext[] Fetch()
         {
-            List<JudgeContext> taskList = new List<JudgeContext>();
+            List<JudgeContext> contextList = new List<JudgeContext>();
             string[] pendingSids = GetPending();
             foreach (string sid in pendingSids)
             {
                 try
                 {
-                    taskList.Add(GetJudgeTask(sid));
+                    contextList.Add(CreateJudgeContext(sid));
                 }
                 catch (Exception ex)
                 {
@@ -33,96 +32,100 @@ namespace Judger.Adapter.HUSTOJ
                 }
             }
 
-            return taskList.ToArray();
+            return contextList.ToArray();
         }
 
         private string[] GetPending()
         {
-            Authenticator.Instance.CheckLogin();
+            string requestBody = CreateGetPendingRequestBody();
+            string response = HttpPost(requestBody).Trim();
 
-            string response;
-            try
-            {
-                string requestBody = CreateGetPendingRequestBody();
-                response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody).Trim();
-            }
-            catch
-            {
-                return new string[0];
-            }
-            
             return response == "" ? new string[0] : Regex.Split(response, "\r\n|\r|\n");
         }
 
         private string CreateGetPendingRequestBody()
         {
-            StringBuilder bodyBuilder = new StringBuilder();
-            bodyBuilder.Append("getpending=1&");
+            StringBuilder builder = new StringBuilder();
+            builder.Append("getpending=1&");
 
-            bodyBuilder.Append("oj_lang_set=");
+            builder.Append("oj_lang_set=");
             foreach (ProgramLangConfig lang in Config.Languages)
-                bodyBuilder.Append(lang.Name + ",");
+                builder.Append(lang.Name + ",");
 
-            bodyBuilder.Remove(bodyBuilder.Length - 1, 1);
-            bodyBuilder.Append("&");
+            builder.Remove(builder.Length - 1, 1);
+            builder.Append("&");
 
-            bodyBuilder.Append("max_running=" + Config.MaxQueueSize);
-            return bodyBuilder.ToString();
+            builder.Append("max_running=" + Config.MaxQueueSize);
+            return builder.ToString();
         }
 
-        private JudgeContext GetJudgeTask(string submitId)
+        private JudgeContext CreateJudgeContext(string submitId)
         {
             GetSolutionInfo(submitId, out string problemId, out string author, out string lang);
             GetProblemInfo(problemId, out int timeLimit, out int memoryLimit, out bool spj);
-            string sourceCode = GetSolution(submitId);
-            string dateMd5 = GetTestDataMd5(problemId);
+            string sourceCode = GetSolutionSourceCode(submitId);
+            string dataMd5 = GetTestDataMd5(problemId);
 
-            JudgeContext task = JudgeContextFactory.Create(
-                submitId, problemId, dateMd5, lang, sourceCode,
+            JudgeContext context = JudgeContextFactory.Create(
+                submitId, problemId, dataMd5, lang, sourceCode,
                 author, timeLimit, memoryLimit, false, spj);
 
-            Authenticator.Instance.UpdateSolution(submitId, 3, 0, 0, 0.0);
+            UpdateSolution(submitId, 3, 0, 0, 0.0);
 
-            return task;
+            return context;
         }
 
-        private void GetSolutionInfo(string sid, out string problemId, out string username, out string lang)
+        private void GetSolutionInfo(string sid, out string problemId, out string username, out string language)
         {
             string requestBody = "getsolutioninfo=1&sid=" + sid;
-            string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
+            string response = HttpPost(requestBody);
 
-            string[] split = Regex.Split(response, "\r\n|\r|\n");
+            string[] infos = Regex.Split(response, "\r\n|\r|\n");
 
-            problemId = split[0];
-            username = split[1];
-            lang = split[2];
+            problemId = infos[0];
+            username = infos[1];
+            language = infos[2];
         }
 
-        private string GetSolution(string sid)
+        private string GetSolutionSourceCode(string sid)
         {
             string requestBody = $"getsolution=1&sid={sid}";
 
-            return HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
+            return HttpPost(requestBody);
         }
 
         private void GetProblemInfo(string pid, out int timeLimit, out int memoryLimit, out bool spj)
         {
             string requestBody = $"getprobleminfo=1&pid={pid}";
-            string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
+            string response = HttpPost(requestBody);
 
-            string[] split = Regex.Split(response, "\r\n|\r|\n");
+            string[] infos = Regex.Split(response, "\r\n|\r|\n");
 
-            timeLimit = (int) (double.Parse(split[0]) * 1000);
-            memoryLimit = int.Parse(split[1]) * 1024;
-            spj = int.Parse(split[2]) == 1;
+            timeLimit = (int) (double.Parse(infos[0]) * 1000);
+            memoryLimit = int.Parse(infos[1]) * 1024;
+            spj = int.Parse(infos[2]) == 1;
         }
 
         private string GetTestDataMd5(string pid)
         {
             string requestBody = $"gettestdatalist=1&pid={pid}&time=1";
-            string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
+            string response = HttpPost(requestBody);
 
             return Md5Encrypt.EncryptToHexString(response);
+        }
+
+        private void UpdateSolution(string sid, int result, int timeCost, int memoryCost, double passRate)
+        {
+            string requestBody =
+                $"update_solution=1&sid={sid}&result={result}&time={timeCost}" +
+                $"&memory={memoryCost}&sim=0&simid=0&pass_rate={passRate}";
+
+            HttpPost(requestBody);
+        }
+
+        private string HttpPost(string data)
+        {
+            return HttpClient.UploadString(Config.TaskFetchUrl, data, 3);
         }
     }
 }

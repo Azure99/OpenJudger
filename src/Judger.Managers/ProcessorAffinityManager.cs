@@ -9,20 +9,8 @@ namespace Judger.Managers
     public static class ProcessorAffinityManager
     {
         private static readonly object Lock = new object();
-
-        /// <summary>
-        /// CPU核心数
-        /// </summary>
         private static readonly int ProcessorCount;
-
-        /// <summary>
-        /// 默认亲和性
-        /// </summary>
         private static readonly int DefaultAffinityInt;
-
-        /// <summary>
-        /// 被使用的核心(二进制表示)
-        /// </summary>
         private static int _usingProcessor;
 
         static ProcessorAffinityManager()
@@ -38,16 +26,18 @@ namespace Judger.Managers
         public static IntPtr DefaultAffinity => new IntPtr(DefaultAffinityInt);
 
         /// <summary>
-        /// 申请处理器使用权
+        /// 申请处理器核心
         /// </summary>
         public static IntPtr GetUsage()
         {
             lock (Lock)
             {
                 int affinity = DefaultAffinityInt;
-                for (int i = 0; i < ProcessorCount; i++) // 遍历所有处理器核心
+                // 遍历所有处理器核心
+                for (int i = 0; i < ProcessorCount; i++)
                 {
-                    if ((_usingProcessor & (1 << i)) == 0) // 判断此处理器核心是否被占用
+                    // 此核心未被占用则分配此核心
+                    if ((_usingProcessor & (1 << i)) == 0)
                     {
                         affinity = 1 << i;
                         _usingProcessor |= affinity;
@@ -60,7 +50,7 @@ namespace Judger.Managers
         }
 
         /// <summary>
-        /// 释放usage对应处理器
+        /// 释放Usage对应的处理器核心
         /// </summary>
         public static void ReleaseUsage(IntPtr affinity)
         {

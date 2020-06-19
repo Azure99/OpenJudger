@@ -12,9 +12,6 @@ namespace Judger.Core
     /// 根据评测上下文创建对应Judger实现类的实例
     public static class JudgerFactory
     {
-        /// <summary>
-        /// 根据上下文创建Judger实例
-        /// </summary>
         public static BaseJudger Create(JudgeContext context)
         {
             switch (context.Task.JudgeType)
@@ -22,7 +19,7 @@ namespace Judger.Core
                 case JudgeType.ProgramJudge:
                     return new ProgramJudger(context);
                 case JudgeType.SpecialJudge:
-                    return new SpecialJudger(context);
+                    return new SpecialProgramJudger(context);
                 case JudgeType.DbJudge:
                     return new DbJudger(context);
                 default:

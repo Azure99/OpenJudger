@@ -56,7 +56,9 @@ namespace Judger.Utils
         public static object DeSerialize(string jsonObject, Type type)
         {
             using (StringReader reader = new StringReader(jsonObject))
+            {
                 return Serializer.Deserialize(reader, type);
+            }
         }
 
         /// <summary>
@@ -68,7 +70,9 @@ namespace Judger.Utils
         public static T DeSerialize<T>(string jsonObject)
         {
             using (StringReader reader = new StringReader(jsonObject))
+            {
                 return (T) Serializer.Deserialize(reader, typeof(T));
+            }
         }
     }
 }

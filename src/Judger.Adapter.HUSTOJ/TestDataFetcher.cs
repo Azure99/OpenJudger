@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Judger.Managers;
 using Judger.Models;
@@ -24,33 +24,25 @@ namespace Judger.Adapter.HUSTOJ
 
         private byte[] Fetch(string problemId)
         {
-            string[] fileNames = GetTestDataList(problemId);
-            Tuple<string, byte[]>[] files = new Tuple<string, byte[]>[fileNames.Length];
-
-            for (int i = 0; i < files.Length; i++)
-            {
-                string fileName = fileNames[i];
-                files[i] = new Tuple<string, byte[]>(fileName, GetTestDataFile(problemId, fileName));
-            }
+            InnerFile[] files = GetTestDataNameList(problemId)
+                .Select(dataName => new InnerFile
+                {
+                    Name = dataName,
+                    Data = GetTestDataFile(problemId, dataName)
+                })
+                .ToArray();
 
             return CreateZip(files, GetTestDataMd5(problemId));
         }
 
-        private string[] GetTestDataList(string pid)
+        private string[] GetTestDataNameList(string pid)
         {
             string requestBody = "gettestdatalist=1&pid=" + pid;
             string response = HttpClient.UploadString(Config.TaskFetchUrl, requestBody, 3);
 
-            string[] split = Regex.Split(response, "\r\n|\r|\n");
+            string[] dataNames = Regex.Split(response, "\r\n|\r|\n");
 
-            List<string> dataList = new List<string>();
-            foreach (string s in split)
-            {
-                if (!string.IsNullOrEmpty(s))
-                    dataList.Add(s);
-            }
-
-            return dataList.ToArray();
+            return dataNames.Where(name => !string.IsNullOrEmpty(name)).ToArray();
         }
 
         private byte[] GetTestDataFile(string pid, string fileName)
@@ -60,36 +52,40 @@ namespace Judger.Adapter.HUSTOJ
             return HttpClient.UploadData(Config.TaskFetchUrl, requestBody, 3);
         }
 
-        private byte[] CreateZip(Tuple<string, byte[]>[] files, string dataVersion)
+        private byte[] CreateZip(InnerFile[] files, string dataVersion)
         {
             byte[] zipData;
             using (MemoryStream ms = new MemoryStream())
             {
                 using (ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create))
                 {
-                    foreach (Tuple<string, byte[]> file in files)
+                    foreach (InnerFile file in files)
                     {
                         ZipArchiveEntry entry = null;
-                        if (file.Item1.EndsWith(".in"))
-                            entry = zip.CreateEntry("input/" + file.Item1);
-                        else if (file.Item1.EndsWith(".out"))
-                            entry = zip.CreateEntry("output/" + file.Item1);
-                        else if (CheckIsSpecialJudgeFile(file.Item1))
+                        if (file.Name.EndsWith(".in"))
+                            entry = zip.CreateEntry("input/" + file.Name);
+                        else if (file.Name.EndsWith(".out"))
+                            entry = zip.CreateEntry("output/" + file.Name);
+                        else if (CheckIsSpecialJudgeFile(file.Name))
                         {
                             entry = zip.CreateEntry("spj/" + SpjManager.SpjSourceFilename +
-                                                    Path.GetExtension(file.Item1));
+                                                    Path.GetExtension(file.Name));
                         }
 
-                        if (entry != null)
+                        if (entry == null)
+                            continue;
+
+                        using (Stream stream = entry.Open())
                         {
-                            using (Stream stream = entry.Open())
-                                stream.Write(file.Item2);
+                            stream.Write(file.Data);
                         }
                     }
 
                     ZipArchiveEntry verEntry = zip.CreateEntry("version.txt");
                     using (StreamWriter writer = new StreamWriter(verEntry.Open()))
+                    {
                         writer.Write(dataVersion);
+                    }
 
                     zip.UpdateBaseStream();
 
@@ -129,10 +125,13 @@ namespace Judger.Adapter.HUSTOJ
             string name = Path.GetFileNameWithoutExtension(fileName).ToLower();
             string extension = Path.GetExtension(fileName).TrimStart('.').ToLower();
 
-            if (name != "spj")
-                return false;
+            return name == "spj" && extensionSet.Contains(extension);
+        }
 
-            return extensionSet.Contains(extension);
+        private class InnerFile
+        {
+            public string Name { get; set; }
+            public byte[] Data { get; set; }
         }
     }
 }

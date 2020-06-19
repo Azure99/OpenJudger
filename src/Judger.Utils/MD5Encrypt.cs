@@ -13,15 +13,16 @@ namespace Judger.Utils
         /// </summary>
         public static string EncryptToHexString(string str)
         {
-            if (str == null)
-                str = "";
+            str ??= "";
 
-            byte[] res;
+            byte[] result;
             using (MD5 md5 = MD5.Create())
-                res = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
+            {
+                result = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
+            }
 
             StringBuilder builder = new StringBuilder();
-            foreach (byte b in res)
+            foreach (byte b in result)
                 builder.Append(b.ToString("x2"));
 
             return builder.ToString();

@@ -14,8 +14,9 @@ namespace Judger.Models
         string Name { get; set; }
 
         /// <summary>
-        /// 是否为数据库的配置, true为数据库配置, false为普通程序配置
+        /// 是否为数据库的配置
         /// </summary>
+        /// true为数据库配置, false为普通程序配置
         [JsonIgnore]
         bool IsDbConfig { get; set; }
     }

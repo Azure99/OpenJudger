@@ -13,22 +13,19 @@ namespace Judger.Managers
     /// </summary>
     public static class ConfigManager
     {
-        private const string CONFIG_FILE_NAME = "Config.json";
+        private const string ConstConfigFileName = "Config.json";
 
         static ConfigManager()
         {
-            FileHelper.TryReadAllText(CONFIG_FILE_NAME, out string configJson);
+            FileHelper.TryReadAllText(ConstConfigFileName, out string configJson);
 
-            bool invalidConfig = string.IsNullOrEmpty(configJson);
-            Config = invalidConfig ? CreateNewConfig() : Json.DeSerialize<Configuration>(configJson);
+            bool configInvalid = string.IsNullOrEmpty(configJson);
+            Config = configInvalid ? CreateDefaultConfig() : Json.DeSerialize<Configuration>(configJson);
             SetIsDbConfigField();
 
             SaveConfig();
         }
 
-        /// <summary>
-        /// 配置信息实例
-        /// </summary>
         public static Configuration Config { get; }
 
         /// <summary>
@@ -43,12 +40,12 @@ namespace Judger.Managers
                 item.IsDbConfig = true;
         }
 
-        private static Configuration CreateNewConfig()
+        private static Configuration CreateDefaultConfig()
         {
             Configuration config = new Configuration
             {
                 Languages = GetDefaultLangConfigs(),
-                Databases = GetDefaultDbConfigs(),
+                Databases = GetDefaultDbLangConfigs(),
                 Password = RandomString.Next(16)
             };
             config.AdditionalConfigs.Add("SampleKey", "SampleValue");
@@ -57,14 +54,9 @@ namespace Judger.Managers
 
         public static void SaveConfig()
         {
-            FileHelper.TryWriteAllText(CONFIG_FILE_NAME, Json.Serialize(Config));
+            FileHelper.TryWriteAllText(ConstConfigFileName, Json.Serialize(Config));
         }
 
-        /// <summary>
-        /// 获取语言配置信息
-        /// </summary>
-        /// <param name="languageName">语言名称</param>
-        /// <returns>语言对应的配置信息</returns>
         public static ILangConfig GetLanguageConfig(string languageName)
         {
             ProgramLangConfig[] programConfigs = Config.Languages;
@@ -86,9 +78,8 @@ namespace Judger.Managers
 
         private static ProgramLangConfig[] GetDefaultLangConfigs()
         {
-            char sparChar = Path.DirectorySeparatorChar;
-
             List<ProgramLangConfig> langConfigs = new List<ProgramLangConfig>();
+            char sparChar = Path.DirectorySeparatorChar;
 
             ProgramLangConfig c = new ProgramLangConfig
             {
@@ -186,7 +177,7 @@ namespace Judger.Managers
             return langConfigs.ToArray();
         }
 
-        private static DbLangConfig[] GetDefaultDbConfigs()
+        private static DbLangConfig[] GetDefaultDbLangConfigs()
         {
             List<DbLangConfig> langConfigs = new List<DbLangConfig>();
 

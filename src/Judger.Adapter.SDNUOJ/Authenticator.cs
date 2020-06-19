@@ -9,12 +9,11 @@ namespace Judger.Adapter.SDNUOJ
     public class Authenticator
     {
         private readonly Configuration _config = ConfigManager.Config;
-        private readonly HttpWebClient _httpClient = WebClientFactory.Create();
+        private readonly HttpWebClient _httpClient = HttpClientFactory.Create();
         private readonly string _loginUrl = "http://localhost/judge/login";
 
         private Authenticator()
         {
-            CookieContainer = new CookieContainer();
             _httpClient.CookieContainer = CookieContainer;
 
             if (_config.AdditionalConfigs.ContainsKey("LoginUrl"))
@@ -29,22 +28,16 @@ namespace Judger.Adapter.SDNUOJ
         }
 
         public static Authenticator Instance { get; } = new Authenticator();
-        public CookieContainer CookieContainer { get; }
+        public CookieContainer CookieContainer { get; } = new CookieContainer();
 
-        private bool Login()
+        private void Login()
         {
             string requestBody = $"username={_config.JudgerName}&password={_config.Password}";
+            string jsonResp = _httpClient.UploadString(_loginUrl, requestBody, 3);
+            ServerMessage message = Json.DeSerialize<ServerMessage>(jsonResp);
 
-            try
-            {
-                string response = _httpClient.UploadString(_loginUrl, requestBody, 3);
-                ServerMessageEntity message = Json.DeSerialize<ServerMessageEntity>(response);
-                return message.IsSuccess;
-            }
-            catch
-            {
-                return false;
-            }
+            if (!message.IsSuccess)
+                LogManager.Error("Login failed, please check password!");
         }
     }
 }

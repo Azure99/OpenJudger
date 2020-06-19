@@ -2,6 +2,7 @@
 using System.Data.Common;
 using System.IO;
 using System.Reflection;
+using Judger.Models.Exception;
 
 namespace Judger.Core.Database.Internal
 {
@@ -10,10 +11,6 @@ namespace Judger.Core.Database.Internal
     /// </summary>
     public static class DbDriverLoader
     {
-        /// <summary>
-        /// 加载数据库驱动
-        /// </summary>
-        /// <param name="assemblyPath">数据库驱动Assembly的路径</param>
         public static DbDriver Load(string assemblyPath)
         {
             assemblyPath = Path.GetFullPath(assemblyPath);
@@ -35,7 +32,7 @@ namespace Judger.Core.Database.Internal
             }
 
             if (connectionType == null || commandType == null)
-                throw new Exception("Driver is not available!");
+                throw new InvalidDbDriverException($"Driver: {assemblyPath} is not available!");
 
             return new DbDriver(connectionType, commandType);
         }

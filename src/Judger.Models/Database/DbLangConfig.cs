@@ -13,19 +13,19 @@ namespace Judger.Models.Database
         /// 数据库管理系统(DBMS)名称
         /// </summary>
         public string Name { get; set; } = "";
-        
+
         /// <summary>
         /// 对查询字段是否大小写敏感
         /// </summary>
         public bool CaseSensitive { get; set; } = false;
-        
+
         /// <summary>
         /// 数据库驱动路径
         /// </summary>
         public string DriverPath { get; set; } = "";
 
         /// <summary>
-        /// 服务器
+        /// 服务器地址
         /// </summary>
         public string Server { get; set; } = "";
 
@@ -35,12 +35,12 @@ namespace Judger.Models.Database
         public string Database { get; set; } = "";
 
         /// <summary>
-        /// 用户名
+        /// 数据库用户名
         /// </summary>
         public string User { get; set; } = "";
 
         /// <summary>
-        /// 密码
+        /// 数据库密码
         /// </summary>
         public string Password { get; set; } = "";
 
