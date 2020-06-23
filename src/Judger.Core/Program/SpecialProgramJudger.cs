@@ -97,11 +97,5 @@ namespace Judger.Core.Program
 
             return TestDataManager.GetSpecialJudgeProgramFile(JudgeTask.ProblemId) != null;
         }
-
-        public override void Dispose()
-        {
-            ProcessorAffinityManager.ReleaseUsage(JudgeTask.ProcessorAffinity);
-            DeleteTempDirectory();
-        }
     }
 }

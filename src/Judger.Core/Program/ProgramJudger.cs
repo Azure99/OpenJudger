@@ -1,5 +1,4 @@
 ﻿using Judger.Core.Program.Internal;
-using Judger.Managers;
 using Judger.Models;
 using Judger.Models.Program;
 
@@ -23,12 +22,6 @@ namespace Judger.Core.Program
             SingleCaseJudger judger = new SingleCaseJudger(Context);
             ProgramTestDataFile[] dataFiles = GetTestDataFiles();
             JudgeAllCases(judger, dataFiles);
-        }
-
-        public override void Dispose()
-        {
-            ProcessorAffinityManager.ReleaseUsage(JudgeTask.ProcessorAffinity);
-            DeleteTempDirectory();
         }
     }
 }

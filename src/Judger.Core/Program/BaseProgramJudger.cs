@@ -75,11 +75,11 @@ namespace Judger.Core.Program
         {
             JudgeResult result = JudgeResult;
             int acceptedCasesCount = 0;
-            for (int i = 0; i < dataFiles.Length; i++)
+            foreach (var dataFile in dataFiles)
             {
                 try
                 {
-                    ProgramTestData testData = TestDataManager.GetTestData(JudgeTask.ProblemId, dataFiles[i]);
+                    ProgramTestData testData = TestDataManager.GetTestData(JudgeTask.ProblemId, dataFile);
                     SingleJudgeResult singleResult = judger.Judge(testData.Input, testData.Output);
 
                     if (result.ResultCode == JudgeResultCode.Accepted)
@@ -115,6 +115,12 @@ namespace Judger.Core.Program
 
             result.JudgeDetail = result.JudgeDetail.Replace(Context.TempDirectory, "");
             result.PassRate = (double) acceptedCasesCount / dataFiles.Length;
+        }
+
+        public override void Dispose()
+        {
+            ProcessorAffinityManager.ReleaseUsage(JudgeTask.ProcessorAffinity);
+            DeleteTempDirectory();
         }
     }
 }

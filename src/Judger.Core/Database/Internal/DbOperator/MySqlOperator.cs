@@ -7,13 +7,13 @@ using Judger.Utils;
 namespace Judger.Core.Database.Internal.DbOperator
 {
     /// <summary>
-    /// MySQL5.x操作器
+    /// MySQL操作器
     /// </summary>
-    public class MySQL5xOperator : BaseDbOperator
+    public class MySqlOperator : BaseDbOperator
     {
         private readonly DbConnection _connection;
 
-        public MySQL5xOperator(string connectionString, DbDriver driver) : base(connectionString, driver)
+        public MySqlOperator(string connectionString, DbDriver driver) : base(connectionString, driver)
         {
             _connection = DbDriver.CreateConnection(ConnectionString);
         }

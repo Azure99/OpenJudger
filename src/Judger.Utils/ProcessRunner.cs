@@ -124,8 +124,10 @@ namespace Judger.Utils
                 writer.Flush();
                 writer.Close();
             }
-            catch
-            { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
         /// <summary>
@@ -143,8 +145,10 @@ namespace Judger.Utils
                 {
                     return ReadStreamToEnd(reader);
                 }
-                catch
-                { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
 
                 Thread.Sleep(ConstReadSleepInterval);
             }

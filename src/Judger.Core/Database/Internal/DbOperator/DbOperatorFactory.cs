@@ -29,7 +29,7 @@ namespace Judger.Core.Database.Internal.DbOperator
             DbDriver driver = DbDriverLoader.Load(dbConfig.DriverPath);
 
             if (dbConfig.Name == DatabaseType.mysql.ToString())
-                return new MySQL5xOperator(connString, driver);
+                return new MySqlOperator(connString, driver);
 
             throw new NotImplementedException("Db operator not implemented: " + dbConfig.Name);
         }

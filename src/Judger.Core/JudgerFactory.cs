@@ -14,17 +14,13 @@ namespace Judger.Core
     {
         public static BaseJudger Create(JudgeContext context)
         {
-            switch (context.Task.JudgeType)
+            return context.Task.JudgeType switch
             {
-                case JudgeType.ProgramJudge:
-                    return new ProgramJudger(context);
-                case JudgeType.SpecialJudge:
-                    return new SpecialProgramJudger(context);
-                case JudgeType.DbJudge:
-                    return new DbJudger(context);
-                default:
-                    throw new JudgeException("Unknown JudgeType!");
-            }
+                JudgeType.ProgramJudge => new ProgramJudger(context),
+                JudgeType.SpecialJudge => new SpecialProgramJudger(context),
+                JudgeType.DbJudge => new DbJudger(context),
+                _ => throw new JudgeException("Unknown JudgeType!")
+            };
         }
     }
 }
