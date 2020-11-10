@@ -95,12 +95,12 @@ namespace Judger.Core.Program.Internal
             }
 
             CompareResult cmpResult = CompareAnswer(input, output, userOutput); // 对比答案输出
-            if (cmpResult == CompareResult.Accepted)
-                result.ResultCode = JudgeResultCode.Accepted;
-            else if (cmpResult == CompareResult.PresentationError)
-                result.ResultCode = JudgeResultCode.PresentationError;
-            else
-                result.ResultCode = JudgeResultCode.WrongAnswer;
+            result.ResultCode = cmpResult switch
+            {
+                CompareResult.Accepted => JudgeResultCode.Accepted,
+                CompareResult.PresentationError => JudgeResultCode.PresentationError,
+                _ => JudgeResultCode.WrongAnswer
+            };
 
             return result;
         }

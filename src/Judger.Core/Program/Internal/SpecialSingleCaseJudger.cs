@@ -71,15 +71,12 @@ namespace Judger.Core.Program.Internal
                 throw new JudgeException("Special judge program time limit exceed");
             }
 
-            switch (exitCode)
+            return exitCode switch
             {
-                case 0:
-                    return CompareResult.Accepted;
-                case 2:
-                    return CompareResult.PresentationError;
-                default:
-                    return CompareResult.WrongAnswer;
-            }
+                0 => CompareResult.Accepted,
+                2 => CompareResult.PresentationError,
+                _ => CompareResult.WrongAnswer
+            };
         }
 
         private ProcessRunner CreateSpecialJudgeProcessRunner()

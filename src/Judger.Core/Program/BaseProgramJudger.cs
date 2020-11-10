@@ -75,7 +75,7 @@ namespace Judger.Core.Program
         {
             JudgeResult result = JudgeResult;
             int acceptedCasesCount = 0;
-            foreach (var dataFile in dataFiles)
+            foreach (ProgramTestDataFile dataFile in dataFiles)
             {
                 try
                 {

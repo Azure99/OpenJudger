@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Judger.Adapter.Generic.Entity;
 using Judger.Models;
 using Judger.Models.Exception;
@@ -23,7 +24,9 @@ namespace Judger.Adapter.Generic
             {
                 ResponseCode.NoTask => new JudgeContext[0],
                 ResponseCode.Success => CreateJudgeContexts(response.Data),
-                _ => throw new AdapterException(response.Message)
+                ResponseCode.Fail => throw new AdapterException("Error: " + response.Message),
+                ResponseCode.WrongToken => throw new AdapterException("Wrong Token: " + response.Message),
+                _ => throw new AdapterException("Unknown code: " + response.Code + ", " + response.Message)
             };
         }
 
