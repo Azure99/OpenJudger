@@ -5,7 +5,7 @@ namespace Judger.Adapter.Generic
 {
     public class TestDataFetcher : BaseTestDataFetcher
     {
-        private const string ConstFieldProblemId = "problemId";
+        private const string FIELD_PROBLEM_ID = "problemId";
 
         public TestDataFetcher()
         {
@@ -21,7 +21,7 @@ namespace Judger.Adapter.Generic
         private string CreateRequestBody(string problemId)
         {
             JObject requestBody = TokenUtil.CreateJObject();
-            requestBody.Add(ConstFieldProblemId, problemId);
+            requestBody.Add(FIELD_PROBLEM_ID, problemId);
 
             return requestBody.ToString();
         }

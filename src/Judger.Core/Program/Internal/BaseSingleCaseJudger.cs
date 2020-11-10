@@ -18,12 +18,12 @@ namespace Judger.Core.Program.Internal
         /// <summary>
         /// 最大总时间为CPU总时间的倍数
         /// </summary>
-        protected const int ConstTotalTimeLimitRatio = 5;
+        protected const int TOTAL_TIME_LIMIT_RATIO = 5;
 
         /// <summary>
         /// 总时间限制x倍数的最小值
         /// </summary>
-        protected const int ConstMinTotalTimeLimit = 20000;
+        protected const int MIN_TOTAL_TIME_LIMIT = 20000;
 
         protected BaseSingleCaseJudger(JudgeContext context)
         {
@@ -48,7 +48,7 @@ namespace Judger.Core.Program.Internal
                     runner.Encoding = Encoding.UTF8;
 
                 // 创建监视器
-                int totalTimeLimit = Math.Max(JudgeTask.TimeLimit * ConstTotalTimeLimitRatio, ConstMinTotalTimeLimit);
+                int totalTimeLimit = Math.Max(JudgeTask.TimeLimit * TOTAL_TIME_LIMIT_RATIO, MIN_TOTAL_TIME_LIMIT);
                 monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval,
                     LangConfig.RunningInVm)
                 {

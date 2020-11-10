@@ -56,6 +56,7 @@ namespace Judger.Utils
         /// <summary>
         /// 下载请求的资源
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public string DownloadString(string address, int maxTry)
         {
             int tryCount = 0;
@@ -79,6 +80,7 @@ namespace Judger.Utils
         /// <summary>
         /// 尝试将字符串上传到指定的位置, 使用POST方法
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public bool TryUploadString(string address, string data, out string result)
         {
             try
@@ -96,6 +98,7 @@ namespace Judger.Utils
         /// <summary>
         /// 尝试POST请求String
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public bool TryUploadString(string address, string data, int maxTry, out string result)
         {
             try
@@ -113,6 +116,7 @@ namespace Judger.Utils
         /// <summary>
         /// 尝试下载String
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public bool TryDownloadString(string address, out string result)
         {
             try
@@ -130,6 +134,8 @@ namespace Judger.Utils
         /// <summary>
         /// 尝试下载String
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        // ReSharper disable once UnusedParameter.Global
         public bool TryDownloadString(string address, out string result, int maxTray)
         {
             try
@@ -147,6 +153,7 @@ namespace Judger.Utils
         /// <summary>
         /// POST请求数据
         /// </summary>
+        // ReSharper disable once MemberCanBePrivate.Global
         public byte[] UploadData(string address, string data)
         {
             return UploadData(address, Encoding.UTF8.GetBytes(data));
@@ -186,6 +193,7 @@ namespace Judger.Utils
             request.CookieContainer = CookieContainer;
 
             // 请求无ContentType
+            // ReSharper disable once InvertIf
             if (string.IsNullOrEmpty(request.ContentType))
             {
                 // 设置了默认ContentType

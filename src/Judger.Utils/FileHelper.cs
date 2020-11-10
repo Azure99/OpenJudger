@@ -11,6 +11,7 @@ namespace Judger.Utils
         /// <summary>
         /// 尝试读取文件的全部文本
         /// </summary>
+        // ReSharper disable once UnusedMethodReturnValue.Global
         public static bool TryReadAllText(string path, out string contents)
         {
             try
@@ -28,6 +29,7 @@ namespace Judger.Utils
         /// <summary>
         /// 尝试将文本写出到文件
         /// </summary>
+        // ReSharper disable once UnusedMethodReturnValue.Global
         public static bool TryWriteAllText(string path, string contents)
         {
             try

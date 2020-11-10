@@ -23,6 +23,7 @@ namespace Judger.Utils
         /// <param name="obj">对象</param>
         /// <param name="type">类型</param>
         /// <returns>序列化后的Json字符串</returns>
+        // ReSharper disable once UnusedMember.Global
         public static string Serialize(object obj, Type type)
         {
             using (StringWriter writer = new StringWriter(new StringBuilder()))
@@ -53,6 +54,7 @@ namespace Judger.Utils
         /// <param name="jsonObject">对象的Json字符串</param>
         /// <param name="type">类型</param>
         /// <returns>反序列化的对象</returns>
+        // ReSharper disable once UnusedMember.Global
         public static object DeSerialize(string jsonObject, Type type)
         {
             using (StringReader reader = new StringReader(jsonObject))

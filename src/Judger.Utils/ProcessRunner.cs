@@ -116,7 +116,7 @@ namespace Judger.Utils
         /// <summary>
         /// 尝试调用StreamWriter写入数据
         /// </summary>
-        private void TryWriteToStream(StreamWriter writer, string data)
+        private void TryWriteToStream(TextWriter writer, string data)
         {
             try
             {
@@ -157,7 +157,7 @@ namespace Judger.Utils
         /// <summary>
         /// 调用StreamReader读取到流尾
         /// </summary>
-        private string ReadStreamToEnd(StreamReader reader)
+        private string ReadStreamToEnd(TextReader reader)
         {
             StringBuilder builder = new StringBuilder();
             char[] buffer = new char[4096];
@@ -171,6 +171,7 @@ namespace Judger.Utils
                 builder.Append(buffer, 0, len);
 
                 sumLength += len;
+                // ReSharper disable once InvertIf
                 if (sumLength > OutputLimit)
                 {
                     reader.Close();

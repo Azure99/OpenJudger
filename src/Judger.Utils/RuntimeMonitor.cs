@@ -46,6 +46,7 @@ namespace Judger.Utils
         /// <summary>
         /// 总时间消耗
         /// </summary>
+        // ReSharper disable once MemberCanBePrivate.Global
         public int TotalTimeCost { get; private set; }
 
         /// <summary>
@@ -76,6 +77,7 @@ namespace Judger.Utils
         /// <summary>
         /// 当前监控的Process
         /// </summary>
+        // ReSharper disable once MemberCanBePrivate.Global
         public Process Process { get; }
 
         public void Dispose()
@@ -95,6 +97,7 @@ namespace Judger.Utils
         /// <summary>
         /// 停止运行时监控
         /// </summary>
+        // ReSharper disable once MemberCanBePrivate.Global
         public void Stop()
         {
             try
@@ -210,6 +213,7 @@ namespace Judger.Utils
             string queryKey = _runningInVm ? "VmHWM" : "VmPeak";
 
             string[] lines = File.ReadAllLines($"/proc/{Process.Id}/status");
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (string line in lines)
             {
                 if (!line.StartsWith(queryKey))

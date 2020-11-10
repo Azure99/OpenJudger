@@ -29,6 +29,7 @@ namespace Judger.Utils
         /// <param name="directory">目录</param>
         /// <param name="filename">文件名</param>
         /// <returns>文件路径</returns>
+        // ReSharper disable once UnusedMember.Global
         public static string FindFileIgnoreCase(string directory, string filename)
         {
             return Directory.GetFiles(directory).FirstOrDefault(

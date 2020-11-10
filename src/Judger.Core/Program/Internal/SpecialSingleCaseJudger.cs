@@ -13,9 +13,9 @@ namespace Judger.Core.Program.Internal
 {
     public class SpecialSingleCaseJudger : BaseSingleCaseJudger
     {
-        private const string ConstSpjInputName = "input.txt";
-        private const string ConstSpjOutputName = "output.txt";
-        private const string ConstSpjUserOutputName = "user.txt";
+        private const string SPJ_INPUT_NAME = "input.txt";
+        private const string SPJ_OUTPUT_NAME = "output.txt";
+        private const string SPJ_USER_OUTPUT_NAME = "user.txt";
 
         public SpecialSingleCaseJudger(JudgeContext judgeContext, JudgeContext spjContext) : base(judgeContext)
         {
@@ -31,9 +31,9 @@ namespace Judger.Core.Program.Internal
 
         protected override CompareResult CompareAnswer(string input, string output, string userOutput)
         {
-            string inputPath = Path.Combine(SpjJudgeContext.TempDirectory, ConstSpjInputName);
-            string outputPath = Path.Combine(SpjJudgeContext.TempDirectory, ConstSpjOutputName);
-            string userOutputPath = Path.Combine(SpjJudgeContext.TempDirectory, ConstSpjUserOutputName);
+            string inputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_INPUT_NAME);
+            string outputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_OUTPUT_NAME);
+            string userOutputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_USER_OUTPUT_NAME);
             File.WriteAllText(inputPath, input);
             File.WriteAllText(outputPath, output);
             File.WriteAllText(userOutputPath, userOutput);
@@ -48,7 +48,7 @@ namespace Judger.Core.Program.Internal
                 monitor = new RuntimeMonitor(runner.Process, ConfigManager.Config.MonitorInterval)
                 {
                     TimeLimit = SpjTask.TimeLimit,
-                    TotalTimeLimit = Math.Max(SpjTask.TimeLimit * ConstTotalTimeLimitRatio, ConstMinTotalTimeLimit),
+                    TotalTimeLimit = Math.Max(SpjTask.TimeLimit * TOTAL_TIME_LIMIT_RATIO, MIN_TOTAL_TIME_LIMIT),
                     MemoryLimit = SpjTask.MemoryLimit
                 };
                 monitor.Start();
@@ -82,9 +82,9 @@ namespace Judger.Core.Program.Internal
 
         private ProcessRunner CreateSpecialJudgeProcessRunner()
         {
-            string inputPath = Path.Combine(SpjJudgeContext.TempDirectory, ConstSpjInputName);
-            string outputPath = Path.Combine(SpjJudgeContext.TempDirectory, ConstSpjOutputName);
-            string userOutputPath = Path.Combine(SpjJudgeContext.TempDirectory, ConstSpjUserOutputName);
+            string inputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_INPUT_NAME);
+            string outputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_OUTPUT_NAME);
+            string userOutputPath = Path.Combine(SpjJudgeContext.TempDirectory, SPJ_USER_OUTPUT_NAME);
 
             string dataArgs = $" \"{inputPath}\" \"{outputPath}\" \"{userOutputPath}\"";
 

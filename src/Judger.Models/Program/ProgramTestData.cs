@@ -9,6 +9,7 @@
         /// <summary>
         /// 测试数据名
         /// </summary>
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string Name { get; set; }
 
         /// <summary>

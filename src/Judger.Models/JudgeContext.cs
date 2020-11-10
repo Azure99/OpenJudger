@@ -41,6 +41,7 @@ namespace Judger.Models
         /// <summary>
         /// 附加配置信息
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public Dictionary<string, object> AdditionalInfo { get; set; } = new Dictionary<string, object>();
 
         public object Clone()
