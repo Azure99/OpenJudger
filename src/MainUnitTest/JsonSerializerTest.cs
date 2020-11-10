@@ -24,13 +24,6 @@ namespace MainUnitTest
             return false;
         }
 
-        private class TempTestClass
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public int[] Arr { get; set; }
-        }
-
         [Fact]
         public void TestSerializer()
         {
@@ -58,6 +51,13 @@ namespace MainUnitTest
 
             // 修改json的情况下是否正确
             Assert.False(Compare(classB, classC));
+        }
+
+        private class TempTestClass
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public int[] Arr { get; set; }
         }
     }
 }

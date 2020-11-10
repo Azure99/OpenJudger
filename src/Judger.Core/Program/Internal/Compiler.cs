@@ -65,7 +65,6 @@ namespace Judger.Core.Program.Internal
                     return "Compiler runtime error.";
 
                 return error;
-
             }
         }
 

@@ -89,7 +89,7 @@ namespace Judger.Managers
         {
             return Path.Combine(
                 GetSpjDirectoryInJudger(context),
-                ((ProgramLangConfig)context.LangConfig).SourceCodeFileName);
+                ((ProgramLangConfig) context.LangConfig).SourceCodeFileName);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace Judger.Managers
             string spjProgramPath = null;
             foreach (string file in files)
             {
-                if (Path.GetFileName(file) == ((ProgramLangConfig)context.LangConfig).SourceCodeFileName)
+                if (Path.GetFileName(file) == ((ProgramLangConfig) context.LangConfig).SourceCodeFileName)
                     continue;
 
                 spjProgramPath = file;
@@ -175,7 +175,7 @@ namespace Judger.Managers
         public static string GetSpjProgramPathInJudger(JudgeContext context)
         {
             string spjDirectory = GetSpjDirectoryInJudger(context);
-            string path = Path.Combine(spjDirectory, ((ProgramLangConfig)context.LangConfig).ProgramFileName);
+            string path = Path.Combine(spjDirectory, ((ProgramLangConfig) context.LangConfig).ProgramFileName);
 
             return PathHelper.GetBaseAbsolutePath(path);
         }
