@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Judger.Adapter.Generic.Entity;
 using Judger.Models;
 using Judger.Models.Exception;

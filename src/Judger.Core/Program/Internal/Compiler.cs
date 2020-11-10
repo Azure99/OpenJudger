@@ -57,18 +57,15 @@ namespace Judger.Core.Program.Internal
                     monitor.Dispose();
                 }
 
-                if (exitCode != 0)
-                {
-                    if (monitor.LimitExceed)
-                        return "Compile timeout.";
+                if (exitCode == 0)
+                    return "";
+                if (monitor.LimitExceed)
+                    return "Compile timeout.";
+                if (string.IsNullOrEmpty(error))
+                    return "Compiler runtime error.";
 
-                    if (string.IsNullOrEmpty(error))
-                        return "Compiler runtime error.";
+                return error;
 
-                    return error;
-                }
-
-                return "";
             }
         }
 
