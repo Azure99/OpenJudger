@@ -134,19 +134,6 @@ namespace Judger.Managers
         }
 
         /// <summary>
-        /// 检查题目是否需要Special Judge
-        /// </summary>
-        public static bool CheckNeedSpecialJudge(string problemId)
-        {
-            string spjDir = Cmb(Config.TestDataDirectory, problemId, ConstDirSpj);
-
-            lock (GetDataLock(problemId))
-            {
-                return Directory.Exists(spjDir) && Directory.GetFiles(spjDir).Length > 0;
-            }
-        }
-
-        /// <summary>
         /// 写出SPJ可执行程序
         /// </summary>
         public static void WriteSpecialJudgeProgramFile(string problemId, SpecialJudgeProgram programFile)
@@ -241,19 +228,6 @@ namespace Judger.Managers
                     Operation = operFile != null ? File.ReadAllText(operFile) : null,
                     Query = queryFile != null ? File.ReadAllText(queryFile) : null
                 };
-            }
-        }
-
-        /// <summary>
-        /// 检查题目是否为数据库题目
-        /// </summary>
-        public static bool CheckIsDatabaseJudge(string problemId)
-        {
-            string dbDir = Cmb(Config.TestDataDirectory, problemId, ConstDirDb);
-
-            lock (GetDataLock(problemId))
-            {
-                return Directory.Exists(dbDir) && Directory.GetDirectories(dbDir).Length > 0;
             }
         }
 
