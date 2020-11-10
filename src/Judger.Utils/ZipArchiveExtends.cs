@@ -17,6 +17,7 @@ namespace Judger.Utils
         {
             foreach (MethodInfo method in zipArchive.GetType().GetRuntimeMethods())
             {
+                // ReSharper disable once InvertIf
                 if (method.Name == ConstMethodWriteFile)
                 {
                     method.Invoke(zipArchive, new object[0]);

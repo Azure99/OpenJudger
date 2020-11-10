@@ -53,12 +53,12 @@ namespace Judger.Service
                     GC.Collect();
                 }
 
-                if (!_judgeQueue.IsEmpty && RunningCount < _config.MaxRunning)
-                {
-                    RunningCount++;
-                    if (_judgeQueue.TryDequeue(out JudgeContext context))
-                        new Task(RunJudgeTask, context).Start();
-                }
+                if (_judgeQueue.IsEmpty || RunningCount >= _config.MaxRunning)
+                    return;
+
+                RunningCount++;
+                if (_judgeQueue.TryDequeue(out JudgeContext context))
+                    new Task(RunJudgeTask, context).Start();
             }
         }
 
@@ -118,15 +118,13 @@ namespace Judger.Service
             JudgeTask task = context.Task;
 
             // 检查本地测试数据是否为最新
-            if (!TestDataManager.CheckDataVersion(task.ProblemId, task.DataVersion))
-            {
-                LogInvalidTestData(task.ProblemId);
+            if (TestDataManager.CheckDataVersion(task.ProblemId, task.DataVersion))
+                return;
 
-                ITestDataFetcher fetcher = AdapterFactory.CreateTestDataFetcher();
-                TestDataManager.WriteTestData(task.ProblemId, fetcher.Fetch(context));
-
-                LogTestDataFetched(task.ProblemId);
-            }
+            LogInvalidTestData(task.ProblemId);
+            ITestDataFetcher fetcher = AdapterFactory.CreateTestDataFetcher();
+            TestDataManager.WriteTestData(task.ProblemId, fetcher.Fetch(context));
+            LogTestDataFetched(task.ProblemId);
         }
 
         private JudgeResult CreateFailedJudgeResult(JudgeContext context, string message = "")

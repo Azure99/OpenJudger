@@ -52,6 +52,7 @@ namespace Judger.Service
             _workTimer.Start();
         }
 
+        // ReSharper disable once UnusedMember.Global
         public void Stop()
         {
             LogManager.Info("Stop service");
@@ -106,16 +107,18 @@ namespace Judger.Service
 
         private void FetchJudgeTask()
         {
-            if (Controller.PendingCount >= _config.MaxQueueSize)
-                return;
+            while (true)
+            {
+                if (Controller.PendingCount >= _config.MaxQueueSize)
+                    break;
 
-            JudgeContext[] tasks = _taskFetcher.Fetch();
-            foreach (JudgeContext task in tasks)
-                Controller.AddTask(task);
+                JudgeContext[] tasks = _taskFetcher.Fetch();
+                if (tasks.Length <= 0)
+                    break;
 
-            // 若当前成功取到任务, 不等待继续尝试取回任务以提高响应率
-            if (tasks.Length > 0)
-                FetchJudgeTask();
+                foreach (JudgeContext task in tasks)
+                    Controller.AddTask(task);
+            }
         }
     }
 }

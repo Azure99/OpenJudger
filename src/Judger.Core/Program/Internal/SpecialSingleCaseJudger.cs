@@ -63,6 +63,7 @@ namespace Judger.Core.Program.Internal
             File.Delete(outputPath);
             File.Delete(userOutputPath);
 
+            // ReSharper disable once InvertIf
             if (monitor.LimitExceed)
             {
                 if (monitor.MemoryCost == monitor.MemoryLimit)

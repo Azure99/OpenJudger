@@ -18,6 +18,7 @@ namespace MainUnitTest
         {
             foreach (MethodInfo method in typeof(SingleCaseJudger).GetRuntimeMethods())
             {
+                // ReSharper disable once InvertIf
                 if (method.Name == "CompareAnswer")
                 {
                     object result = method.Invoke(_judger, new object[] {"", ans1, ans2});

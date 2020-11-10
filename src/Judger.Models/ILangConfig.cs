@@ -11,6 +11,7 @@ namespace Judger.Models
         /// <summary>
         /// 语言名称
         /// </summary>
+        // ReSharper disable once UnusedMemberInSuper.Global
         string Name { get; set; }
 
         /// <summary>
@@ -18,6 +19,7 @@ namespace Judger.Models
         /// </summary>
         /// true为数据库配置, false为普通程序配置
         [JsonIgnore]
+        // ReSharper disable once UnusedMemberInSuper.Global
         bool IsDbConfig { get; set; }
     }
 }

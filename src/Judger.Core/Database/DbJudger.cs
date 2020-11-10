@@ -131,6 +131,7 @@ namespace Judger.Core.Database
             return userOperator;
         }
 
+        // ReSharper disable once SuggestBaseTypeForParameter
         private void ClearJudgeEnvironment(BaseDbOperator userOperator)
         {
             userOperator.Dispose();

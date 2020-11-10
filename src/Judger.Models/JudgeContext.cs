@@ -20,6 +20,7 @@ namespace Judger.Models
         /// <summary>
         /// 评测任务
         /// </summary>
+        // ReSharper disable once MemberCanBePrivate.Global
         public JudgeTask Task { get; set; }
 
         /// <summary>

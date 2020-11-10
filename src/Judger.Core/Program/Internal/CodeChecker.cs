@@ -89,8 +89,10 @@ namespace Judger.Core.Program.Internal
             List<string> rules = _langRulesDic[language];
             for (int i = 0; i < lines.Length; i++)
             {
+                // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
                 foreach (string rule in rules)
                 {
+                    // ReSharper disable once InvertIf
                     if (Regex.IsMatch(lines[i], rule, RegexOptions.Singleline))
                     {
                         unsafeCode = lines[i];

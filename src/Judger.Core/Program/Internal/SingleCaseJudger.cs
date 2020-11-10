@@ -35,6 +35,7 @@ namespace Judger.Core.Program.Internal
                 bool correct = true;
                 for (int i = 0; i < crtLength; i++)
                 {
+                    // ReSharper disable once InvertIf
                     if (crtArr[i] != usrArr[i])
                     {
                         correct = false;

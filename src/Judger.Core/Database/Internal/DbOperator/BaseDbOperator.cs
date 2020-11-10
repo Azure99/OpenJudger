@@ -59,6 +59,8 @@ namespace Judger.Core.Database.Internal.DbOperator
         /// 执行命令不查询
         /// </summary>
         /// <returns>操作影响的行数</returns>
+        // ReSharper disable once UnusedMemberInSuper.Global
+        // ReSharper disable once UnusedMethodReturnValue.Global
         public abstract int ExecuteNonQuery(string cmd, int timeout = 0);
 
         /// <summary>

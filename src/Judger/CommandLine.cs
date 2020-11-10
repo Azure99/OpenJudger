@@ -19,6 +19,7 @@ namespace Judger
 
         private static void Execute(string cmd)
         {
+            // ReSharper disable once ConvertIfStatementToSwitchStatement
             if (cmd == "status")
                 ShowStatus();
             else if (cmd == "clear")

@@ -78,6 +78,7 @@ namespace Judger.Adapter
                 try
                 {
                     Assembly assembly = Assembly.LoadFile(assemblyFile);
+                    // ReSharper disable once LoopCanBeConvertedToQuery
                     foreach (Type type in assembly.ExportedTypes)
                     {
                         if (type.GetInterface(typeof(IConfigInitializer).FullName!) != null)

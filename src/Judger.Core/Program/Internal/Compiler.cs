@@ -61,6 +61,7 @@ namespace Judger.Core.Program.Internal
                     return "";
                 if (monitor.LimitExceed)
                     return "Compile timeout.";
+                // ReSharper disable once ConvertIfStatementToReturnStatement
                 if (string.IsNullOrEmpty(error))
                     return "Compiler runtime error.";
 

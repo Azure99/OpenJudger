@@ -15,6 +15,7 @@ namespace MainUnitTest
         {
             string fileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "cmd" : "bash";
 
+            // ReSharper disable once UseObjectOrCollectionInitializer
             Process process = new Process();
             process.StartInfo.FileName = fileName;
 

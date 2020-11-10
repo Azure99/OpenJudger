@@ -135,6 +135,7 @@ namespace Judger.Utils
             TimeCost = (int) Process.TotalProcessorTime.TotalMilliseconds;
             TotalTimeCost = (int) (DateTime.Now - Process.StartTime).TotalMilliseconds;
 
+            // ReSharper disable once InvertIf
             if (TimeCost > TimeLimit && TimeLimit > 0 ||
                 TotalTimeCost > TotalTimeLimit && TotalTimeLimit > 0)
             {
@@ -151,9 +152,11 @@ namespace Judger.Utils
         {
             int nowMemoryCost = PeakMemory();
 
+            // ReSharper disable once InvertIf
             if (nowMemoryCost > MemoryCost)
             {
                 MemoryCost = nowMemoryCost;
+                // ReSharper disable once InvertIf
                 if (MemoryCost > MemoryLimit && MemoryLimit > 0)
                 {
                     MemoryCost = MemoryLimit;
@@ -174,6 +177,7 @@ namespace Judger.Utils
             if (_platformIsWindows)
                 return PeakMemoryOnWindows();
 
+            // ReSharper disable once ConvertIfStatementToReturnStatement
             if (_platformIsLinux)
                 return PeakMemoryOnLinux();
 

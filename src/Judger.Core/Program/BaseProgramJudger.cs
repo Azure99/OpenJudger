@@ -23,6 +23,7 @@ namespace Judger.Core.Program
         protected void CheckUnsafeCode()
         {
             JudgeResult result = JudgeResult;
+            // ReSharper disable once InvertIf
             if (!CodeChecker.Instance.Check(JudgeTask.SourceCode, JudgeTask.Language,
                 out string unsafeCode, out int line))
             {

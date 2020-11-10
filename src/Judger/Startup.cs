@@ -11,6 +11,7 @@ namespace Judger
     {
         public static JudgeService Service { get; private set; }
 
+        // ReSharper disable once UnusedParameter.Global
         public static void Run(string[] args)
         {
             CheckInit();
